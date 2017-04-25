@@ -1,0 +1,406 @@
+package com.multshows.Adapter;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.multshows.Activity.MainActivity;
+import com.multshows.Activity.MyHomePager_Activity;
+import com.multshows.Activity.Search_Activity;
+import com.multshows.Beans.MyHome_Idle_Beans;
+import com.multshows.Beans.ShowsLikeAdd;
+import com.multshows.Beans.UserHead;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.DateDeal;
+import com.multshows.Utils.Emoji_Change;
+import com.multshows.Utils.Emoji_Map;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Utils.SubString_Utils;
+import com.multshows.Utils.Time_Now;
+import com.multshows.Views.Dialog_Hint;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.NineGridview.ImageInfo;
+import com.multshows.Views.NineGridview.NineGridView;
+import com.multshows.Views.NineGridview.preview.NineGridViewClickAdapter;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+
+/**
+ * 描述：我的主页  闲置页适配器
+ * 作者：李萧萧
+ * 时间：2016.9/27
+ */
+public class MyHome_Idle_adapter extends BaseAdapter{
+    List<MyHome_Idle_Beans>  mList;
+    private Context mContext;
+    Gson mGson = new Gson();
+    Dialog mDialog;//消息提示框
+    SaveSharedPreferences saveSharedPreferences;
+    ViewHolder viewHolder;
+    MyApplication mApplication;
+    Dialog_Hint mDialogHint;//提示删除
+    Emoji_Change mEmoji_change=new Emoji_Change();//表情，匹配符替换类
+    public MyHome_Idle_adapter(Context mContext, List<MyHome_Idle_Beans> mList) {
+        this.mContext = mContext;
+        this.mList = mList;
+        mApplication= (MyApplication) mContext.getApplicationContext();
+        saveSharedPreferences= new SaveSharedPreferences();
+        mDialog = new HintText_Dialog(mContext, R.style.MyDialog);
+    }
+
+    @Override
+    public int getCount() {
+        return mList.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return mList.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mList.get(position).getFlag();
+    }
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+    @Override
+    public View getView(final int position, View view, ViewGroup viewGroup) {
+        if(getItemViewType(position)==1){
+            if (view == null) {
+                viewHolder = new ViewHolder();
+                view = LayoutInflater.from(mContext).inflate(R.layout.adapter_idle_item, null);
+                viewHolder.mIdleuserpic = (SimpleDraweeView) view.findViewById(R.id.Idleuserpic);
+                viewHolder.mIdleusername = (TextView) view.findViewById(R.id.Idleusername);
+                viewHolder.Idlecontent = (TextView) view.findViewById(R.id.Idlecontent);
+                viewHolder.mIdletitle = (TextView) view.findViewById(R.id.Idletitle);
+                viewHolder.addressImage = (ImageView) view.findViewById(R.id.addressImage);
+                viewHolder.mIdledate = (TextView) view.findViewById(R.id.Idledate);
+                viewHolder.mNineGridView = (NineGridView) view.findViewById(R.id.Idle_nineGrid);
+                viewHolder.mIdlemoney = (TextView) view.findViewById(R.id.Idlemoney);
+                viewHolder.mIdle_address = (TextView) view.findViewById(R.id.Idle_address);
+                viewHolder.IdlecommentNum = (TextView) view.findViewById(R.id.IdlecommentNum);
+                viewHolder.IdlelikeNum = (TextView) view.findViewById(R.id.IdlelikeNum);
+                viewHolder.ViewNumText = (TextView) view.findViewById(R.id.ViewNumText);
+                viewHolder.IdleLikeLayout = (RelativeLayout) view.findViewById(R.id.IdleLikeLayout);
+                viewHolder.IdleLikeimage = (ImageView) view.findViewById(R.id.IdleLikeimage);
+                viewHolder.ViewNumIamge = (ImageView) view.findViewById(R.id.ViewNumIamge);
+                viewHolder.IdleDeleteText = (TextView) view.findViewById(R.id.IdleDeleteText);
+                view.setTag(viewHolder);
+            } else {
+               viewHolder = (ViewHolder) view.getTag();
+            }
+
+            final MyHome_Idle_Beans beans=mList.get(position);
+            if(beans.getUserid().equals(Login_Static.myUserID)&&beans.getIsTrade()==0){
+                viewHolder.IdleDeleteText.setVisibility(View.VISIBLE);
+            }else {
+                viewHolder.IdleDeleteText.setVisibility(View.INVISIBLE);
+            }
+            viewHolder.IdleDeleteText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDialogHint = new Dialog_Hint(mContext, 0,
+                            "确认删除吗?", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DeleteIdle(beans,position);
+                            mDialogHint.dismiss();
+                        }
+                    });
+                    mDialogHint.show();
+                }
+            });
+            if(beans.getViews()>=0){
+                viewHolder.ViewNumText.setText(beans.getViews()+"人浏览过");
+                viewHolder.ViewNumIamge.setVisibility(View.VISIBLE);
+                viewHolder.ViewNumText.setVisibility(View.VISIBLE);
+            }else {
+                viewHolder.ViewNumIamge.setVisibility(View.INVISIBLE);
+                viewHolder.ViewNumText.setVisibility(View.INVISIBLE);
+            }
+            boolean flag=false;
+            for(int i=0;i<beans.getLikeUsername().size();i++){
+                if(beans.getLikeUsername().get(i).getUserId().equals(Login_Static.myUserID)){
+                    flag=true;
+                }
+            }
+            if(flag) {
+                viewHolder.IdleLikeimage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.item_like));
+                viewHolder.IdleLikeLayout.setBackgroundResource(R.drawable.btn_style7);
+                viewHolder.IdlelikeNum.setTextColor(mContext.getResources().getColor(R.color.green));
+            }else  {
+                viewHolder.IdleLikeimage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.list_clickalike));
+                viewHolder.IdleLikeLayout.setBackgroundResource(R.drawable.btn_style6);
+                viewHolder.IdlelikeNum.setTextColor(mContext.getResources().getColor(R.color.text));
+            }
+            viewHolder.mIdleusername.setText(beans.getUsername());
+            viewHolder.mIdletitle.setText(Emoji_Map.Emojichange((Activity) mContext, mEmoji_change.ChangeEmoji(beans.getTitle())));
+            viewHolder.Idlecontent.setText(Emoji_Map.Emojichange((Activity) mContext, mEmoji_change.ChangeEmoji(beans.getContent())));
+            viewHolder.mIdledate.setText(DateDeal.format(Time_Now.getStringTime(Integer.parseInt(beans.getData()))));
+            viewHolder.mIdlemoney.setText("¥"+beans.getMoney());
+            Uri uri = Uri.parse(beans.getUserpic());
+            viewHolder.mIdleuserpic.setImageURI(uri);
+            ArrayList<ImageInfo> imageInfo = new ArrayList<>();
+            if(beans.getStringList().size()==0||!beans.getStringList().get(0).equals("")){
+                List<String> imageDetails = beans.getStringList();
+                if (imageDetails != null) {
+                    for (String imageDetail : imageDetails) {
+                        ImageInfo info = new ImageInfo();
+                        info.setThumbnailUrl(SubString_Utils.getImageUrl3(imageDetail));
+                        info.setBigImageUrl(SubString_Utils.getImageUrlclearly(imageDetail));
+                        info.setWorkId(beans.getId());
+                        imageInfo.add(info);
+                    }
+                }
+                viewHolder.mNineGridView.setAdapter(new NineGridViewClickAdapter(mContext, imageInfo));
+            }else  viewHolder.mNineGridView.setVisibility(View.GONE);
+
+            viewHolder.IdlecommentNum .setText(beans.getMessageNum()+"");
+            viewHolder.IdlelikeNum.setText(beans.getLikeUsername().size()+"");
+            if(!beans.getAddress().equals("")){
+                viewHolder.addressImage.setVisibility(View.VISIBLE);
+                viewHolder.mIdle_address.setVisibility(View.VISIBLE);
+                String []mAddress=beans.getAddress().split(" ");
+                if(mAddress.length>1){
+                    viewHolder.mIdle_address.setText("来自"+mAddress[1]);
+                }else {
+                    viewHolder.mIdle_address.setText("来自"+mAddress[0]);
+                }
+            }
+            else {
+                viewHolder.addressImage.setVisibility(View.INVISIBLE);
+                viewHolder.mIdle_address.setVisibility(View.INVISIBLE);
+            }
+            viewHolder.mIdleuserpic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mIntent = new Intent(mContext, MyHomePager_Activity.class);
+                    saveSharedPreferences.Save_PREFS(mContext, "otherId", beans.getUserid());//是否进入的我的主页，yes表示进入的是我的主页，no表示进入的是发现的闲置页
+                    mContext.startActivity(mIntent);
+                }
+            });
+            viewHolder.IdleLikeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewHolder.IdleLikeLayout.setEnabled(false);
+                    boolean flag=false;
+                    for(int i=0;i<beans.getLikeUsername().size();i++){
+                        if(beans.getLikeUsername().get(i).getUserId().equals(Login_Static.myUserID)){
+                            flag=true;
+                        }
+                    }
+                    if(flag){
+                        cancleLike(beans);
+                    }else sendLike(beans);
+
+                }
+            });
+
+        }
+        else {
+            if("mom".equals(saveSharedPreferences.Get_PREFS(mContext, "Type"))){
+                view = LayoutInflater.from(mContext).inflate(R.layout.sort_top_item_2, null);
+            }else {
+                view = LayoutInflater.from(mContext).inflate(R.layout.sort_top_item_4, null);
+            }
+
+            RelativeLayout searchLayout = (RelativeLayout) view.findViewById(R.id.Work_SearchLayout);
+            searchLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, Search_Activity.class);
+                    intent.putExtra("SearchType","idle");
+                    mContext.startActivity(intent);
+                }
+            });
+
+          /*  view = LayoutInflater.from(mContext).inflate(R.layout.sort_top_item_2, null);
+            RelativeLayout searchLayout= (RelativeLayout) view.findViewById(R.id.friends_Friend_SearchLayout);
+            searchLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(mContext, Search_Activity.class);
+                    intent.putExtra("SearchType","idle");
+                    mContext.startActivity(intent);
+                }
+            });*/
+        }
+
+        return view;
+    }
+    class ViewHolder {
+        TextView mIdleusername;//闲置 姓名
+        TextView mIdledate;//闲置 日期时间
+        TextView mIdlemoney;//闲置 日期价格
+        TextView mIdletitle;//闲置 闲置标题
+        TextView Idlecontent;//闲置 闲置详情
+        SimpleDraweeView mIdleuserpic;//用户头像
+        NineGridView mNineGridView;
+        TextView mIdle_address;//发表地址
+        ImageView addressImage;//地址图片
+        TextView IdlecommentNum;//评论赞显示
+        TextView IdlelikeNum;//评论赞显示
+        RelativeLayout IdleLikeLayout;//闲置赞布局
+        ImageView IdleLikeimage;//闲置图标
+        ImageView ViewNumIamge;//浏览图标
+        TextView ViewNumText;//浏览数量
+        TextView IdleDeleteText;//删除闲置
+         }
+    //点赞
+    public void sendLike(final MyHome_Idle_Beans beans) {
+        ShowsLikeAdd mShowsLikeAdd = new ShowsLikeAdd();
+        mShowsLikeAdd.setUserId(Login_Static.myUserID);
+        mShowsLikeAdd.setShowsId(beans.getId());
+        mShowsLikeAdd.setType(1);
+        String data = mGson.toJson(mShowsLikeAdd);
+        CLog.e("data", data);
+        OKHttp.OkHttpPost("/Shows/AddShowsLike", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing", "错误");
+                viewHolder.IdleLikeLayout.setEnabled(true);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing", "changeNickName:" + response);
+                try {
+                    if (Json_Utils.getCode(response) == 0) {
+                        UserHead mUser = new UserHead();
+                        mUser.setUserId(Login_Static.myUserID);
+                        mUser.setNickName(Login_Static.mAccount.getNickName());
+                        if (beans.getLikeUsername() == null) {
+                            List<UserHead> mUserHeads = new ArrayList<UserHead>();
+                            beans.setLikeUsername(mUserHeads);
+                        }
+                        beans.getLikeUsername().add(mUser);
+                     //   viewHolder.IdleLikeimage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.item_like));
+                     //   viewHolder.IdlelikeNum.setText(Integer.parseInt( viewHolder.IdlelikeNum.getText().toString())+1+"");
+                        notifyDataSetChanged();
+                    } viewHolder.IdleLikeLayout.setEnabled(true);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    //取消点赞
+    private void cancleLike(final MyHome_Idle_Beans beans) {
+        OkHttpUtils.get().url(mApplication.getUrl() + "/Shows/DelShowsLike")
+                .addParams("showsId", beans.getId())
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("type", "1")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        viewHolder.IdlelikeNum.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                for (int j = 0; j < beans.getLikeUsername().size(); j++) {
+                                    if (beans.getLikeUsername().get(j).getUserId().equals(Login_Static.myUserID)) {
+                                        beans.getLikeUsername().remove(j);
+                                    }
+                                }
+                              notifyDataSetChanged();
+                            }
+                            viewHolder.IdlelikeNum.setEnabled(true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+    //删除作品
+    private void DeleteIdle(MyHome_Idle_Beans mMList, final int position){
+        OkHttpUtils.get().url(mApplication.getUrl() + "/Shows/DelShows")
+                .addParams("showsId", mMList.getId())
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mDialog.show();
+                        showError("删除失败", 0);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                mDialog.show();
+                                showError("删除成功", 1);
+                                mList.remove(position);
+                                notifyDataSetChanged();
+                            } else {
+                                mDialog.show();
+                                showError("删除失败", 0);
+                                //  mDialog.show();
+                                //  showError("取消点赞失败", 0);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    //发布结果提示
+    public void showError(String errorString, final int is) {
+        String isString = null;
+        if (is == 1) {
+            isString = "success";
+
+        }
+        if (is == 0) {
+            isString = "fail";
+        }
+        HintText_Dialog hint = new HintText_Dialog(mContext, errorString, isString);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //得到返回值后，2秒后加载框消失
+                mDialog.dismiss();
+                MainActivity.isShow2=true;
+            }
+        }, 2000);
+    }
+}

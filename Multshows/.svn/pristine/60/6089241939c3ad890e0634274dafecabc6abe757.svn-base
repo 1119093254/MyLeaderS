@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <com.multshows.Views.PullToRefresh
+        android:id="@+id/Friends_Interaction_Fragment_Refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/Friends_Interaction_Fragment_ListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:divider="@null"/>
+        <include
+            android:id="@+id/Friends_Interaction_No_View"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/no_view"/>
+    </com.multshows.Views.PullToRefresh>
+
+</LinearLayout>

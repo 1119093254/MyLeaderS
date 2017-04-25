@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white">
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/task_Babypic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        fresco:roundAsCircle="true"
+        fresco:placeholderImage="@drawable/info_photoyou"
+        />
+
+    <TextView
+        android:id="@+id/babyname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/task_Babypic"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@id/task_Babypic"
+        android:text="桃桃baby"
+        android:textColor="@color/text_black"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/babyname"
+        android:layout_below="@id/babyname"
+        android:id="@+id/babyPhone"
+        android:layout_marginTop="9dp"
+        android:text=""
+        android:textColor="@color/text"
+        android:textSize="10sp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/babyChioce"
+        android:src="@drawable/item_security_choce"
+        android:visibility="visible"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="16dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/text_gray"/>
+
+</RelativeLayout>

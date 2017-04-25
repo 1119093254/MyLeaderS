@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/homefragment_Layout"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:id="@+id/homeFrament_Relayout"
+            android:background="@color/green"
+            >
+            <RadioGroup
+                android:id="@+id/home_Group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+                <!--style="?android:attr/borderlessButtonStyle"-->
+                <RadioButton
+                    android:id="@+id/home_RadioBtn1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:checked="true"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="3dp"
+                    android:text="全部作品"
+                    android:textColor="@color/baby_radio"
+                    android:textSize="15sp"
+                    android:background="@drawable/radiobtn_background_check"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:id="@+id/AllWorkTextChioce"
+                    android:textSize="15sp"
+                    android:text="宝宝作品"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="3dp"
+                    android:visibility="gone"
+                    />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/moreWorkClassImage"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/item_arrowopen"
+                        android:paddingTop="3dp"
+                        android:layout_centerVertical="true"
+                        />
+                </RelativeLayout>
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/home_RadioBtn2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="3dp"
+                    android:text="好友作品"
+                    android:textColor="@color/baby_radio"
+                    android:textSize="15sp"
+                    android:background="@drawable/radiobtn_background_check"/>
+            </RadioGroup>
+
+
+
+            <TextView
+                android:id="@+id/ClassificationActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="7dp"
+                android:padding="10dp"
+                android:text="筛选"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+            <!--<ImageView
+                android:id="@+id/ClassificationImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="7dp"
+                android:visibility="invisible"
+                android:src="@drawable/icon_classifyimg"/>-->
+
+
+          <!--  <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="#E1DFE0"
+                />-->
+        </RelativeLayout>
+
+
+        <com.multshows.Views.CustomViewPager
+            android:id="@+id/home_viewpage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/SendWorkFriend"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="35dp"
+        android:layout_marginRight="25dp"
+        android:src="@drawable/sns_compile_icon"/>
+</RelativeLayout>

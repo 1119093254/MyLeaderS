@@ -1,0 +1,56 @@
+package com.multshows.Beans;
+
+import java.io.Serializable;
+
+/**
+ * Created by Administrator on 2016/11/9.
+ * 分类bean
+ */
+public class ShowsClass implements Serializable{
+    String Id;//分类id
+    String ClassName;//分类名称
+    String IsUse;//1使用 0 不使用
+    String Icon;//选择时图片
+    String GrayIcon;//1使用 0 不使用
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
+    }
+
+    public String getClassName() {
+        return ClassName;
+    }
+
+    public void setClassName(String className) {
+        ClassName = className;
+    }
+
+    public String getIsUse() {
+        return IsUse;
+    }
+
+    public void setIsUse(String isUse) {
+        IsUse = isUse;
+    }
+
+    public String getIcon() {
+        return Icon;
+    }
+
+    public void setIcon(String icon) {
+        Icon = icon;
+    }
+
+    public String getGrayIcon() {
+        return GrayIcon;
+    }
+
+    public void setGrayIcon(String grayIcon) {
+        GrayIcon = grayIcon;
+    }
+
+}

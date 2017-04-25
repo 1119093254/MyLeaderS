@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/start_page0"
+    tools:context=".Activity.Start_interimActivity">
+
+   <!--<ImageView
+       android:layout_width="167dp"
+       android:layout_height="52dp"
+       android:src="@mipmap/logo"
+       android:layout_above="@+id/logo_slogan"
+       android:layout_marginBottom="32dp"
+       android:layout_centerHorizontal="true"/>
+    <ImageView
+        android:layout_width="254dp"
+        android:layout_height="25dp"
+        android:src="@mipmap/logo_slogan"
+        android:id="@+id/logo_slogan"
+        android:layout_centerInParent="true"/>-->
+
+
+</RelativeLayout>

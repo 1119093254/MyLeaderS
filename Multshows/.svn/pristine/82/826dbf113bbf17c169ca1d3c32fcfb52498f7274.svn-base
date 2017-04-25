@@ -1,0 +1,228 @@
+package com.multshows.Utils;
+
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
+/**
+ * 描述：okHttp   工具类
+ * 作者：贾强胜
+ * 时间：2016.9.18
+ */
+public class OKHttp {
+    private static final OkHttpClient okHttpClient=new OkHttpClient();
+
+    /**
+     * GET请求(同步)
+     */
+
+    /**
+     * GET请求 获取Request对象
+     * @param urlString
+     * @return
+     */
+    private static Request getGETRequestFromUrl(String urlString){
+        Request request=new Request.Builder()
+                .url(urlString)
+                .build();
+        return request;
+    }
+
+    /**
+     * 获取Response对象
+     * @param urlString
+     * @return
+     * @throws IOException
+     */
+    private static Response getResponseFromUrl(String urlString) throws IOException {
+        Request request=getGETRequestFromUrl(urlString);
+        Response response=okHttpClient.newCall(request).execute();
+        return response;
+    }
+
+    /**
+     * 获取ResponseBody对象
+     * @param urlString
+     * @return
+     * @throws IOException
+     */
+    private static ResponseBody getResponseBodyFromUrl(String urlString) throws IOException {
+        Response response=getResponseFromUrl(urlString);
+       if(response.isSuccessful()){
+           return response.body();
+       }
+        return null;
+    }
+
+    /**
+     * GET请求 获取访问网络 返回的结果（字符串）
+     * @param urlString
+     * @return String
+     * @throws IOException
+     */
+    public static String loadGET_StringHttp(String urlString) throws IOException {
+       ResponseBody responseBody=getResponseBodyFromUrl(urlString);
+        if(responseBody!=null){
+            return responseBody.string();
+        }
+        return null;
+    }
+
+    /**
+     * GET请求 获取访问网络 返回的结果（字节数组）
+     * @param urlString
+     * @return byte[]
+     * @throws IOException
+     */
+    public static byte[] loadGET_ByteHttp(String urlString) throws IOException {
+        ResponseBody responseBody=getResponseBodyFromUrl(urlString);
+        if(responseBody!=null){
+            return responseBody.bytes();
+        }
+        return null;
+    }
+
+    /**
+     * GET请求 获取访问网络 返回的结果（流）
+     * @param urlString
+     * @return InputStream
+     * @throws IOException
+     */
+    public static InputStream loadGET_StreamHttp(String urlString) throws IOException {
+        ResponseBody responseBody=getResponseBodyFromUrl(urlString);
+        if(responseBody!=null){
+            return responseBody.byteStream();
+        }
+        return null;
+    }
+    /**
+     * GET请求(异步)
+     */
+    /**
+     * 开启一个异步线程访问网络,通过回调方法加载数据
+     * @param urlString
+     * @param callback
+     */
+    public static void loadGET_AsyncHttp(String urlString, Callback callback){
+        Request request=getGETRequestFromUrl(urlString);
+        okHttpClient.newCall(request).enqueue(callback);
+    }
+
+    /**
+     * POST 请求
+     */
+
+///////////////////////////////////////////////////////////////////////////
+//POST同步请求
+///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * POST请求  获得Request对象
+     * @param urlString
+     * @param requestBody
+     * @return
+     */
+    private static Request getPOSTRequest(String urlString , RequestBody requestBody){
+        Request.Builder builder=new Request.Builder();
+        builder.url(urlString).post(requestBody);
+        return builder.build();
+    }
+
+    /**
+     * 获取RequestBody对象
+     * @param map
+     * @return
+     */
+    private static RequestBody getPOSTRequestBody(Map<String,String> map){
+        //okHttp3 将FormBody.Builder代替了FormEncodingBuilder
+        FormBody.Builder body=new FormBody.Builder();
+        if(map!=null || !map.isEmpty()){
+            //增强for循环
+            for(Map.Entry<String,String> entry: map.entrySet()){
+                body.add(entry.getKey(),entry.getValue());
+            }
+        }
+        return body.build();
+    }
+
+    /**
+     * POST请求  获取网络返回数据（字符串）
+     * @param urlString
+     * @param requestBody
+     * @return String
+     * @throws IOException
+     */
+    public static String loadPOST_String(String urlString , RequestBody requestBody) throws IOException {
+        Request request=getPOSTRequest(urlString,requestBody);
+        Response response=okHttpClient.newCall(request).execute();
+        if(response.isSuccessful()){
+            return response.body().string();
+        }
+        return null;
+    }
+
+    /**
+     * 通过POST请求  提交键值对
+     * @param urlString
+     * @param map
+     * @return
+     * @throws IOException
+     */
+    public static String loadPost_StringHttp(String urlString , Map<String,String> map) throws IOException {
+        RequestBody requestBody=getPOSTRequestBody(map);
+        return loadPOST_String(urlString,requestBody);
+    }
+//sbc
+///////////////////////////////////////////////////////////////////////////
+// POST异步网络请求
+///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 通过POST请求 ，提交RequestBody对象
+     * @param urlString
+     * @param requestBody
+     * @param callback
+     */
+    private static void loadPOST_AsyncHttp(String urlString , RequestBody requestBody , Callback callback){
+        Request request=getPOSTRequest(urlString,requestBody);
+        okHttpClient.newCall(request).enqueue(callback);
+    }
+
+    /**
+     * POST异步请求  提交键值对
+     * @param urlString
+     * @param map
+     * @return
+     * @throws IOException
+     */
+    public static void loadPost_AsyncStringHttp(String urlString ,Map<String,String> map , Callback callback) throws IOException {
+        RequestBody requestBody=getPOSTRequestBody(map);
+        loadPOST_AsyncHttp(urlString,requestBody,callback);
+    }
+
+
+    public static void OkHttpPost(String url, String key, String json, StringCallback callback) {
+            OkHttpUtils.post()
+                    //.url("http://api.mshow.test.viigoo.com:3311/api"+url)//http://api.leadershows.com/api
+                    .url("http://api.leadershows.com/api"+url)//http://api.leadershows.com/api
+                    .addParams(key,json)
+                    .build()
+                    .connTimeOut(20000)
+                    .readTimeOut(20000)
+                    .writeTimeOut(20000)
+                    .execute(callback);
+    }
+
+}
+

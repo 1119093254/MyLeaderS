@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/item_grida_image"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/item_grida_image_delete"
+        android:scaleType="centerCrop"
+        >
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/paly"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/item_grida_image_delete"
+        android:scaleType="centerCrop"
+        android:visibility="invisible"
+        android:src="@drawable/video_icon"
+        >
+    </ImageView>
+    <ImageView
+        android:id="@+id/item_grida_image_delete"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="-10dp"
+        android:layout_marginLeft="-10dp"
+        android:layout_toRightOf="@+id/item_grida_image"
+        android:src="@drawable/sns_closeimg_icon"
+        ></ImageView>
+</RelativeLayout>

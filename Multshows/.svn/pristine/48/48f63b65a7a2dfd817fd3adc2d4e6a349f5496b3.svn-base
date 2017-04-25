@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="138dp"
+        android:layout_height="49dp">
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="17dp"
+            android:layout_centerVertical="true"
+            fresco:placeholderImage="@drawable/info_photoyou"
+            fresco:roundAsCircle="true"
+            android:id="@+id/babyPic"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/babyPic"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
+            android:textSize="13sp"
+            android:id="@+id/baby_name"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@color/text_grey_2"
+            android:text="王晓丽"/>
+    <!--    <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:id="@+id/LineChange"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:background="#E1DFE0"
+            android:visibility="gone"
+            />-->
+    </RelativeLayout>
+
+
+</LinearLayout>

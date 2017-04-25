@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="bg_black">#000000</color>
+    <color name="bg_white">#FFFFFF</color>
+    <color name="bg_topbar">#FFFFFF</color>
+    <color name="bg_gray">#00F1F1F1</color>
+    <color name="transparent">#00FFFFFF</color>
+    <!--沉浸栏 顶部 颜色#dfdddd-->
+    <color name="app_babyColor">#5D3D34</color>
+    <color name="app_topColor">#33CC99</color>
+    <color name="ic_default_bg_color">#33000000</color>
+
+    <!--宝宝端沉浸栏颜色-->
+    <color name="baby_topColor">#33CC99</color>
+    <!--红色-->
+    <color name="red">#FF0000</color>
+    <color name="text_gray">#C8CACA</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_yellow">#FFC800</color>
+    <color name="text_topbar">#694E42</color>
+    <color name="baby_radio">#b04747</color>
+    <color name="div_white">#E5E5E5</color>
+    <color name="white">#ffffff</color>
+
+    <color name="white2">#50ffffff</color>
+
+    <color name="border_grey">#e9e9e9</color>
+    <color name="orange">#ff9c00</color>
+    <color name="weak_black">#010101</color>
+    <color name="gridView">#EDEEF0</color>
+    <color name="gridView2">#00000000</color>
+    <color name="grey_lucency">#aa000000</color>
+    <color name="zhong">#858585</color>
+
+    <color name="bg">#F1F2F6</color>
+    <color name="green">#33CC99</color>
+    <color name="adaptername">#576b95</color>
+    <color name="text">#81838E</color>
+    <color name="textgrey">#CCCECD</color>
+    <color name="textwhite">#ffffff</color>
+    <!--按钮背景不可点击-->
+    <color name="button_grey">#E3E5E9</color>
+    <!--纯黑字体-->
+    <color name="text_black">#000000</color>
+    <!--纯黑字体-->
+    <color name="text_black_2">#434242</color>
+    <!--纯黑字体-->
+    <color name="text_black_3">#010101</color>
+    <!--纯黑字体-->
+    <color name="text_white_c">#cccccc</color>
+    <!--输入框浅灰色-->
+    <color name="edit_grey">#F5F5F6</color>
+    <!--绿-->
+    <color name="text_green">#33CC99</color>
+    <!--黄-->
+    <color name="yellow">#e95fad</color>
+    <color name="red_grey">#b04747</color>
+    <color name="red_grey2">#848689</color>
+    <!--浅灰-->
+    <color name="unlogin_text">#999999</color>
+    <!--浅灰-->
+    <color name="border_grey_d9">#d9d9d9</color>
+    <!--浅灰-->
+    <color name="light_grey">#81838e</color>
+    <!--浅灰2-->
+    <color name="light_grey_2">#B0B4BB</color>
+    <!--浅灰4-->
+    <color name="light_grey_4">#BFBFBF</color>
+    <!--浅灰3-->
+    <color name="light_grey_3">#848689</color>
+    <!--背景灰-->
+    <color name="background_grey">#F1F2F6</color>
+    <!--背景灰透明-->
+    <color name="alight_grey">#1aF1F2F6</color>
+    <!--背景灰-->
+    <color name="text_grey_2">#333333</color>
+    <!--背景浅灰-->
+    <color name="text_grey_3">#666666</color>
+    <!--浅蓝-->
+    <color name="text_light_blue">#59b3f7</color>
+    <!--浅蓝-->
+    <color name="blue_2">#007AFF</color>
+    <!--半透明-->
+    <color name="background_alight_2">#e5ffffff</color>
+    <!--半透明-->
+    <color name="black_alight_2">#e0000000</color>
+    <!--全透明-->
+    <color name="background_alight">#00ffffff</color>
+    <!--透明背景灰-->
+    <color name="background_grey_alight">#e5F1F2F6</color>
+    <!--透明背景灰60%-->
+    <color name="background_black_alight_60">#98000000</color>
+    <!--透明背景黑40%-->
+    <color name="background_black_alight">#66000000</color>
+    <color name="none_color">#00000000</color>
+    <!--半透明-->
+    <color name="hint_back">#98000000</color>
+</resources>

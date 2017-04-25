@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/background_grey"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
+
+    <com.multshows.Views.PullToRefresh
+        android:id="@+id/my_TradingList_fragment_Refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/my_TradingList_fragment_ListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:scrollbars="none"
+            />
+
+        <include
+            android:id="@+id/my_TradingList_fragment_No_View"
+            layout="@layout/no_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.multshows.Views.PullToRefresh>
+</LinearLayout>

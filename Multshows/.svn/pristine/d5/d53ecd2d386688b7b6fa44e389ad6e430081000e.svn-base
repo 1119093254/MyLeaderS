@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/background_grey"
+    android:orientation="vertical"
+    tools:context="com.multshows.Activity.Setting_CallUs_Activity">
+
+    <RelativeLayout
+        style="@style/top_APP"
+        android:background="@color/text_green">
+
+        <ImageView
+            android:id="@+id/setting_CallUs_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/index_return_arrow"/>
+
+        <TextView
+            style="@style/text_ww_20_white"
+            android:layout_centerInParent="true"
+            android:text="关于我们"/>
+        <ImageView
+            android:id="@+id/setting_CallUs_fen"
+            android:layout_width="49dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/item_share"/>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/logo"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="17dp"
+                android:padding="12dp">
+                <TextView
+                    android:id="@+id/setting_callUs_text1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_black"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:text="关于我们"/>
+                <TextView
+                    style="@style/text_ww_13_black"
+                    android:layout_below="@id/setting_callUs_text1"
+                    android:layout_marginTop="16dp"
+                    android:text="       领秀S是上海沐渎信息技术服务有限公司开发的针对儿童才艺展示和培养孩子良好生活、学习习惯于一体的一款社交育儿类app。通过领秀S，父母可以随时随地跟踪、奖励孩子的良好行为习惯，并以此为动机鼓励孩子养成更多的好习惯。
+       领秀S以幼儿园小朋友、小学生及其家长（妈妈）为主要服务对象，为孩子提供了一个实现愿望的平台，愿望包括别人的赞赏（打赏），实物的玩具等，孩子要通过自己的付出，特别是持续的付出来一步步达成自己的愿望，就是完成父母制定的计划；为家长提供了一个交流育儿经验的平台，一方面可以督促孩子的成长，另一方面是帮助孩子规划生活学习，还可以作为记录孩子成长的工具。
+       通过一部手机管理孩子的整个成长过程。一端是家长一端是孩子，促进了家长与孩子之间的沟通互动，增强了家长与孩子彼此的感情，形成了全新的家庭教育方式。它不仅仅是一款成长教育软件，更是一个能促进家长与孩子心灵贴近的沟通成长平台
+"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/layout_border_top1_bottom1_white">
+                <RelativeLayout
+                    android:id="@+id/setting_CallUs_Welcome"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="17dp"
+                    android:background="@drawable/layout_border_bottom1_white">
+                    <TextView
+                        style="@style/text_ww_16_black"
+                        android:layout_marginLeft="17dp"
+                        android:layout_centerVertical="true"
+                        android:text="欢迎页"/>
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/more_settings_rightarrow"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/setting_CallUs_BanQuan"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="17dp">
+                    <TextView
+                        style="@style/text_ww_16_black"
+                        android:layout_marginLeft="17dp"
+                        android:layout_centerVertical="true"
+                        android:text="版权信息"/>
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/more_settings_rightarrow"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
+                <TextView
+                    style="@style/text_ww_10_grey"
+                    android:layout_centerInParent="true"
+                    android:text="copy@2016-2017"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp">
+                <TextView
+                    style="@style/text_ww_10_grey"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="上海沐读信息技术服务有限公司版权所有"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/friends_Friend_TopLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/button_grey"
+        >
+
+        <RelativeLayout
+            android:id="@+id/friends_Friend_SearchLayout"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/border_4_grey_1">
+            
+
+                <ImageView
+                    android:id="@+id/serchImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@+id/searchText"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/mm_search_img"
+                    />
+
+                <TextView
+                    android:id="@+id/searchText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:hint="搜索"/>
+            </RelativeLayout>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/layout_border_top1_alight_bottom1_white">
+        <RelativeLayout
+            android:id="@+id/search_AddFriend"
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
+            android:layout_marginLeft="17dp"
+            android:background="@drawable/layout_border_bottom1_alightwhite">
+            <ImageView
+                android:id="@+id/search_addImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/addfriendicon"/>
+            <TextView
+               style="@style/text_ww_16_black"
+               android:layout_toRightOf="@id/search_addImage"
+               android:layout_centerVertical="true"
+               android:layout_marginLeft="17dp"
+                android:text="添加好友"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/search_MoreFriend"
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
+            android:layout_marginLeft="17dp">
+            <ImageView
+                android:id="@+id/search_moreImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/moretouchicon"/>
+            <TextView
+                style="@style/text_ww_16_black"
+                android:layout_toRightOf="@id/search_moreImage"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="17dp"
+                android:text="群聊"/>
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

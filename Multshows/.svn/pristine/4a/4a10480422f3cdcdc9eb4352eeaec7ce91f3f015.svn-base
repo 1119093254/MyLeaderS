@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/friends_fragment_parent"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:fitsSystemWindows="true"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:id="@+id/ActivityTopLayout"
+        android:background="@drawable/layout_border_bottom1_alightgreen"
+        >
+
+        <ImageView
+            android:id="@+id/Completed_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/index_return_arrow"/>
+
+        <RadioGroup
+            android:id="@+id/Completed"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <RadioButton
+                android:id="@+id/tasknoCompleted"
+                android:layout_width="128dp"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="true"
+                android:paddingLeft="20dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="3dp"
+                android:gravity="center"
+                android:text="我创建的活动"
+                android:textColor="@drawable/text_change_orange"
+                android:textSize="15sp"/>
+
+            <RadioButton
+                android:id="@+id/taskCompleted"
+                android:layout_width="128dp"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:paddingLeft="20dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="3dp"
+                android:gravity="center"
+                android:text="我报名的活动"
+                android:textColor="@drawable/text_change_orange"
+                android:textSize="15sp"/>
+        </RadioGroup>
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/Completed_fragment_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</LinearLayout>

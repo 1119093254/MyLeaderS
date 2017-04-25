@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/WorkClassfication"
+    android:fitsSystemWindows="true"
+    tools:context="com.multshows.Activity.WorkClassificationActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:background="@color/green"
+            android:id="@+id/my_toplayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            >
+            <ImageView
+                android:id="@+id/Classification_return"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="7dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/index_return_arrow"
+                />
+            <TextView
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/Classification"
+                android:id="@+id/Work_classFicationTitle"
+                android:textSize="17sp"/>
+        </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/classificationScroll"
+            android:layout_below="@+id/my_toplayout">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                >
+                <com.multshows.Views.MyGridView
+                    android:layout_width="wrap_content"
+                    android:numColumns="3"
+                    android:background="#EDEEF0"
+                    android:horizontalSpacing="0.5dp"
+                    android:verticalSpacing="0.5dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ClassificationGridview">
+                </com.multshows.Views.MyGridView>
+
+            </RelativeLayout>
+
+        </ScrollView>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="确定"
+            android:layout_marginTop="50dp"
+            android:background="@color/green"
+            android:textSize="17sp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/SureChioce"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

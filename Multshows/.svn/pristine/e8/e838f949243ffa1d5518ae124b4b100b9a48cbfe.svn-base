@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/my_BabyShip_fragment_ListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/layout_border_top1_bottom1_white">
+            <RelativeLayout
+                android:id="@+id/my_BabyShip_fragment_fatherLayout"
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+                android:background="@drawable/layout_border_bottom1_white">
+                <TextView
+                    style="@style/text_ww_16_black"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:text="爸爸"/>
+                <ImageView
+                    android:id="@+id/my_BabyShip_fragment_father"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/item_security_choce"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/my_BabyShip_fragment_motherLayout"
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+                >
+                <TextView
+                    style="@style/text_ww_16_black"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:text="妈妈"/>
+                <ImageView
+                    android:id="@+id/my_BabyShip_fragment_mother"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:visibility="invisible"
+                    android:src="@drawable/item_security_choce"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        </ScrollView>
+
+</LinearLayout>

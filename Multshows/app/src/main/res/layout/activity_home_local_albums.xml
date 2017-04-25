@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+   >
+    <!--头部-->
+    <RelativeLayout
+        style="@style/top_APP"
+        android:background="@color/zhong">
+        <ImageView
+            android:id="@+id/home_LocalAlbums_return"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17dp"
+            android:visibility="gone"
+            android:src="@drawable/messsage_return"
+            />
+        <TextView
+            style="@style/text_ww_20_white"
+            android:layout_centerInParent="true"
+            android:text="本地相册"
+            />
+        <TextView
+            android:id="@+id/home_LocalAlbums_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="17dp"
+            android:textColor="@color/text_white_c"
+            android:textSize="17dp"
+            android:text="关闭"/>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/home_LocalAlbums_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:divider="@null"/>
+</LinearLayout>

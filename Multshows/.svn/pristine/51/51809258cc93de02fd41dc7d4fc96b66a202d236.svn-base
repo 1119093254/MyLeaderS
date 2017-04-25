@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:id="@+id/workFragmentTopLayout"
+                android:orientation="vertical"
+
+                android:layout_height="match_parent">
+    <com.multshows.Views.PullToRefresh
+        android:id="@+id/Fragment_Work_Refresh"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="@null"
+            android:scrollbars="none"
+            android:descendantFocusability="blocksDescendants"
+            android:id="@+id/AllworkListview">
+        </ListView>
+        <include
+            android:id="@+id/Fragment_Work_No_View"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/no_view"/>
+    </com.multshows.Views.PullToRefresh>
+
+</LinearLayout>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Task_ListItem"
+                android:background="@color/white">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/task_image"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="11dp"
+        fresco:placeholderImage="@drawable/defult"
+        fresco:failureImage="@drawable/defult"
+        />
+
+    <TextView
+        android:id="@+id/task_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="17dp"
+        android:layout_toRightOf="@+id/task_image"
+        android:text="扫地"
+        android:textColor="@color/bg_black"
+        android:textSize="16sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/task_image"
+        android:layout_marginLeft="17dp"
+        android:id="@+id/BabyName"
+        android:layout_marginTop="5dp"
+        android:textSize="14sp"
+        android:textColor="@color/bg_black"
+        android:layout_below="@+id/task_title"
+        android:text="宝宝："/>
+    <LinearLayout
+        android:id="@+id/task_rewards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/task_image"
+        android:layout_below="@id/BabyName"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="本任务奖励金额为¥"
+            android:textColor="@color/text"
+            android:textSize="14sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/task_reward"
+            android:text="0.0"
+            android:textColor="@color/text"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/task_image"
+        android:id="@+id/task_Time"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="8dp"
+        android:text="完成时间：2016-12-12 11:12:20"/>
+<Button
+    android:layout_below="@+id/task_rewards"
+    android:id="@+id/completeButton"
+    android:layout_height="28dp"
+    android:layout_width="93dp"
+    android:textColor="@color/green"
+    android:background="@drawable/verificationbutton"
+    android:textSize="15sp"
+    android:layout_alignLeft="@id/task_rewards"
+    android:text="确认完成"
+    android:layout_marginTop="30dp"
+    android:visibility="gone"/>
+
+    <Button
+        android:layout_below="@id/task_rewards"
+        android:layout_height="28dp"
+        android:id="@+id/completenoButton"
+        android:textColor="#cccccc"
+        android:background="@drawable/resend_verification_code"
+        android:textSize="15sp"
+        android:layout_marginTop="5dp"
+        android:layout_width="93dp"
+        android:layout_alignLeft="@id/task_rewards"
+        android:enabled="false"
+        android:text="待完成"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/task_Time"
+        android:layout_marginTop="5dp"
+        android:layout_alignLeft="@id/task_rewards"
+        android:background="#E1DFE0" />
+</RelativeLayout>

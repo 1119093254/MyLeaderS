@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:id="@+id/lookPhoto_dialog_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="17dp"
+            android:background="@drawable/shape_white_9">
+        <RelativeLayout
+            android:id="@+id/Group_Hint"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:background="@drawable/shape_white_t9">
+        <TextView
+            style="@style/text_ww_16_light_grey"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_marginLeft="9dp"
+            android:layout_marginRight="9dp"
+            android:text="退出后不会通知群聊中其他成员,且不会再接收此群聊消息"/>
+        </RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/background_grey"/>
+        <RelativeLayout
+            android:id="@+id/Group_Clear"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            >
+            <TextView
+                style="@style/text_ww_20_text_green"
+                android:layout_centerInParent="true"
+                android:text="退出"/>
+        </RelativeLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/Group_cancle"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="17dp"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="9dp"
+            android:textColor="@color/text_black"
+            android:textSize="17sp"
+            android:background="@drawable/shape_white_9"
+            android:text="取消"
+
+            />
+    </LinearLayout>
+</RelativeLayout>

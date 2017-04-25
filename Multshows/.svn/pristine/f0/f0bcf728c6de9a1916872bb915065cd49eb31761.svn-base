@@ -1,0 +1,243 @@
+package com.multshows.Adapter;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Handler;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.multshows.Activity.Idle_ProduceDetails_Activity;
+import com.multshows.Activity.MyHomePager_Activity;
+import com.multshows.Activity.My_MyWallet_Activity;
+import com.multshows.Beans.WorkAll_Beans;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.DateDeal;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Utils.SubString_Utils;
+import com.multshows.Utils.Time_Now;
+import com.multshows.Views.Dialog_Hint;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.MyListView;
+import com.multshows.Views.NineGridview.ImageInfo;
+import com.multshows.Views.NineGridview.NineGridView;
+import com.multshows.Views.NineGridview.preview.NineGridViewClickAdapter;
+import com.multshows.Views.SwipeLayout_Views;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+
+/**
+ * 描述：所有作品列表适配器
+ * 作者：李萧萧
+ * 时间：2016.9.22
+ */
+public class MyCollection_Adapter extends BaseAdapter {
+    List<WorkAll_Beans> mList;
+    private Context mContext;
+
+    Dialog mDialog;//消息提示框
+    Dialog_Hint mDialogHint;//消息提示
+    MyApplication mApplication;
+    SaveSharedPreferences saveSharedPreferences = new SaveSharedPreferences();
+
+    public MyCollection_Adapter(Context mContext, List<WorkAll_Beans> mList) {
+        this.mContext = mContext;
+        this.mList = mList;
+        mApplication= (MyApplication) mContext.getApplicationContext();
+        mDialog = new HintText_Dialog(mContext, R.style.MyDialog);
+    }
+
+    @Override
+    public int getCount() {
+        return mList.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return mList.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public View getView(final int i, View view, ViewGroup viewGroup) {
+        ViewHolder viewHolder = null;
+        if (view == null) {
+            viewHolder = new ViewHolder();
+            view = LayoutInflater.from(mContext).inflate(R.layout.adapter_collection_item, null);
+            viewHolder.mAllWorkuserpic = (SimpleDraweeView) view.findViewById(R.id.AllWorkuserpic);
+            viewHolder.mAllWorkusername = (TextView) view.findViewById(R.id.AllWorkusername);
+            viewHolder.mAllWorktitle = (TextView) view.findViewById(R.id.AllWorktitle);
+            viewHolder.mAllWorkcontent = (TextView) view.findViewById(R.id.AllWorkcontent);
+            viewHolder.nineGrid = (NineGridView) view.findViewById(R.id.nineGrid);
+            viewHolder.money_time = (TextView) view.findViewById(R.id.money_time);
+            viewHolder.mDelete = (LinearLayout) view.findViewById(R.id.myCollection_delete);
+            viewHolder.mAllLayout = (RelativeLayout) view.findViewById(R.id.mycollection_AllLayout);
+            viewHolder.mSwipeLayoutViews= (SwipeLayout_Views) view.findViewById(R.id.mycollection_swipeLayout);
+            SwipeLayout_Views.addSwipeView(viewHolder.mSwipeLayoutViews);
+            view.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) view.getTag();
+        }
+
+        final WorkAll_Beans beans = mList.get(i);
+        Uri uri = Uri.parse(beans.getUserPic());
+        viewHolder.mAllWorkuserpic.setImageURI(uri);
+        viewHolder.mAllWorkusername.setText(beans.getUsername());
+        viewHolder.mAllWorktitle.setText(beans.getThemetitle());
+        viewHolder.mAllWorkcontent.setText(beans.getContent());
+        if (beans.getImageStrinig().size() == 0 || !beans.getImageStrinig().get(0).equals("")) {
+            ArrayList<ImageInfo> imageInfo = new ArrayList<>();
+            List<String> imageDetails = beans.getImageStrinig();
+            if (imageDetails != null) {
+                for (String imageDetail : imageDetails) {
+                    ImageInfo info = new ImageInfo();
+                    info.setThumbnailUrl(SubString_Utils.getImageUrl3(imageDetail));
+                    info.setBigImageUrl(SubString_Utils.getImageUrlclearly(imageDetail));
+                    info.setImageViewHeight(beans.getIsVideo());
+                    info.setIsVideo(beans.getIsVideo());
+                    info.setVideoName(beans.getVideoName());
+                    imageInfo.add(info);
+                }
+            }
+            viewHolder.nineGrid.setVisibility(View.VISIBLE);
+            viewHolder.nineGrid.setAdapter(new NineGridViewClickAdapter(mContext, imageInfo));
+        } else {
+            viewHolder.nineGrid.setVisibility(View.GONE);
+        }
+
+        viewHolder.money_time.setText(DateDeal.format(Time_Now.getStringTime(Integer.parseInt(beans.getDate()))));
+        final ViewHolder finalViewHolder = viewHolder;
+        viewHolder.mDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialogHint = new Dialog_Hint(mContext, 0,
+                        "确认删除收藏吗?", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cancleCollect(mList.get(i).getId(),i, finalViewHolder.mSwipeLayoutViews);
+                        mDialogHint.dismiss();
+                    }
+                });
+                mDialogHint.show();
+
+            }
+        });
+        viewHolder.mAllWorkuserpic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent mIntent = new Intent(mContext, MyHomePager_Activity.class);
+                saveSharedPreferences.Save_PREFS(mContext, "otherId", beans.getUserid());
+                mContext.startActivity(mIntent);
+
+            }
+        });
+        viewHolder.mAllLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent = new Intent(mContext, Idle_ProduceDetails_Activity.class);
+                mIntent.putExtra("IdleID",beans.getId());
+                mContext.startActivity(mIntent);
+            }
+        });
+        return view;
+    }
+
+    class ViewHolder {
+        SimpleDraweeView mAllWorkuserpic;//用户头像
+        TextView mAllWorkusername;//用户昵称
+        TextView mAllWorktitle;//作品标题
+        TextView mAllWorkcontent;//作品内容
+        //TextView DeleteCollect;//作品内容
+        NineGridView nineGrid;//九宫格图片控件
+        TextView money_time;//作品时间
+        LinearLayout mDelete;//删除
+        RelativeLayout mAllLayout;
+        SwipeLayout_Views mSwipeLayoutViews;
+    }
+
+    //dp 转变为px
+    public int Dp2Px(float dp) {
+        final float scale = mContext.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
+    //px转变为dp
+    public int Px2Dp(float px) {
+        final float scale = mContext.getResources().getDisplayMetrics().density;
+        return (int) (px / scale + 0.5f);
+    }
+    //取消 收藏
+    private void cancleCollect(String collectId, final int i, final SwipeLayout_Views swipeLayoutViews) {
+        OkHttpUtils.get().url(mApplication.getUrl() + "/Shows/DelShowsFavourite")
+                .addParams("showsId",collectId)
+                .addParams("userId", Login_Static.myUserID)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                SwipeLayout_Views.removeSwipeView(swipeLayoutViews);
+                                mList.remove(i);
+                                mDialog.show();
+                                showError("取消收藏成功", 1);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+    //发布结果提示
+    public void showError(String errorString, final int is) {
+        String isString = null;
+        if (is == 1) {
+            isString = "success";
+            notifyDataSetChanged();
+        }
+        if (is == 0) {
+            isString = "fail";
+        }
+        HintText_Dialog hint = new HintText_Dialog(mContext, errorString, isString);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //得到返回值后，2秒后加载框消失
+                mDialog.dismiss();
+            }
+        }, 2000);
+    }
+}

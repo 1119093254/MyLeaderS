@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:layout_marginLeft="17dp"
+        android:background="@drawable/layout_border_bottom1_white">
+        <RelativeLayout
+            android:id="@+id/GroupList_item_LeftLayout"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true">
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/GroupList_item_GroupHeader"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                fresco:failureImage="@drawable/info_photoyou"
+                fresco:placeholderImage="@drawable/info_photoyou"
+                fresco:roundAsCircle="true"
+                />
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/GroupList_item_GroupName"
+            style="@style/text_ww_16_black"
+            android:layout_toRightOf="@id/GroupList_item_LeftLayout"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17dp"
+            android:text="群聊昵称(1)"/>
+        
+    </RelativeLayout>
+
+</LinearLayout>

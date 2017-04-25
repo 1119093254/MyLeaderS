@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/My_Information_RealName_ParentsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/background_grey"
+    tools:context="com.multshows.Activity.My_Information_RealName_Activity">
+    <RelativeLayout
+        android:id="@+id/My_Information_RealName_returnLayout"
+        style="@style/top_APP"
+        android:background="@drawable/layout_border_bottom1_white">
+        <ImageView
+            android:id="@+id/My_Information_RealName_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+        <TextView
+            android:id="@+id/My_Information_RealName_title"
+            style="@style/text_ww_20_text_grey_2"
+            android:layout_centerInParent="true"
+            android:text="实名认证"/>
+    </RelativeLayout>
+    <FrameLayout
+        android:id="@+id/My_Information_RealName_FrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

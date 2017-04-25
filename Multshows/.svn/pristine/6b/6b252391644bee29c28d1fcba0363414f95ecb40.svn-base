@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/my_fragment_Parents"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:id="@+id/my_toplayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        >
+
+        <TextView
+            android:id="@+id/My_Fragment_title"
+            style="@style/text_mw_15_white"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/mys"/>
+
+        <TextView
+            android:id="@+id/My_Fragment_take"
+            style="@style/text_mw_13_white"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_marginRight="20dp"
+            android:text="@string/tab_menu_setting"
+            />
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/My_Fragment_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/my_toplayout"
+        android:scrollbars="none"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/My_Fragment_myInformation"
+                android:layout_width="match_parent"
+                android:layout_height="107dp"
+                android:background="@color/app_topColor"
+                >
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/My_Fragment_header"
+                    android:layout_width="67dp"
+                    android:layout_height="67dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="19dp"
+                    fresco:failureImage="@drawable/info_photoyou"
+                    fresco:placeholderImage="@drawable/info_photoyou"
+                    fresco:roundAsCircle="true"/>
+
+                <TextView
+                    android:id="@+id/My_Fragment_nickName"
+                    style="@style/text_ww_20_white"
+                    android:layout_marginLeft="19dp"
+                    android:layout_marginTop="29dp"
+                    android:layout_toRightOf="@id/My_Fragment_header"
+                    android:layout_marginRight="60dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="昵称"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/My_Fragment_nickName"
+                    android:layout_marginLeft="19dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_toRightOf="@id/My_Fragment_header">
+
+                    <TextView
+                        android:id="@+id/My_Fragment_userTag1"
+                        style="@style/text_ww_10_white"
+                        android:background="@drawable/white_labelimg2"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="4dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/My_Fragment_userTag2"
+                        style="@style/text_ww_10_white"
+                        android:background="@drawable/white_labelimg2"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="4dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:layout_marginLeft="9dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/My_Fragment_userTag3"
+                        style="@style/text_ww_10_white"
+                        android:background="@drawable/white_labelimg2"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="4dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:layout_marginLeft="9dp"
+                        />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/white_toright"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                >
+
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_myLookLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    >
+
+                    <TextView
+                        android:id="@+id/My_Fragment_myLookNumber"
+                        style="@style/text_ww_16_black"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        android:text="0"
+                        />
+
+                    <TextView
+                        android:id="@+id/My_Fragment_myLook"
+                        style="@style/text_ww_14_light_grey"
+                        android:layout_below="@id/My_Fragment_myLookNumber"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:text="我看过的"
+                        />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_lookMeLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    >
+
+                    <TextView
+                        android:id="@+id/My_Fragment_lookMeNumber"
+                        style="@style/text_ww_16_black"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        android:text="0"
+                        />
+
+                    <TextView
+                        android:id="@+id/My_Fragment_lookMe"
+                        style="@style/text_ww_14_light_grey"
+                        android:layout_below="@id/My_Fragment_lookMeNumber"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:text="看过我的"
+                        />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_giveMoneyLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    >
+
+                    <TextView
+                        android:id="@+id/My_Fragment_giveMoneyNumber"
+                        style="@style/text_ww_16_black"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        android:text="0"
+                        />
+
+                    <TextView
+                        android:id="@+id/My_Fragment_giveMoney"
+                        style="@style/text_ww_14_light_grey"
+                        android:layout_below="@id/My_Fragment_giveMoneyNumber"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:text="打赏我的"
+                        />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/My_Fragment_rel_2"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:background="@color/background_grey_alight">
+                <TextView
+                    style="@style/text_ww_14_light_grey"
+                    android:layout_marginLeft="16dp"
+                    android:text="我的主页"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:id="@+id/myFragment_myWork"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/myFragment_image01"
+                        android:layout_width="27dp"
+                        android:layout_height="27dp"
+                        android:src="@drawable/mylogin_img01"
+                        android:layout_marginTop="13dp"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        style="@style/text_ww_14_text_grey_2"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/myFragment_image01"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="我的作品"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/myFragment_myIdel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/myFragment_image02"
+                        android:layout_width="27dp"
+                        android:layout_height="27dp"
+                        android:src="@drawable/mylogin_img02"
+                        android:layout_marginTop="13dp"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        style="@style/text_ww_14_text_grey_2"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/myFragment_image02"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="我的圈子"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/myFragment_myTask"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone">
+                    <ImageView
+                        android:id="@+id/myFragment_image13"
+                        android:layout_width="27dp"
+                        android:layout_height="27dp"
+                        android:src="@drawable/mylogin_img13"
+                        android:layout_marginTop="13dp"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        style="@style/text_ww_14_text_grey_2"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/myFragment_image13"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="我的任务"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/myFragment_myXZ"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/myFragment_image03"
+                        android:layout_width="27dp"
+                        android:layout_height="27dp"
+                        android:src="@drawable/mylogin_img03"
+                        android:layout_marginTop="13dp"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        style="@style/text_ww_14_text_grey_2"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/myFragment_image03"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="我的闲置"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/myFragment_myPhoto"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/myFragment_image04"
+                        android:layout_width="27dp"
+                        android:layout_height="27dp"
+                        android:src="@drawable/mylogin_img04"
+                        android:layout_marginTop="13dp"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        style="@style/text_ww_14_text_grey_2"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/myFragment_image04"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="我的相册"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/My_Fragment_rel_3"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:background="@color/background_grey_alight">
+                <TextView
+                    style="@style/text_ww_14_light_grey"
+                    android:layout_marginLeft="16dp"
+                    android:text="必备功能"/>
+            </LinearLayout>
+            <com.multshows.Views.MyGridView
+                android:id="@+id/My_Fragment_GridView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:numColumns="4"
+                />
+
+
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_border_top1_alight_bottom1_white"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_myBody_Layout"
+                    style="@style/Layout_m_49_white"
+                    android:layout_marginLeft="19dp"
+                    android:background="@drawable/layout_border_bottom1_alightwhite">
+
+                    <ImageView
+                        android:id="@+id/My_Fragment_myBody_image"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/mysign_img01"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/My_Fragment_myBody_image"
+                        android:text="我的宝贝"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_toUpdate_Layout"
+                    style="@style/Layout_m_49_white"
+                    android:layout_marginLeft="19dp"
+                    >
+
+                    <ImageView
+                        android:id="@+id/My_Fragment_toUpdate_image"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/mysign_img02"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/My_Fragment_toUpdate_image"
+                        android:text="身份切换"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/My_Fragment_rel_3"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:orientation="vertical"
+                android:background="@color/background_grey_alight">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_border_top1_alight_bottom1_white"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_interest_Layout"
+                    style="@style/Layout_m_49_white"
+                    android:layout_marginLeft="19dp"
+                    android:background="@drawable/layout_border_bottom1_alightwhite">
+
+                    <ImageView
+                        android:id="@+id/My_Fragment_interest_image"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/mysign_img03"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/My_Fragment_interest_image"
+                        android:text="兴趣标签"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_collection_Layout"
+                    style="@style/Layout_m_49_white"
+                    android:layout_marginLeft="19dp">
+
+                    <ImageView
+                        android:id="@+id/My_Fragment_collection_image"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/mysign_img04"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/My_Fragment_collection_image"
+                        android:text="我的收藏"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/My_Fragment_rel_4"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:orientation="vertical"
+                android:background="@color/background_grey_alight">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_border_top1_alight_bottom1_white"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_myWallet_Layout"
+                    style="@style/Layout_m_49_white"
+                    android:layout_marginLeft="19dp"
+                    android:background="@drawable/layout_border_bottom1_alightwhite"
+                    >
+
+                    <ImageView
+                        android:id="@+id/My_Fragment_myWallet_image"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/mysign_img05"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/My_Fragment_myWallet_image"
+                        android:text="我的钱包"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_flower_Layout"
+                    style="@style/Layout_m_49_white"
+                    android:layout_marginLeft="19dp"
+                    android:background="@drawable/layout_border_bottom1_alightwhite">
+
+                    <ImageView
+                        android:id="@+id/My_Fragment_flower_image"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/mysign_img06"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/My_Fragment_flower_image"
+                        android:text="鲜花市场"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/My_Fragment_myOrder_Layout"
+                    style="@style/Layout_m_49_white"
+                    android:layout_marginLeft="19dp"
+                    >
+
+                    <ImageView
+                        android:id="@+id/My_Fragment_myOrder_image"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/mysign_img07"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/My_Fragment_myOrder_image"
+                        android:text="我的订单"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+
+            </LinearLayout>-->
+
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:id="@+id/Unlogin_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/my_toplayout"
+        android:visibility="gone"
+        >
+        <include
+            android:id="@+id/unlogin_views"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/unlogin_view"
+            />
+    </LinearLayout>
+
+</RelativeLayout>

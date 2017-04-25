@@ -1,0 +1,549 @@
+package com.multshows.Fragment;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.multshows.Adapter.Friends_CommentList_Adapter;
+import com.multshows.Adapter.Friends_FlowerList_Adapter;
+import com.multshows.Adapter.Friends_HeadList_Adapter;
+import com.multshows.Adapter.Friends_ReWordList_Adapter;
+import com.multshows.Adapter.Friends_ZanList_Adapter;
+import com.multshows.Beans.ShowsComment;
+import com.multshows.Beans.ShowsFlower;
+import com.multshows.Beans.ShowsLike;
+import com.multshows.Beans.ShowsReward;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.PullToRefresh;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+
+/**
+ * 互动消息 Fragment
+ */
+public class Friends_Interaction_Fragment extends LazyFragment{
+    View mView;
+    //上下文
+    Context mContext;
+    //控件
+    ListView mListView;
+    //空视图
+    View mNoView;
+    ImageView mNoImage;//空视图图标
+    TextView mNoText;//空视图信息
+    Button mNoButton;//空视图按钮
+    //数据集合
+    List<ShowsComment> mCommentList=new ArrayList<>();//评论数据
+    List<ShowsLike> mZanList=new ArrayList<>();//点赞数据
+    List<ShowsFlower> mFlowerList=new ArrayList<>();
+    //List<ShowsLike> mHeadList=new ArrayList<>();//掌声数据
+    List<ShowsReward> mRewordList=new ArrayList<>();//打赏我的
+    //适配器
+    Friends_CommentList_Adapter mCommentAdapter;//评论适配器
+    Friends_ZanList_Adapter mZanAdapter;//点赞适配器
+    Friends_ReWordList_Adapter mReWordAdapter;//打赏适配器
+    Friends_FlowerList_Adapter mFlowerAdapter;//鲜花适配器
+    //Friends_HeadList_Adapter mHeadAdapter;//掌声适配器
+    boolean init=true;
+    //进入的界面标志位(0评论,1点赞,2打赏,3鲜花,4掌声)
+    int flag=0;
+    private PullToRefresh mPullToRefresh;
+
+    int comIndex=1;//页数
+    int zanIndex=1;//页数
+    int rewordIndex=1;//页数
+    int flowerIndex=1;//页数
+    int headIndex=1;//页数
+    boolean isCreate = false;
+    Gson mGson=new Gson();
+    MyApplication myApplication;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext=activity;
+        myApplication= (MyApplication)activity.getApplication();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mView=inflater.inflate(R.layout.friends_interaction_fragment,null);
+        initView(mView);
+        initData();
+        initListen();
+        isCreate = true;
+        lazyLoad();
+        return mView;
+    }
+
+    /**
+     * 初始化
+     * @param view
+     */
+    private void initView(View view) {
+        mListView= (ListView) view.findViewById(R.id.Friends_Interaction_Fragment_ListView);
+        mPullToRefresh= (PullToRefresh) view.findViewById(R.id.Friends_Interaction_Fragment_Refresh);
+        mNoView=view.findViewById(R.id.Friends_Interaction_No_View);
+        mNoImage= (ImageView) mNoView.findViewById(R.id.no_view_image);
+        mNoText= (TextView) mNoView.findViewById(R.id.no_view_text);
+        mNoButton= (Button) mNoView.findViewById(R.id.no_view_Button);
+        mNoImage.setImageResource(R.drawable.error_pic5);
+        mNoText.setText("暂无数据!");
+        mNoButton.setVisibility(View.GONE);
+        mListView.setEmptyView(mNoView);
+    }
+
+    /**
+     * 数据处理
+     */
+    private void initData() {
+        Bundle mBundle=getArguments();
+        if(mBundle!=null) {
+            flag = mBundle.getInt("position");
+        }
+        if(flag==0){
+            //评论
+            mCommentAdapter=new Friends_CommentList_Adapter(mContext,mCommentList);
+            mListView.setAdapter(mCommentAdapter);
+        }else if(flag==1){
+            //点赞
+            mZanAdapter=new Friends_ZanList_Adapter(mContext,mZanList);
+            mListView.setAdapter(mZanAdapter);
+        }else if(flag==2){
+            //打赏
+            mReWordAdapter=new Friends_ReWordList_Adapter(mContext,mRewordList);
+            mListView.setAdapter(mReWordAdapter);
+        }else if(flag==3){
+            //鲜花
+            mFlowerAdapter=new Friends_FlowerList_Adapter(mContext,mFlowerList);
+            mListView.setAdapter(mFlowerAdapter);
+        }/*else if(flag==4){
+            //掌声
+            mHeadAdapter=new Friends_HeadList_Adapter(mContext,mHeadList);
+            mListView.setAdapter(mHeadAdapter);
+        }*/
+    }
+
+    /**
+     * 事件处理
+     */
+    private void initListen() {
+        //下拉刷新
+        mPullToRefresh.setOnHeaderRefreshListener(new PullToRefresh.OnHeaderRefreshListener() {
+            @Override
+            public void onHeaderRefresh(PullToRefresh view) {
+                if (flag == 0) {
+                    comIndex=1;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getCommentList(comIndex);
+                        }
+                    },2000);
+                }else if (flag == 1) {
+                    zanIndex=1;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getZanList(zanIndex);
+                        }
+                    },2000);
+                }else if (flag == 2) {
+                    rewordIndex=1;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getReWordtoMe(rewordIndex);
+                        }
+                    },2000);
+                }else if (flag == 3) {
+                    flowerIndex=1;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getFlowerList(flowerIndex);
+                        }
+                    },2000);
+                }/*else if (flag == 4) {
+                    headIndex=1;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getHeadList(headIndex);
+                        }
+                    },2000);
+                }*/
+
+            }
+        });
+        //上拉加载
+        mPullToRefresh.setOnFooterRefreshListener(new PullToRefresh.OnFooterRefreshListener() {
+            @Override
+            public void onFooterRefresh(PullToRefresh view) {
+                if (flag == 0) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getCommentList(comIndex);
+                        }
+                    },2000);
+                }else if (flag == 1) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getZanList(zanIndex);
+                        }
+                    },2000);
+                }else if (flag == 2) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getReWordtoMe(rewordIndex);
+                        }
+                    },2000);
+                }else if (flag == 3) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getFlowerList(flowerIndex);
+                        }
+                    },2000);
+                }/*else if (flag == 4) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getHeadList(headIndex);
+                        }
+                    },2000);
+                }*/
+            }
+        });
+
+    }
+
+    @Override
+    protected void lazyLoad() {
+        if (isVisible && isCreate) {
+            getdata();
+        }
+    }
+
+    /**
+     * 访问网络加载数据
+     */
+    private void getdata() {
+        if (init) {
+            init = false;//第一次加载数据后，设置为false,不在加载数据
+            if (flag == 0) {
+                //评论
+                setMessage(1);
+                getCommentList(1);
+            } else if (flag == 1) {
+                //点赞
+                setMessage(2);
+                getZanList(1);
+            } else if (flag == 2) {
+                //打赏
+                setMessage(3);
+                getReWordtoMe(1);
+            } else if (flag == 3) {
+                //鲜花
+                setMessage(4);
+                getFlowerList(1);
+            } /*else if (flag == 4) {
+                //掌声
+                getHeadList(1);
+            }*/
+        }
+    }
+
+    /**
+     * 更新消息状态为已读
+     */
+    private void setMessage(int flags){
+        CLog.e("testing","type="+flags+"&userId="+Login_Static.myUserID+"&msgtype=1");
+        OkHttpUtils.get().url(myApplication.getUrl()+"/User/ChangeMessageRead")
+                .addParams("type",""+flags)
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("msgtype","1")//0其他消息1互动消息 (注:此字段传1时 则type需要传互动消息类型:1评论2点赞3打赏4鲜花)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","更新消息状态为已读失败"+e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","更新消息状态为已读"+response);
+                    }
+                });
+
+    }
+    /**
+     * 查看用户被评论记录
+     */
+    private void getCommentList(final int pageIndex){
+
+        OkHttpUtils.get().url(myApplication.getUrl()+"/Statis/GetUserBeCommentedList")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("pageIndex", pageIndex+"")
+                .addParams("pageSize", "10")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","查看被评论记录失败："+e.toString());
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","查看被评论记录："+response);
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                if(pageIndex==1){
+                                    mCommentList.clear();
+                                }
+                                comIndex++;
+                                JSONArray jsonArray=new JSONArray(Json_Utils.getTemplate(response));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    ShowsComment comment=mGson.fromJson(jsonArray.getString(i),ShowsComment.class);
+                                    mCommentList.add(comment);
+                                }
+                                mCommentAdapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    /**
+     * 查看用户被点赞记录
+     */
+    private void getZanList(final int pageIndex){
+        OkHttpUtils.get().url(myApplication.getUrl()+"/Statis/GetUserBeLikedList")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("pageIndex", pageIndex+"")
+                .addParams("pageSize", "10")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","查看被点赞记录失败："+e.toString());
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","查看被点赞记录："+response);
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                if(pageIndex==1){
+                                    mZanList.clear();
+                                }
+                                zanIndex++;
+                                JSONArray jsonArray=new JSONArray(Json_Utils.getTemplate(response));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    ShowsLike like=mGson.fromJson(jsonArray.getString(i),ShowsLike.class);
+                                    if(like.getType()==1 && like.getState()==1){
+                                        //作品    已点赞
+                                        mZanList.add(like);
+                                    }
+                                }
+                                mZanAdapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    /**
+     * 打赏我的 记录
+     */
+    private void getReWordtoMe(final int pageIndex){
+        OkHttpUtils.get().url(myApplication.getUrl()+"/Statis/GetUserBeRewardedList")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("pageIndex", pageIndex+"")
+                .addParams("pageSize", "10")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","获取打赏我的记录失败："+e.toString());
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","获取打赏我的记录："+response);
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                if(pageIndex==1){
+                                    mRewordList.clear();
+                                }
+                                rewordIndex++;
+                                JSONArray jsonArray=new JSONArray(Json_Utils.getTemplate(response));
+                                for (int i=0;i<jsonArray.length();i++){
+                                    ShowsReward showsReward=mGson.fromJson(jsonArray.getString(i),ShowsReward.class);
+                                    mRewordList.add(showsReward);
+                                }
+                                mReWordAdapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+    /**
+     * 查看鲜花记录
+     */
+    private void getFlowerList(final int pageIndex){
+        OkHttpUtils.get().url(myApplication.getUrl()+"/Statis/GetUserFlowerReceiveList")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("pageIndex", pageIndex+"")
+                .addParams("pageSize", "10")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","查看被送花记录失败："+e.toString());
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","查看被送花记录："+response);
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                if(pageIndex==1){
+                                    mFlowerList.clear();
+                                }
+                                flowerIndex++;
+                                JSONArray jsonArray=new JSONArray(Json_Utils.getTemplate(response));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    ShowsFlower flower=mGson.fromJson(jsonArray.getString(i),ShowsFlower.class);
+                                    mFlowerList.add(flower);
+                                }
+                                mFlowerAdapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+
+   /* *//**
+     * 查看用户掌声记录
+     *//*
+    private void getHeadList(final int pageIndex){
+        MyApplication myApplication=new MyApplication();
+        OkHttpUtils.get().url(myApplication.getUrl()+"/Statis/GetUserBeLikedList")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("pageIndex", pageIndex+"")
+                .addParams("pageSize", "10")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("testing","查看送掌声记录失败："+e.toString());
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e("testing","查看送掌声记录："+response);
+                        //关闭刷新
+                        mPullToRefresh.onHeaderRefreshComplete();
+                        mPullToRefresh.onFooterRefreshComplete();
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                if(pageIndex==1){
+                                    mZanList.clear();
+                                }
+                                headIndex++;
+                                JSONArray jsonArray=new JSONArray(Json_Utils.getTemplate(response));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    ShowsLike like=mGson.fromJson(jsonArray.getString(i),ShowsLike.class);
+                                    if(like.getType()==3 && like.getState()==1){
+                                        //作品    已点赞
+                                        mHeadList.add(like);
+                                    }
+                                }
+                                mHeadAdapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }*/
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if(requestCode==2){
+                if(resultCode==6){
+                    if(data!=null && data.getIntExtra("result",0)==1){
+                        if(flag==0) {
+                            getCommentList(1);
+                        }
+                    }
+                }
+            }
+    }
+
+
+}

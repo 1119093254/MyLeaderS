@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:background="@color/background_grey">
+    <RelativeLayout
+        style="@style/top_APP"
+        android:background="@color/app_topColor">
+
+        <ImageView
+            android:id="@+id/WeiXin_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/index_return_arrow"/>
+
+        <TextView
+            android:id="@+id/add_NewAddress_TopTitle"
+            style="@style/text_ww_20_white"
+            android:layout_centerInParent="true"
+            android:text="微信支付"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/realname_fail"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="22dp"
+            android:textSize="20sp"
+            android:textColor="@color/text_black"
+            android:text="支付异常"/>
+    </LinearLayout>
+
+</RelativeLayout>

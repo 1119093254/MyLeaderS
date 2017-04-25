@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/My_myBaby_ParentsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/background_grey"
+    tools:context="com.multshows.Activity.My_MyBaby_Activity">
+    <RelativeLayout
+        android:id="@+id/My_myBaby_TopLayout"
+        style="@style/top_APP"
+        android:background="@drawable/layout_border_bottom1_white">
+
+        <ImageView
+            android:id="@+id/My_myBaby_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+
+        <TextView
+            android:id="@+id/My_myBaby_TopTitle"
+            style="@style/text_ww_20_text_grey_2"
+            android:layout_centerInParent="true"
+            android:text="我的宝贝"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/My_myBaby_BottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:background="@color/text_green">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/item_shipping_address_addaddress"/>
+            <TextView
+                style="@style/text_ww_15_white"
+                android:text="添加宝贝"/>
+        </LinearLayout>
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/My_myBaby_ListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:layout_below="@id/My_myBaby_TopLayout"
+        android:layout_above="@id/My_myBaby_BottomLayout"/>
+    <include
+        android:id="@+id/My_myBaby_No_View"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/no_view"/>
+</RelativeLayout>

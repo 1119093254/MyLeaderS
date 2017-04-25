@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/release_work_Layout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical"
+              tools:context="com.multshows.Activity.Release_Activity_Activity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/my_toplayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/green">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/ReLeaseWorkTitle"
+                    android:text="发布作品"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"/>
+
+                <TextView
+                    android:id="@+id/releaseWorkActivity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="7dp"
+                    android:padding="10dp"
+                    android:text="发布"
+                    android:textColor="@color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/text_gray"/>
+
+                <ImageView
+                    android:id="@+id/ReleaseWork_return"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="7dp"
+                    android:src="@drawable/index_return_arrow"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/lookmyActivity"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="49dp">
+
+                <EditText
+                    android:id="@+id/Release_workTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@null"
+                    android:hint="在这里写下标题"
+                    android:textSize="16sp"
+                    android:singleLine="true" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignLeft="@+id/Release_workTitle"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/text_gray"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignLeft="@+id/Release_workTitle"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/text_gray"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/WorkConntentlayout"
+                >
+
+                <EditText
+                    android:id="@+id/Release_workContent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="90dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@null"
+                    android:gravity="left|top"
+                    android:hint="在这里写下内容...."
+                    android:paddingTop="5dp"/>
+
+                <com.multshows.Views.MyGridView
+                    android:id="@+id/imageWorkGridview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/Release_workContent"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:horizontalSpacing="3dp"
+                    android:numColumns="4"
+                    android:scrollbars="none"
+                    android:verticalSpacing="5dp">
+                </com.multshows.Views.MyGridView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignLeft="@+id/Release_workContent"
+                    android:layout_below="@+id/imageWorkGridview"
+
+                    android:background="@color/text_gray"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/chioceClassification"
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+               >
+
+                <TextView
+                    android:id="@+id/chioce"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:text="选择分类:"
+                    android:textColor="@color/bg_black"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/WrokClassification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="135dp"
+                    android:hint="请选择分类"
+                    android:textColor="@color/bg_black"
+                    android:textSize="17sp"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/item_more"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignLeft="@+id/chioce"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/text_gray"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/BabySeeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:text="宝宝可见"
+                    android:textColor="@color/bg_black"
+                    android:textSize="17sp"/>
+
+                <ImageView
+                    android:id="@+id/BabySee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/switch_on"/>
+                >
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:text="出售此作品"
+                    android:textColor="@color/bg_black"
+                    android:textSize="17sp"/>
+
+
+                <ImageView
+                    android:id="@+id/WorkisSell"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/switch_off"/>
+                >
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/PriceLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                   >
+
+                    <TextView
+                        android:id="@+id/workprice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:text="宝贝价格:"
+                        android:textColor="@color/bg_black"
+                        android:textSize="16sp"/>
+
+                    <EditText
+                        android:id="@+id/workPriceEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="135dp"
+                        android:background="@null"
+                        android:hint="请输入价格"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/bg_black"
+                        android:textSize="17sp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignLeft="@+id/workprice"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:text="运费:"
+                        android:id="@+id/price"
+                        android:textColor="@color/bg_black"
+                        android:textSize="16sp"/>
+
+
+                    <EditText
+                        android:id="@+id/workFreightPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="135dp"
+                        android:background="@null"
+                        android:hint="请输入价格"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/bg_black"
+                        android:textSize="17sp"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignLeft="@+id/price"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

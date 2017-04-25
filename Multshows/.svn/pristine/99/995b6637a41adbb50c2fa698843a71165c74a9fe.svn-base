@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white">
+
+    <com.multshows.Views.SwipeLayout_Views
+        android:id="@+id/requestList_swipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/requestList_leftLayout"
+                android:layout_width="69dp"
+                android:layout_height="match_parent">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/requestList_headImage"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="3dp"
+                    fresco:placeholderImage="@drawable/info_photoyou"
+                    fresco:roundAsCircle="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/requestList_leftLayout"
+                android:background="@drawable/layout_border_bottom1_white">
+
+                <TextView
+                    android:id="@+id/requestList_userName"
+                    style="@style/text_ww_16_black"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="13dp"
+                    android:text="昵称"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/requestList_userName"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="9dp">
+
+                    <TextView
+                        android:id="@+id/requestList_userTag1"
+                        style="@style/text_ww_10_green"
+                        android:background="@drawable/shape_alight_green_17"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/requestList_userTag2"
+                        style="@style/text_ww_10_green"
+                        android:background="@drawable/shape_alight_green_17"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:layout_marginLeft="9dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/requestList_userTag3"
+                        style="@style/text_ww_10_green"
+                        android:background="@drawable/shape_alight_green_17"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:layout_marginLeft="9dp"
+                        />
+                </LinearLayout>
+                <Button
+                    android:id="@+id/requestList_okAdd"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="79dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/shape_green_3"
+                    android:text="同意添加"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/requestList_deleteRequest"
+            android:layout_width="73dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@color/text_green">
+            <TextView
+                style="@style/text_ww_17_white"
+                android:text="删除"/>
+        </LinearLayout>
+
+    </com.multshows.Views.SwipeLayout_Views>
+
+
+</LinearLayout>

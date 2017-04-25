@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/My_LookMe_ParentsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_grey"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.multshows.Activity.My_LookMe_Activity">
+
+    <RelativeLayout
+        android:id="@+id/My_LookMe_returnLayout"
+        style="@style/top_APP"
+        android:background="@drawable/layout_border_bottom1_white">
+
+        <ImageView
+            android:id="@+id/My_LookMe_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+
+        <TextView
+            android:id="@+id/My_LookMe_TopTitle"
+            style="@style/text_ww_20_text_grey_2"
+            android:layout_centerInParent="true"
+            android:text="看过我的"/>
+    </RelativeLayout>
+
+    <com.multshows.Views.PullToRefresh
+        android:id="@+id/My_LookMe_Refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/My_LookMe_ListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:scrollbars="none"/>
+
+        <include
+            android:id="@+id/LookMe_No_View"
+            layout="@layout/no_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.multshows.Views.PullToRefresh>
+
+</LinearLayout>

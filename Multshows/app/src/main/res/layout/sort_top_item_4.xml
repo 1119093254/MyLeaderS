@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/friends_Friend_TopLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <RelativeLayout
+            android:layout_marginTop="5dp"
+            android:id="@+id/Work_SearchLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/search_boxbg">
+
+
+            <ImageView
+                android:id="@+id/serchImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="9dp"
+                android:layout_marginTop="8dp"
+                android:layout_toLeftOf="@+id/searchText"
+                android:src="@drawable/icon_searchimg"
+                />
+            <TextView
+                android:id="@+id/searchText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:layout_centerInParent="true"
+                android:textSize="15sp"
+                android:textColor="@color/yellow"
+                android:text="搜索"/>
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

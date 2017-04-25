@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "G:\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\background_tab.xml",
+        "source": "G:\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\bundles\\debug\\res\\drawable\\background_tab.xml"
+    },
+    {
+        "merged": "D:\\AndroidStudio\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\background_tab.xml",
+        "source": "D:\\AndroidStudio\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\bundles\\debug\\res\\drawable\\background_tab.xml"
+    },
+    {
+        "merged": "D:\\develop\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\background_tab.xml",
+        "source": "D:\\develop\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\bundles\\debug\\res\\drawable\\background_tab.xml"
+    },
+    {
+        "merged": "F:\\AndroidStudioProjects\\Test\\PagerSlidingTabStrip\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\background_tab.xml",
+        "source": "F:\\AndroidStudioProjects\\Test\\PagerSlidingTabStrip\\build\\intermediates\\bundles\\debug\\res\\drawable\\background_tab.xml"
+    },
+    {
+        "merged": "F:\\svn\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\background_tab.xml",
+        "source": "F:\\svn\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\bundles\\debug\\res\\drawable\\background_tab.xml"
+    },
+    {
+        "merged": "F:\\BaiduYunDownload\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\background_tab.xml",
+        "source": "F:\\BaiduYunDownload\\Multshows\\PagerSlidingTabStrip\\build\\intermediates\\bundles\\debug\\res\\drawable\\background_tab.xml"
+    }
+]

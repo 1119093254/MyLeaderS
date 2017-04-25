@@ -1,0 +1,423 @@
+package com.multshows.Fragment;
+
+import android.animation.LayoutTransition;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.cpoopc.scrollablelayoutlib.ScrollableHelper;
+import com.google.gson.Gson;
+import com.multshows.Activity.LoginActivity;
+import com.multshows.Activity.LoginRegisterActivity;
+import com.multshows.Adapter.HomeFrament_Adapter;
+import com.multshows.Adapter.HomeFrament_c_Adapter;
+import com.multshows.Adapter.WorkAll_Adapter;
+import com.multshows.Beans.Shows;
+import com.multshows.Beans.ShowsCommentAdd;
+import com.multshows.Beans.ShowsTerm;
+import com.multshows.Beans.Task;
+import com.multshows.Beans.TaskTerm;
+import com.multshows.Beans.WorkAll_Beans;
+import com.multshows.Fragment.base.ScrollAbleFragment;
+import com.multshows.Interfaces.MyPageCommentInterface;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Emoji_Change;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Utils.SubString_Utils;
+import com.multshows.Utils.SystemBarUtils;
+import com.multshows.Utils.System_Utils;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.PullToRefresh;
+import com.rockerhieu.emojicon.EmojiconEditText;
+import com.rockerhieu.emojicon.EmojiconsFragment;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.ButterKnife;
+import okhttp3.Call;
+
+/**
+ * 描述：宝宝任务
+ * 作者：
+ * 时间：2016.11/23
+ */
+public class MyBaby_Task_Fragment extends ScrollAbleFragment implements ScrollableHelper.ScrollableContainer {
+    View mView;
+    Context mContext;
+    //控件
+    ViewPager mViewPager;
+    ImageView mLeft;//向左
+    ImageView mRight;//向右
+    //RadioGroup mGroup;
+    TextView mPosition;//当前页数
+    TextView mNumber;//总页数
+    LinearLayout mLayout;//
+    //适配器
+    //HomeFrament_Adapter mAdapter;
+    HomeFrament_Adapter mAdapter;
+    //数据集合
+    List<Fragment> mFramentList = new ArrayList<>();
+    //数据
+    List<Task> mList=new ArrayList<>();
+    //工具
+    FragmentManager mFragmentManager;
+    //fragment
+    MyBaby_Task_Item_Fragment mChangeFragment;
+    Bundle mBundle;
+    //空视图
+    View mNoView;
+    ImageView mNoImage;//空视图图标
+    TextView mNoText;//空视图信息
+    Button mNoButton;//空视图按钮
+
+    boolean isOk = false;
+    Gson mGson=new Gson();
+    //记录当前页码数
+    int pageIndex=0;
+    //加载页数
+    int Pages=1;
+    //记录上次数据个数
+    int historyNum=0;
+    SaveSharedPreferences mSharedPreferences=new SaveSharedPreferences();
+    LinearLayout mUnloginLayout;//未登录界面
+    View mUnlogin;//未登录界面视图
+    TextView mUnLoginHint;
+    Button mLogin;//登录
+    Button mZC;//注册
+    RelativeLayout mVisLayout;
+    String unlogin="";
+    public static MyBaby_Task_Fragment newInstance() {
+        MyBaby_Task_Fragment myHomeWorkFragment = new MyBaby_Task_Fragment();
+        return myHomeWorkFragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext=activity;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.fragment_baby_task, container, false);
+        MySystemBarTintManage_Utils tintManageUtils = new MySystemBarTintManage_Utils();
+        tintManageUtils.setSystemBarTintManage_noColor(getActivity());
+        initView();
+        unlogin=mSharedPreferences.Get_PREFS(getActivity(),"Unlogin");
+        if("yes".equals(unlogin)){
+            //未登录
+            mVisLayout.setVisibility(View.GONE);
+            mUnloginLayout.setVisibility(View.VISIBLE);
+        }else {
+            //已登录
+            mVisLayout.setVisibility(View.VISIBLE);
+            mUnloginLayout.setVisibility(View.GONE);
+        }
+        initData();
+        initListen();
+        isOk = true;
+        return mView;
+    }
+
+    /**
+     * 初始化
+     */
+    private void initView() {
+        mViewPager= (ViewPager) mView.findViewById(R.id.fragment_BabyTask_ViewPager);
+        //mGroup = (RadioGroup) mView.findViewById(R.id.fragment_BabyTask_Group);
+        mLeft= (ImageView) mView.findViewById(R.id.fragment_BabyTask_left);
+        mRight= (ImageView) mView.findViewById(R.id.fragment_BabyTask_right);
+        mPosition= (TextView) mView.findViewById(R.id.fragment_BabyTask_Position);
+        mNumber= (TextView) mView.findViewById(R.id.fragment_BabyTask_Number);
+        mLayout= (LinearLayout) mView.findViewById(R.id.fragment_BabyTask_PositionLayout);
+        mUnloginLayout= (LinearLayout) mView.findViewById(R.id.Unlogin_view);
+        mUnlogin=mView.findViewById(R.id.unlogin_views);
+        mUnLoginHint= (TextView) mUnlogin.findViewById(R.id.UnLogin_text);
+        mLogin= (Button) mUnlogin.findViewById(R.id.UnLogin_login);
+        mZC= (Button) mUnlogin.findViewById(R.id.UnLogin_ZC);
+        mUnLoginHint.setText("登陆后，在这里可以发布任务帮助小朋友培养好的习惯");
+
+        mVisLayout= (RelativeLayout) mView.findViewById(R.id.fragment_BabyTask_visLayout);
+        mNoView=mView.findViewById(R.id.fragment_BabyTask_No_View);
+        mNoImage= (ImageView) mNoView.findViewById(R.id.no_view_image);
+        mNoText= (TextView) mNoView.findViewById(R.id.no_view_text);
+        mNoButton= (Button) mNoView.findViewById(R.id.no_view_Button);
+        mNoImage.setImageResource(R.drawable.no_taskimg);
+        mNoText.setText("暂无任务!");
+        mNoButton.setVisibility(View.GONE);
+        mFragmentManager=getActivity().getSupportFragmentManager();
+    }
+
+    /**
+     * 数据处理
+     */
+    private void initData() {
+        //动态添加
+        dataDeal();
+        //初始化适配器
+        mAdapter = new HomeFrament_Adapter(mFragmentManager, mFramentList);
+        mViewPager.setAdapter(mAdapter);
+        getTaskList(1);
+    }
+
+    /**
+     * 事件监听
+     */
+    private void initListen() {
+        //登录
+        mLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, LoginActivity.class);
+                startActivity(intent);
+
+            }
+        });
+        //注册
+        mZC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, LoginRegisterActivity.class);
+                intent.putExtra("IsThree", "no");//传值，yes代表是第三方登录
+                intent.putExtra("Logintoken", "no");
+                startActivity(intent);
+            }
+        });
+        //RadioGroup事件监听，根据选中的不同进行viewpager界面切换
+      /*  mGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                resetViewPager(checkedId);
+            }
+        });*/
+        //viewPager监听事件
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //滑动中
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                //滑动结束时
+                if(position==0){
+                    mLeft.setVisibility(View.GONE);
+                }else if(position==mList.size()-1){
+                    mRight.setVisibility(View.GONE);
+                }else {
+                    mLeft.setVisibility(View.VISIBLE);
+                    mRight.setVisibility(View.VISIBLE);
+                }
+                pageIndex=position;
+                mPosition.setText(pageIndex+1+"");
+                if(position==mList.size()-3){
+                    getTaskList(Pages);
+                }
+               /* RadioButton tempButton = (RadioButton)mView.findViewById(position);
+                tempButton.setChecked(true);*/
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                //滑动状态改变时（调用三次）
+            }
+        });
+        /**
+         * 向左滑动
+         */
+        mLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(pageIndex==0){
+                    /*pageIndex=mList.size()-1;
+                    mViewPager.setCurrentItem(pageIndex, true);
+                    mPosition.setText(pageIndex+1+"");*/
+                }else {
+                    pageIndex--;
+                    mViewPager.setCurrentItem(pageIndex, true);
+                    mPosition.setText(pageIndex+1+"");
+                }
+            }
+        });
+        /**
+         * 向右滑动
+         */
+        mRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(pageIndex==mList.size()-1){
+                   /* pageIndex=0;
+                    mViewPager.setCurrentItem(pageIndex, true);
+                    mPosition.setText(pageIndex+1+"");*/
+                }else {
+                    pageIndex++;
+                    mViewPager.setCurrentItem(pageIndex, true);
+                    mPosition.setText(pageIndex+1+"");
+                }
+            }
+        });
+
+    }
+    /**
+     * 功能：ViewPager监听事件
+     * 参数：无
+     * 返回：无
+     */
+    private void resetViewPager(int checkId) {
+        pageIndex=checkId;
+        mViewPager.setCurrentItem(checkId,true);
+    }
+    /**
+     * 动态添加
+     *
+     */
+    private void dataDeal(){
+        /*//动态添加RadioButton
+        for (int i = 0; i < mList.size(); i++) {
+            RadioButton tempButton = new RadioButton(getActivity());
+            if (i == 0) {
+                tempButton.setChecked(true);
+            }
+            tempButton.setButtonDrawable(null);           // 设置按钮的样式
+            tempButton.setPadding(5, 0, 5, 0);                 // 设置文字距离按钮四周的距离
+            tempButton.setButtonDrawable(R.drawable.radio_button_check);
+            tempButton.setId(i);
+            mGroup.addView(tempButton, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        }*/
+        if(mList.size()>1){
+            mRight.setVisibility(View.VISIBLE);
+        }else {
+            mLeft.setVisibility(View.GONE);
+            mRight.setVisibility(View.GONE);
+        }
+        mPosition.setText(pageIndex+1+"");
+        //动态添加ViewPager
+        for (int i = historyNum; i <mList.size(); i++) {
+            mChangeFragment=new MyBaby_Task_Item_Fragment();
+            mBundle=new Bundle();
+            mBundle.putSerializable("TaskBean",mList.get(i));
+            mChangeFragment.setArguments(mBundle);
+            mFramentList.add(mChangeFragment);
+        }
+        if(mList.size()==0){
+            mNoView.setVisibility(View.VISIBLE);
+            mLayout.setVisibility(View.GONE);
+        }else {
+            mNoView.setVisibility(View.GONE);
+            mLayout.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    @Override
+    public View getScrollableView() {
+        return null;
+    }
+    /**
+     * 功能：该界面是否为显示状态
+     * 参数：isVisibleToUser 是否正在显示
+     * 返回：无
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        // TODO Auto-generated method stub
+        super.setUserVisibleHint(isVisibleToUser);
+        //界面显示的时候加载数据
+        if (isVisibleToUser) {
+            if (isOk) {
+                Pages=1;
+                getTaskList(1);
+            }
+        }
+    }
+
+    //获取任务列表数据
+    private void getTaskList(final int pageIndex){
+        if(Login_Static.myUserID!=null && !"".equals(Login_Static.myUserID)) {
+            TaskTerm taskTerm = new TaskTerm();
+            taskTerm.setType(1);
+            taskTerm.setState(4);
+            taskTerm.setExecutorId(Login_Static.myUserID);
+            taskTerm.setPageIndex(pageIndex);
+            taskTerm.setPageSize(20);
+            String data = mGson.toJson(taskTerm);
+            CLog.e("testing", "获取宝宝任务列表data" + data);
+            OKHttp.OkHttpPost("/Task/ListTask", "", data, new StringCallback() {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                    CLog.e("testing", "获取宝宝任务列表失败" + e.toString());
+                }
+
+                @Override
+                public void onResponse(String response, int id) {
+                    CLog.e("testing", "获取宝宝任务列表" + response);
+                    try {
+                        if (Json_Utils.getCode(response) == 0) {
+                            if (pageIndex == 1) {
+                                mList.clear();
+                            }
+                            JSONArray jsonArray = new JSONArray(Json_Utils.getTemplate(response));
+                            if (jsonArray.length() != 0) {
+                                Pages++;
+                            }
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Task task = mGson.fromJson(jsonArray.getString(i), Task.class);
+                                mList.add(task);
+                            }
+                            mNumber.setText(Json_Utils.getCount(response) + "");
+                            dataDeal();
+                            historyNum = mList.size();
+
+                            mAdapter.notifyDataSetChanged();
+                            if (pageIndex == 1) {
+                                if (mList.size() != 0) {
+                                    mViewPager.setCurrentItem(0);
+                                }
+                            }
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+}

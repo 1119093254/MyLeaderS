@@ -1,0 +1,371 @@
+package com.multshows.Activity;
+
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.multshows.Adapter.Adapter_Idle_producedetails_Adapter;
+import com.multshows.Beans.Idle_ProduceComment_Beans;
+import com.multshows.Beans.Idle_ProduceDetails_Bean;
+import com.multshows.Beans.Shows;
+import com.multshows.Beans.ShowsCommentUser;
+import com.multshows.Beans.ShowsLikeAdd;
+import com.multshows.Beans.UserHead;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Utils.SubString_Utils;
+import com.multshows.Views.MyApplication;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
+import okhttp3.Call;
+
+/**
+ * 宝贝详情界面
+ */
+public class Idle_ProduceDetails_Activity extends AppCompatActivity {
+    List<Idle_ProduceDetails_Bean> mList;//宝贝详情集合
+    Adapter_Idle_producedetails_Adapter mAdapter;
+    ListView mListView;
+    @Bind(R.id.buyButton)
+    Button mBuyButton;//购买按钮
+    @Bind(R.id.produceDetailsLayout)
+    RelativeLayout mProduceDetailsLayout;//最外层布局 ，用来修改背景颜色
+    @Bind(R.id.Idle_ProduceDetails_return)
+    ImageView mIdle_ProduceDetails_return;//返回按钮
+    String IdleID;//闲置id
+    Gson mGson = new Gson();
+    List<String> mNum;//赞用户头像
+    Shows Shows;
+    @Bind(R.id.shareimage)
+    ImageView mShareimage;//分享图标
+    @Bind(R.id.idleDetail_title)
+    TextView idleDetail_title;//顶部布局标题，用来更改字体颜色
+    @Bind(R.id.my_toplayout)
+    RelativeLayout mMyToplayout;//顶部布局  用来更改背景颜色
+    @Bind(R.id.idle_details_listview)
+    ListView mIdleDetailsListview;
+    @Bind(R.id.commentImage)
+    ImageView mCommentImage;
+    @Bind(R.id.LeaveMessageLayout)
+    RelativeLayout mLeaveMessageLayout;//评论布局
+    @Bind(R.id.likeImage)
+    ImageView mLikeImage;//赞图标
+    @Bind(R.id.LikeText)
+    TextView mLikeText;//赞文字
+    @Bind(R.id.LikeLAyout)
+    RelativeLayout mLikeLAyout;//赞布局
+    @Bind(R.id.bottomLayout)
+    RelativeLayout mBottomLayout;//底部布局
+    MyApplication mApplication ;
+    String shareUrlImage="";
+    SaveSharedPreferences mSharedPreferences=new SaveSharedPreferences();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_idle_producedetails);
+        ButterKnife.bind(this);
+        mApplication= (MyApplication) getApplication();
+        mListView = (ListView) findViewById(R.id.idle_details_listview);
+        mList = new ArrayList<>();
+        initData();
+        mIdle_ProduceDetails_return.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    private void initData() {
+        mList.clear();
+        if (mSharedPreferences.Get_PREFS(Idle_ProduceDetails_Activity.this, "Type").equals("baby")) {
+            MySystemBarTintManage_Utils tintManageUtils = new MySystemBarTintManage_Utils();
+            //tintManageUtils.setSystemBarTintManage(MainActivity.this, R.color.app_babyColor);
+            tintManageUtils.setSystemBarTintManage_noColor(Idle_ProduceDetails_Activity.this);
+            mMyToplayout.setBackgroundResource(R.drawable.classify_topbg);
+            mIdle_ProduceDetails_return.setImageResource(R.drawable.return_arrow);
+            mShareimage.setImageResource(R.drawable.reditem_share);
+            idleDetail_title.setTextColor(getResources().getColor(R.color.red_grey));
+        }else  if (mSharedPreferences.Get_PREFS(Idle_ProduceDetails_Activity.this, "Type").equals("mom")) {
+            mProduceDetailsLayout.setBackgroundColor(getResources().getColor(R.color.white));
+            MySystemBarTintManage_Utils tintManageUtils = new MySystemBarTintManage_Utils();
+            tintManageUtils.setSystemBarTintManage(Idle_ProduceDetails_Activity.this, R.color.green);
+        }
+        mNum = new ArrayList<>();
+        Intent intent = getIntent();
+        IdleID = intent.getStringExtra("IdleID");
+
+        CLog.e("IdleID",""+IdleID);
+        OkHttpUtils.get().url(mApplication.getUrl() + "/Shows/GetShows")
+                .addParams("showsId", IdleID)
+                .addParams("userId", Login_Static.myUserID)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("error", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        JSONObject jsonObject = null;
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                mSharedPreferences.Save_PREFS(Idle_ProduceDetails_Activity.this,"WorkIdNum",IdleID);
+                                JSONObject jsonject = new JSONObject(Json_Utils.getTemplate(response));
+                                Shows = mGson.fromJson(jsonject.toString(), Shows.class);
+                                List<String> imageStrinig3 = new ArrayList<>();
+                                if (Shows.getShowsPhoto() != null) {
+                                    String[] imag = Shows.getShowsPhoto().split(",");
+                                    CLog.e("length", "" + imag.length);
+                                    for (int m = 0; m < imag.length; m++) {
+                                        imageStrinig3.add(imag[m]);
+                                        if(m==0) shareUrlImage=SubString_Utils.getImageUrl(imag[m]);
+                                    }
+                                }
+                                List<Idle_ProduceComment_Beans> workComment_beanes = new ArrayList<Idle_ProduceComment_Beans>();
+                                if (Shows.getCommentUser() != null) {
+                                    CLog.e("length", "" + Shows.getCommentUser().size());
+                                    for (int i = 0; i < Shows.getCommentUser().size(); i++) {
+                                        ShowsCommentUser mShowsCommentUser = Shows.getCommentUser().get(i);
+                                        Idle_ProduceComment_Beans beans = null;
+                                        if (mShowsCommentUser.getTargetUserNickName().equals("")) {
+                                            beans = new Idle_ProduceComment_Beans(mShowsCommentUser.getId(),mShowsCommentUser.getUser().getUserId(), mShowsCommentUser.getUser().getNickName(), "", "", mShowsCommentUser.getContent(), SubString_Utils.getImageUrl(mShowsCommentUser.getUser().getPortrait()), mShowsCommentUser.getRecordTime());
+
+                                        } else {
+                                            beans = new Idle_ProduceComment_Beans(mShowsCommentUser.getId(),mShowsCommentUser.getTargetUserId(), mShowsCommentUser.getTargetUserNickName(), mShowsCommentUser.getUser().getUserId(), mShowsCommentUser.getUser().getNickName(), mShowsCommentUser.getContent(), SubString_Utils.getImageUrl(mShowsCommentUser.getUser().getPortrait()), mShowsCommentUser.getRecordTime());
+                                        }
+                                        workComment_beanes.add(beans);
+                                    }
+                                }
+                                if (Shows.getUser().getUserId().equals(Login_Static.myUserID) || Shows.getPrice() == 0.0||Shows.getAmount() == 0) {
+                                    mBuyButton.setEnabled(false);
+                                }else {
+                                    mBuyButton.setEnabled(true);
+                                }
+                                if (Shows.getLikeUser() != null)
+                                    for (int i = 0; i < Shows.getLikeUser().size(); i++) {
+                                        if (Shows.getLikeUser().get(i).getUserId().equals(Login_Static.myUserID)) {
+                                            mLikeText.setText("已赞");
+                                            mLikeImage.setImageResource(R.drawable.item_like);
+                                        }
+                                    }
+                                Idle_ProduceDetails_Bean bean = new Idle_ProduceDetails_Bean(Shows.getUser().getUserId(), Shows.getUser().getNickName(), Shows.getPublishTime() + "", SubString_Utils.getImageUrl(Shows.getUser().getPortrait()), Shows.getTitle(), Shows.getInfos(), Shows.getPrice(), Shows.getAddress(), imageStrinig3, Shows.getLikeUser(), Shows.getViews(), workComment_beanes, Shows.getUser().getUserId(), Shows.getAmount() + "",Shows.getShowsType());
+                                mList.add(bean);
+                                if (mAdapter == null) {
+                                    mAdapter = new Adapter_Idle_producedetails_Adapter(Idle_ProduceDetails_Activity.this, mList);
+                                    mListView.setAdapter(mAdapter);
+                                } else mAdapter.notifyDataSetChanged();
+                                CLog.e("Shows", Shows.getTitle());
+                            } else {
+                                //后期判断错误原因
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+    //点赞
+    public void sendLike() {
+        ShowsLikeAdd mShowsLikeAdd = new ShowsLikeAdd();
+        mShowsLikeAdd.setUserId(Login_Static.myUserID);
+        mShowsLikeAdd.setShowsId(IdleID);
+        mShowsLikeAdd.setType(1);
+        String data = mGson.toJson(mShowsLikeAdd);
+        CLog.e("data", data);
+        OKHttp.OkHttpPost("/Shows/AddShowsLike", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing", "错误");
+                mLikeLAyout.setEnabled(true);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing", "changeNickName:" + response);
+                try {
+                    if (Json_Utils.getCode(response) == 0) {
+                        if(mList.size()>0&&mList.get(0).getType()==2){
+                            mSharedPreferences.Save_PREFS(Idle_ProduceDetails_Activity.this,"intent","idle");
+                        }
+
+                        mLikeText.setText("已赞");
+                        mLikeImage.setImageResource(R.drawable.item_like);
+                        UserHead mUser = new UserHead();
+                        mUser.setUserId(Login_Static.myUserID);
+                        mUser.setNickName(Login_Static.mAccount.getNickName());
+                        mUser.setPortrait(Login_Static.mAccount.getPortrait());
+                        if (mList.get(0).getPicLikeString() == null) {
+                            List<UserHead> mUserHeads = new ArrayList<UserHead>();
+                            mList.get(0).setPicLikeString(mUserHeads);
+                        }
+                        mList.get(0).getPicLikeString().add(mUser);
+                        mAdapter.notifyDataSetChanged();
+                    } mLikeLAyout.setEnabled(true);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    //取消点赞
+    private void cancleLike() {
+        OkHttpUtils.get().url(mApplication.getUrl() + "/Shows/DelShowsLike")
+                .addParams("showsId", IdleID)
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("type", "1")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mLikeLAyout.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                if(mList.size()>0&&mList.get(0).getType()==2){
+                                    mSharedPreferences.Save_PREFS(Idle_ProduceDetails_Activity.this,"intent","idle");
+                                }
+                                mLikeText.setText("点赞");
+                                mLikeImage.setImageResource(R.drawable.item_details_clickalike);
+                                for (int j = 0; j < mList.get(0).getPicLikeString().size(); j++) {
+                                    if (mList.get(0).getPicLikeString().get(j).getUserId().equals(Login_Static.myUserID)) {
+                                        mList.get(0).getPicLikeString().remove(j);
+                                    }
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            }
+                            mLikeLAyout.setEnabled(true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+    @OnClick({R.id.buyButton, R.id.shareimage, R.id.LeaveMessageLayout, R.id.LikeText, R.id.LikeLAyout})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.buyButton://购买区域点击事件
+                if(!mSharedPreferences.Get_PREFS(Idle_ProduceDetails_Activity.this,"Unlogin").equals("yes")){
+                    Intent intent = new Intent(Idle_ProduceDetails_Activity.this, BuyProduce_Activity.class);
+                    intent.putExtra("Shows", Shows);
+                    startActivityForResult(intent, 0);
+                }else {
+                    Intent mIntent = new Intent(Idle_ProduceDetails_Activity.this, LoginActivity.class);
+                    startActivity(mIntent);
+                }
+
+                break;
+            case R.id.shareimage://分享按钮
+                showShare();
+                break;
+            case R.id.LeaveMessageLayout://评论点击事件
+                if(!mSharedPreferences.Get_PREFS(Idle_ProduceDetails_Activity.this,"Unlogin").equals("yes")){
+                    Intent intent = new Intent(Idle_ProduceDetails_Activity.this, Commeny_Activity.class);
+                    intent.putExtra("Shows", Shows);
+                    startActivity(intent);
+                }else {
+                    Intent mIntent = new Intent(Idle_ProduceDetails_Activity.this, LoginActivity.class);
+                    startActivity(mIntent);
+                }
+
+                break;
+            case R.id.LikeText:
+                break;
+            case R.id.LikeLAyout://点赞布局点击事件
+                if(!mSharedPreferences.Get_PREFS(Idle_ProduceDetails_Activity.this,"Unlogin").equals("yes")){
+                    mLikeLAyout.setEnabled(false);
+                    if (mLikeText.getText().equals("点赞"))
+                        sendLike();
+                    else
+                        cancleLike();
+                }else {
+                    Intent mIntent = new Intent(Idle_ProduceDetails_Activity.this, LoginActivity.class);
+                    startActivity(mIntent);
+                }
+
+                break;
+        }
+    }
+
+    private void showShare() {
+        ShareSDK.initSDK(this);
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+
+// 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
+        //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+        oks.setTitle(Shows.getTitle());
+        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+        oks.setTitleUrl("http://www.leadershows.com/home/download");
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText(Shows.getInfos());
+        //分享网络图片，新浪微博分享网络图片需要通过审核后申请高级写入接口，否则请注释掉测试新浪微博
+
+        oks.setImageUrl(shareUrlImage);
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl("http://www.leadershows.com/home/download");
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        oks.setComment(" ");
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite("领秀s");
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl("http://www.leadershows.com/home/download");
+
+// 启动分享GUI
+        oks.show(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mSharedPreferences.Get_PREFS(Idle_ProduceDetails_Activity.this, "idleFresh").equals("yes")){
+            initData();
+            mSharedPreferences.Save_PREFS(Idle_ProduceDetails_Activity.this,"intent","idle");
+            mSharedPreferences.Save_PREFS(Idle_ProduceDetails_Activity.this, "idleFresh","no");
+        }
+
+    }
+
+
+}

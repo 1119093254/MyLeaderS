@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg">
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="34dp"
+    android:layout_marginLeft="16dp"
+    android:textSize="16sp"
+    android:id="@+id/SetphoneText"
+    android:textColor="@color/text"
+    android:text="请输入13036965655收到的短信验证码"/>
+    <RelativeLayout
+        android:id="@+id/phoneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:layout_marginTop="67dp"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/AreaCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:text="验证码："
+            android:textColor="#000000"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/AreaCode"
+            android:background="@null"
+            android:inputType="number"
+            android:singleLine="true"
+            android:id="@+id/verificationEditext"
+            android:hint="请输入手机验证码"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/register_send"
+            style="@style/verificationbutton"
+            android:text="发送验证码"
+            android:visibility="invisible"
+            />
+        <ImageView
+            android:id="@+id/ClearverificationImage"
+            android:layout_width="26dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:layout_toLeftOf="@+id/register_send"
+            android:visibility="gone"
+            android:src="@drawable/icon_delete"/>
+        <Button
+            android:id="@+id/register_send_two"
+            android:layout_width="55dp"
+            android:layout_height="32dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/resend_verification_code"
+            android:textColor="#cccccc"
+            android:text="60s"
+            android:layout_centerVertical="true"
+            android:textSize="14sp" />
+        <!--<Button
+            android:layout_width=""
+            android:layout_height=""/>-->
+    </RelativeLayout>
+    <Button
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/phoneLayout"
+        android:id="@+id/verificationNext"
+        android:text="下一步"
+        android:enabled="false"
+        style="@style/btnstyle"
+        />
+</RelativeLayout>

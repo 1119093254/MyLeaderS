@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="140dp"
+              android:layout_height="30dp"
+              android:background="@drawable/border_commentlayout"
+              android:gravity="center">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+
+        <RelativeLayout
+            android:id="@+id/applauseTextLayout"
+            android:layout_width="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/likeimage"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="5dp"
+                android:src="@drawable/money_message"/>
+
+            <TextView
+                android:id="@+id/applauseText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="4dp"
+                android:layout_toRightOf="@+id/likeimage"
+                android:text="掌声"/>
+        </RelativeLayout>
+
+
+        <View
+            android:id="@+id/likeLine"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/applauseTextLayout"
+            android:layout_alignTop="@+id/applauseTextLayout"
+            android:layout_toRightOf="@+id/applauseTextLayout"
+            android:background="#737378"
+            />
+
+        <RelativeLayout
+            android:id="@+id/applauseCommentLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/likeLine">
+
+            <ImageView
+                android:id="@+id/publicWelfareComment"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="5dp"
+                android:src="@drawable/money_message"/>
+
+            <TextView
+                android:id="@+id/flowerText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="8dp"
+                android:layout_toRightOf="@+id/publicWelfareComment"
+                android:text="评论"/>
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/OtherTopLayout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/green"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        >
+
+        <RadioGroup
+            android:id="@+id/myhome_Group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <!--style="?android:attr/borderlessButtonStyle"-->
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"/>
+            <RadioButton
+                android:id="@+id/myhome_RadioBtn1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_background_check"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="3dp"
+                android:text="作品"
+                android:textColor="@color/baby_radio"
+                android:textSize="15sp"/>
+
+
+
+            <RadioButton
+                android:id="@+id/myhome_RadioBtn2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_background_check"
+                android:button="@null"
+                android:gravity="center"
+                android:text="闲置"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="3dp"
+                android:textColor="@color/baby_radio"
+                android:textSize="15sp"
+              />
+
+            <RadioButton
+                android:id="@+id/myhome_RadioBtn3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_background_check"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="3dp"
+                android:text="任务"
+                android:textColor="@color/baby_radio"
+                android:textSize="15sp"/>
+            <RadioButton
+                android:id="@+id/myhome_RadioBtn4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_background_check"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="3dp"
+                android:text="相册"
+                android:textColor="@color/baby_radio"
+                android:textSize="15sp"/>
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"/>
+        </RadioGroup>
+
+    </RelativeLayout>
+</LinearLayout>

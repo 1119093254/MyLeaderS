@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_grey"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.multshows.Activity.Setting_CallUs_Activity">
+
+    <RelativeLayout
+        style="@style/top_APP"
+        android:background="@color/text_green">
+
+        <ImageView
+            android:id="@+id/setting_CallUs_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/index_return_arrow"/>
+
+        <TextView
+            style="@style/text_ww_20_white"
+            android:layout_centerInParent="true"
+            android:text="版权信息"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/logo"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="17dp"
+                android:padding="12dp">
+                <TextView
+                    android:id="@+id/setting_callUs_text1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_black"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:text="版权信息"/>
+                <TextView
+                    style="@style/text_ww_13_black"
+                    android:layout_below="@id/setting_callUs_text1"
+                    android:layout_marginTop="16dp"
+                    android:text="1.“领秀S”app的所有权由上海沐渎信息技术服务有限公司。
+ 2.领秀S内用户的所有内容，包括所有文字、图片和音视频资料，版权均属上海沐渎信息技术服务有限公司（以下简称“沐渎信息”）以及用户个人所有，任何媒体、网站或个人未经领秀S授权不得转载、链接、转贴或以其他方式发布、发表。经领秀S协议授权的媒体、网站，在下载使用时必须注明来源：领秀S。违者将依法追究责任。
+ 3.转载或引用领秀S内容必须是以新闻性或资料性公共免费信息为使用目的的合理、善意引用，不得对领秀S内容恶意进行曲解、修改，同时必须保留领秀S注明的“内容来源”，并自负版权等法律责任。
+ 4.对于领秀S圈子或公益内，用户发表的信息或文章仅代表用户个人观点，与领秀S无关。对于用户言论的真实性引发的全部责任，由用户个人承担，领秀S不承担任何责任。
+ 5.由于我们无法对转载或者用户上传的作品设计或包含的权利信息进行甄别，领秀S如无意中侵犯了那个媒体或个人的知识产权；请按提交具体材料并通知我公司，我公司在审查核实后立即删除侵权内容。
+"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
+                <TextView
+                    style="@style/text_ww_10_grey"
+                    android:layout_centerInParent="true"
+                    android:text="copy@2016-2017"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp">
+                <TextView
+                    style="@style/text_ww_10_grey"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="上海沐读信息技术服务有限公司版权所有"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,202 @@
+package com.multshows.Activity;
+
+import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.multshows.Beans.PayRecord;
+import com.multshows.Fragment.My_Fragment_ok;
+import com.multshows.Fragment.My_Recharge_Fragment;
+import com.multshows.Fragment.ZPMessageTg_Fragment;
+import com.multshows.Fragment.ZPMessage_Fragment;
+import com.multshows.Fragment.ZPMessage_buy_Fragment;
+import com.multshows.Fragment.ZPMessage_every_Fragment;
+import com.multshows.R;
+import com.multshows.Utils.MomORBaby_Utils;
+//交易详情 界面
+public class HistoryList_Activity extends AppCompatActivity {
+    //控件
+    ImageView mReturn;
+    RelativeLayout mReturnLayout;//顶部布局
+    LinearLayout mParentLayout;//父布局
+    TextView mTitle;
+
+    PayRecord mPayRecord;
+    //工具
+    FragmentManager mFragmentManager;
+    //fragment
+    ZPMessage_Fragment mZPMessageFragment;//作品卖出交易详情
+    ZPMessage_buy_Fragment mZPMessage_buy_fragment;//作品购买交易详情
+    My_Fragment_ok mKittingFragment;//提现交易详情
+    ZPMessageTg_Fragment mTgFragment;//推广奖励
+    ZPMessage_every_Fragment mZPMessage_every_Fragment;
+
+    int PayType=0;
+    String IDs="";
+    Bundle mBundle;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_history_list);
+        initView();
+        initData();
+        initListen();
+    }
+    /**
+     * 初始化
+     */
+    private void initView() {
+        mReturn= (ImageView) findViewById(R.id.My_MyWallet_History_return);
+        mReturnLayout= (RelativeLayout) findViewById(R.id.My_MyWallet_History_returnLayout);
+        mParentLayout= (LinearLayout) findViewById(R.id.My_MyWallet_History_ParentsLayout);
+        mTitle= (TextView) findViewById(R.id.My_MyWallet_History_title);
+        mFragmentManager=getSupportFragmentManager();
+
+        MomORBaby_Utils momORBabyUtils=new MomORBaby_Utils();
+        momORBabyUtils.isMomORBaby(HistoryList_Activity.this,mReturnLayout,mParentLayout,mReturn,mTitle);
+    }
+
+    /**
+     * 数据处理
+     */
+    private void initData() {
+        Intent intent=getIntent();
+        mPayRecord= (PayRecord) intent.getSerializableExtra("PayRecord");
+        if(mPayRecord!=null){
+            PayType=mPayRecord.getType();
+        }
+
+        if(PayType==1){
+            //售出商品
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mZPMessageFragment=new ZPMessage_Fragment();
+            mZPMessageFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessageFragment).commit();
+        }else if(PayType==2){
+            //购买商品
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mZPMessage_buy_fragment=new ZPMessage_buy_Fragment();
+            mZPMessage_buy_fragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessage_buy_fragment).commit();
+        }else if(PayType==3){
+            //打赏
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mBundle.putInt("types",1);
+            mZPMessage_buy_fragment=new ZPMessage_buy_Fragment();
+            mZPMessage_buy_fragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessage_buy_fragment).commit();
+        }else if(PayType==4){
+            //收到打赏
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mBundle.putInt("types",1);
+            mZPMessageFragment=new ZPMessage_Fragment();
+            mZPMessageFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessageFragment).commit();
+        }else if(PayType==5){
+            //购买鲜花
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mBundle.putInt("types",2);
+            mZPMessage_buy_fragment=new ZPMessage_buy_Fragment();
+            mZPMessage_buy_fragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessage_buy_fragment).commit();
+        }else if(PayType==6){
+            //发布任务
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mBundle.putInt("types",6);
+            mZPMessage_buy_fragment=new ZPMessage_buy_Fragment();
+            mZPMessage_buy_fragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessage_buy_fragment).commit();
+        }else if(PayType==7){
+            //完成任务
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mBundle.putInt("types",7);
+            mZPMessageFragment=new ZPMessage_Fragment();
+            mZPMessageFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessageFragment).commit();
+        }else if(PayType==8){
+            //充值
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mBundle.putInt("types",8);
+            mZPMessageFragment=new ZPMessage_Fragment();
+            mZPMessageFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessageFragment).commit();
+        }else if(PayType==9){
+            //提现成功
+            mBundle=new Bundle();
+            mBundle.putString("message",mPayRecord.getCashId());
+            mBundle.putInt("types",9);
+            mKittingFragment=new My_Fragment_ok();
+            mKittingFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mKittingFragment).commit();
+        }else if(PayType==10){
+            //提现失败
+            mBundle=new Bundle();
+            mBundle.putString("message",mPayRecord.getCashId());
+            mBundle.putInt("types",10);
+            mBundle.putString("TradeId",mPayRecord.getTradeId());
+            mKittingFragment=new My_Fragment_ok();
+            mKittingFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mKittingFragment).commit();
+        }else if(PayType==12) {
+            //推广奖励
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mTgFragment=new ZPMessageTg_Fragment();
+            mTgFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mTgFragment).commit();
+        }else if(PayType==13) {
+            //打赏退回
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mBundle.putInt("types",9);
+            mZPMessageFragment=new ZPMessage_Fragment();
+            mZPMessageFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessageFragment).commit();
+        }else if(PayType==14) {
+            //任务撤回
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mBundle.putInt("types",10);
+            mZPMessageFragment=new ZPMessage_Fragment();
+            mZPMessageFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessageFragment).commit();
+        }else {
+            //通用
+            mBundle=new Bundle();
+            mBundle.putSerializable("PayRecords",mPayRecord);
+            mZPMessage_every_Fragment=new ZPMessage_every_Fragment();
+            mZPMessageFragment.setArguments(mBundle);
+            mFragmentManager.beginTransaction().replace(R.id.My_MyWallet_History_fragment,mZPMessage_every_Fragment).commit();
+        }
+
+
+    }
+
+    /**
+     * 事件监听
+     */
+    private void initListen() {
+        //返回
+        mReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+}

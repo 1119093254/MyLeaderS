@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/flower_ParentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background_black_alight"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="35dp"
+    android:layout_marginRight="35dp"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/RewordLayout2"
+        >
+
+        <RelativeLayout
+            android:id="@+id/flowerTopLayout"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/shape_red_t">
+
+            <TextView
+                android:id="@+id/Dialog_title"
+                style="@style/text_ww_17_black"
+                android:layout_centerInParent="true"
+                android:text=""/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/flowerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/flowerTopLayout"
+            android:background="@drawable/shape_red_t2"
+            >
+
+            <LinearLayout
+                android:id="@+id/rowoneLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="17dp">
+
+                <RelativeLayout
+                    android:layout_width="67dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/reward1"
+                    android:background="@drawable/shape_alight_red"
+                    android:gravity="center"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/num1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="1"
+                            android:textColor="@color/text_yellow"
+                            android:textSize="30sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_toRightOf="@+id/num1"
+                            android:id="@+id/yuan"
+                            android:text="元"
+                            android:paddingBottom="5dp"
+                            android:textColor="@color/text_yellow"/>
+                        <ImageView
+                            android:visibility="invisible"
+                            android:id="@+id/chiocetrue1"
+                            android:layout_alignLeft="@+id/yuan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_checkimg"
+                            android:layout_marginLeft="3dp"
+                            />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="67dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/reward10"
+                    android:background="@drawable/shape_alight_red"
+                    android:gravity="center">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/num2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="10"
+                            android:textColor="@color/text_yellow"
+                            android:textSize="30sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:id="@+id/yuan2"
+                            android:layout_toRightOf="@+id/num2"
+                            android:text="元"
+                            android:paddingBottom="5dp"
+                            android:textColor="@color/text_yellow"/>
+                        <ImageView
+                            android:id="@+id/chiocetrue2"
+                            android:visibility="invisible"
+                            android:layout_alignLeft="@+id/yuan2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_checkimg"
+                            android:layout_marginLeft="3dp"
+                            />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="67dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/reward20"
+                    android:background="@drawable/shape_alight_red"
+                    android:gravity="center"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/num3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="20"
+                            android:textColor="@color/text_yellow"
+                            android:textSize="30sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_toRightOf="@+id/num3"
+                            android:text="元"
+                            android:paddingBottom="5dp"
+                            android:id="@+id/yuan3"
+                            android:textColor="@color/text_yellow"/>
+                        <ImageView
+                            android:id="@+id/chiocetrue3"
+                            android:visibility="invisible"
+                            android:layout_alignLeft="@+id/yuan3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_checkimg"
+                            android:layout_marginLeft="3dp"
+                            />
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rowTwoLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rowoneLayout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp">
+
+                <RelativeLayout
+                    android:layout_width="67dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/reward5"
+                    android:background="@drawable/shape_alight_red"
+                    android:gravity="center"
+                    android:padding="2dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/num4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="5"
+                            android:textColor="@color/text_yellow"
+                            android:textSize="28sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_toRightOf="@+id/num4"
+                            android:id="@+id/yuan4"
+                            android:text="元"
+                            android:paddingBottom="5dp"
+                            android:textColor="@color/text_yellow"/>
+                        <ImageView
+                            android:id="@+id/chiocetrue4"
+                            android:visibility="invisible"
+                            android:layout_alignLeft="@+id/yuan4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_checkimg"
+                            android:layout_marginLeft="3dp"
+                            />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+
+                    android:id="@+id/reward100"
+                    android:background="@drawable/shape_alight_red"
+                    android:gravity="center"
+                    android:padding="2dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/num5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="100"
+                            android:textColor="@color/text_yellow"
+                            android:textSize="28sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_toRightOf="@+id/num5"
+                            android:text="元"
+                            android:id="@+id/yuan5"
+                            android:paddingBottom="5dp"
+                            android:textColor="@color/text_yellow"/>
+
+
+                        <ImageView
+                            android:id="@+id/chiocetrue5"
+                            android:visibility="invisible"
+                            android:layout_toRightOf="@+id/yuan5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_checkimg"
+                            android:layout_marginLeft="-10dp"
+                            />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+
+                    android:id="@+id/reward200"
+                    android:background="@drawable/shape_alight_red"
+                    android:gravity="center"
+                    android:padding="2dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/num6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="200"
+                            android:textColor="@color/text_yellow"
+                            android:textSize="28sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_toRightOf="@+id/num6"
+                            android:text="元"
+                            android:id="@+id/yuan6"
+                            android:paddingBottom="5dp"
+                            android:textColor="@color/text_yellow"/>
+                        <ImageView
+                            android:id="@+id/chiocetrue6"
+                            android:visibility="invisible"
+                            android:layout_toRightOf="@+id/yuan6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_checkimg"
+                            android:layout_marginLeft="-10dp"
+                            />
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+            <EditText
+                android:id="@+id/TextNumReward"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@+id/rowTwoLayout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="23dp"
+                android:layout_alignLeft="@+id/rowTwoLayout"
+                android:layout_alignRight="@+id/rowTwoLayout"
+                android:singleLine="true"
+                android:background="@drawable/sendreward"
+                android:inputType="numberDecimal"
+                android:hint="其它金额（最低1元）"
+                android:paddingLeft="13dp"
+                android:textColorHint="@color/text_yellow"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+            <Button
+                android:id="@+id/SureRewardSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/rowTwoLayout"
+                android:layout_alignRight="@+id/rowTwoLayout"
+                android:layout_below="@+id/TextNumReward"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="22dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_style3"
+                android:text="确认打赏"
+                android:textColor="#E94659"
+                android:textSize="18sp"/>
+        </RelativeLayout>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/reward_userPic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            fresco:roundAsCircle="true"
+            fresco:placeholderImage="@drawable/info_photoyou"
+            fresco:failureImage="@drawable/info_photoyou"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/info_photoyou"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/reward_userPic"
+            android:id="@+id/reward_userName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="陶小桃Lovey"
+            android:textColor="@color/white"/>
+        <TextView
+            android:layout_below="@+id/flowerLayout"
+            android:layout_width="2dp"
+            android:background="@color/white"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/flowerLine"
+            android:layout_height="70dp"/>
+        <ImageView
+            android:id="@+id/Rewadrclose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/flowerLine"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/remove_box"/>
+
+    </RelativeLayout>
+</RelativeLayout>
+</RelativeLayout>

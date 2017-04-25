@@ -1,0 +1,481 @@
+package com.multshows.Fragment;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.multshows.Activity.ChioceIdentity;
+import com.multshows.Activity.Login_FindPassword_Activity;
+import com.multshows.Activity.MainActivity;
+import com.multshows.Beans.Account;
+import com.multshows.Beans.Setting_LoginUser_Beans;
+import com.multshows.Beans.User;
+import com.multshows.Beans.UserPrimaryKey;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.BaseAppManager;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Utils.SubString_Utils;
+import com.multshows.Views.Dialog_Hint;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.MyEditText;
+import com.multshows.Views.MyNumber_Pop;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.Call;
+
+/**
+ * 切换账号
+ */
+public class Setting_Change_Fragment extends LazyFragment {
+    View mView;
+    //上下文
+    Context mContext;
+    boolean isCreate = false;
+    boolean isBut;//是否显示登录
+    //控件
+    SimpleDraweeView mParents;//父布局
+    SimpleDraweeView mHeader;//头像
+    TextView mName;//称谓关系
+    TextView mPhone;//电话
+    TextView mIsLogin;//已登录
+    TextView mUserType;
+    Button mButton;//登录按钮
+    MyEditText mPassWord;//切换密码
+    TextView mHint;//请输入切换密码提示
+    LinearLayout mBottom;//底部数字输入器
+    LinearLayout mTextLayout;
+    //传来的信息
+    Setting_LoginUser_Beans bean;
+    private MyNumber_Pop mMyNumber_pop;
+    Dialog mDialog;
+    MyApplication myApplication;
+    SaveSharedPreferences mSave = new SaveSharedPreferences();
+    Dialog_Hint mDialogHint;
+    Gson mGson = new Gson();
+    String type;
+    String type_flag="";
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext = activity;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.setting_change_fragment, null);
+        myApplication= (MyApplication) getActivity().getApplication();
+        type_flag=mSave.Get_PREFS(getActivity(),"Type");//代表此页妈妈界面还是宝宝页面unlogin没登录
+        initView();
+        //初始化后变为true
+        initData();
+        initListen();
+        isCreate = true;
+        lazyLoad();
+        return mView;
+    }
+
+    /**
+     * 初始化
+     */
+    private void initView() {
+        mParents = (SimpleDraweeView) mView.findViewById(R.id.Setting_Change_Parents);
+        mTextLayout= (LinearLayout) mView.findViewById(R.id.Setting_Change_nameLayout);
+        mUserType= (TextView) mView.findViewById(R.id.Setting_Change_Type);
+        mHeader = (SimpleDraweeView) mView.findViewById(R.id.Setting_Change_pic);
+        mName = (TextView) mView.findViewById(R.id.Setting_Change_name);
+        mPhone = (TextView) mView.findViewById(R.id.Setting_Change_phone);
+        mIsLogin = (TextView) mView.findViewById(R.id.Setting_Change_islogin);
+        mButton = (Button) mView.findViewById(R.id.Setting_Change_login);
+        mPassWord = (MyEditText) mView.findViewById(R.id.Setting_Change_textHint);
+        mHint = (TextView) mView.findViewById(R.id.Setting_Change_hint);
+        mMyNumber_pop = new MyNumber_Pop(getActivity());
+        mDialog = new HintText_Dialog(mContext, R.style.MyDialog);
+    }
+
+    /**
+     * 数据处理
+     */
+    private void initData() {
+        //强制不弹出软键盘
+        mPassWord.setInputType(InputType.TYPE_NULL);
+        Bundle mBundle = getArguments();
+        bean = (Setting_LoginUser_Beans) mBundle.getSerializable("Login_Beans");
+        CLog.e("testing", "bean:" + bean.toString());
+        isBut = bean.isFlag();
+        if (bean.isFlag()) {
+            mButton.setVisibility(View.GONE);
+            mIsLogin.setVisibility(View.VISIBLE);
+        } else {
+            mIsLogin.setVisibility(View.GONE);
+            mButton.setVisibility(View.VISIBLE);
+        }
+        if (bean.getUserPic() != null && !"null".equals(bean.getUserPic())) {
+            Uri uri = Uri.parse(SubString_Utils.getImageUrl(bean.getUserPic()));
+            mParents.setImageURI(uri);
+            mHeader.setImageURI(uri);
+        } else {
+            Uri uri = Uri.parse("");
+            mParents.setImageURI(uri);
+            mHeader.setImageURI(uri);
+        }
+        if("mom".equals(bean.getUser())){
+            mUserType.setText("(家长端)");
+        }else {
+            mUserType.setText("(宝宝端)");
+        }
+        mName.setText(bean.getUserName());
+        if (bean.getPhone() != null) {
+            if (bean.getPhone().length() >= 11) {
+                String bound = bean.getPhone().substring(0, 3) + "****" +
+                        bean.getPhone().substring(7, bean.getPhone().length());
+                mPhone.setText(bound);
+            }
+        }
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    /**
+     * 事件监听
+     */
+    private void initListen() {
+        mMyNumber_pop.setNum(new MyNumber_Pop.Num() {
+            @Override
+            public void num(String text) {
+                CLog.e("testing", text);
+                mPassWord.setText(text);
+            }
+        });
+        //登录
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if ("mom".equals(bean.getUser())) {
+                    /*if("baby".equals(type_flag)){
+                        changeUser(bean.getUserId(),"0");
+                    }else {*/
+                        getUser();
+                   // }
+                } else {
+                    changeUser(bean.getUserId());
+                }
+            }
+        });
+        //密码框点击事件监听
+        mPassWord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mMyNumber_pop.isShowing()) {
+                    //设置弹出动画效果
+                    mMyNumber_pop.setAnimationStyle(R.style.PopupAnimation);
+                    //显示窗口  //设置layout在PopupWindow中显示的位置
+                    mMyNumber_pop.showAtLocation(getActivity().findViewById(R.id.Setting_Change_ParentLayout),
+                            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                }
+            }
+        });
+        //密码框状态监听
+        mPassWord.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count == 4) {
+                    mMyNumber_pop.dismiss();
+                    changeUser(bean.getUserId(), mPassWord.getText().toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+    }
+
+    /**
+     * 界面显示的时候调用
+     */
+    @Override
+    protected void lazyLoad() {
+        if (isVisible && isCreate) {
+            mPhone.setVisibility(View.VISIBLE);
+            mPassWord.setVisibility(View.INVISIBLE);
+            if (isBut) {
+                mButton.setVisibility(View.GONE);
+                mIsLogin.setVisibility(View.VISIBLE);
+            } else {
+                mIsLogin.setVisibility(View.GONE);
+                mButton.setVisibility(View.VISIBLE);
+            }
+            mHint.setVisibility(View.INVISIBLE);
+            mTextLayout.setVisibility(View.VISIBLE);
+            mMyNumber_pop.setNumText();
+            type = mSave.Get_PREFS(getActivity(), "Type");//代表此页妈妈界面还是宝宝页面unlogin没登录
+            if (type.equals("unLogin")) {
+                getUser();
+            }
+        }
+    }
+
+
+    //切换密码
+    private void changeUser(String userId, String password) {
+        mDialog.show();
+        CLog.e("testing", "切换用户:" + userId);
+        HintText_Dialog hint = new HintText_Dialog(mContext, "切换中...", "");
+        OkHttpUtils.get().url(myApplication.getUrl() + "/User/SwitchUserStatus")
+                .addParams("userid", userId)
+                .addParams("pwd", password)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing", "切换用户登录失败" + e.toString());
+                        HintText_Dialog hint = new HintText_Dialog(mContext, "未知错误", "fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //得到返回值后，2秒后加载框消失
+                                mDialog.dismiss();
+                            }
+                        }, Login_Static.hintTime);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", "切换用户登录" + response);
+                        try {
+                            if (Json_Utils.getCode(response) == 1003) {
+                                HintText_Dialog hint = new HintText_Dialog(mContext, "密码错误", "fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //得到返回值后，2秒后加载框消失
+                                        mDialog.dismiss();
+                                    }
+                                }, Login_Static.hintTime);
+
+                            } else if (Json_Utils.getCode(response) == 0) {
+                                mDialog.dismiss();
+                                if ("baby".equals(bean.getUser())) {
+                                    UserPrimaryKey beans = mGson.fromJson(Json_Utils.getTemplate(response), UserPrimaryKey.class);
+
+                                    Login_Static.myUserAccount = beans.getAccountId();
+                                    Login_Static.myUserID = beans.getUserId();
+
+                                    CLog.e("onMessage","新用户222："+beans.getUserId()+"的token="+beans.getToken());
+                                    mSave.Save_PREFS(mContext, beans.getUserId()+"token", beans.getToken());
+                                    mSave.Save_PREFS(mContext, "ismy", "no");//是否进入的我的主页，yes表示进入的是我的主页，no表示进入的是发现的闲置页
+                                    mSave.Save_PREFS(mContext, "Type", "baby");
+                                    mSave.Save_PREFS(mContext, "Vip", "no");
+                                    Intent mIntent = new Intent(mContext, MainActivity.class);
+                                    startActivity(mIntent);
+                                    getActivity().finish();
+                                    Login_Static.mActivityList.get(0).finish();
+                                } else {
+                                    UserPrimaryKey beans = mGson.fromJson(Json_Utils.getTemplate(response), UserPrimaryKey.class);
+
+                                    Login_Static.myUserAccount = beans.getAccountId();
+                                    Login_Static.myUserID = beans.getUserId();
+                                    CLog.e("onMessage","新用户mom："+beans.getUserId()+"的token="+beans.getToken());
+                                    mSave.Save_PREFS(mContext, beans.getUserId()+"token", beans.getToken());
+                                    mSave.Save_PREFS(mContext, "ismy", "no");//是否进入的我的主页，yes表示进入的是我的主页，no表示进入的是发现的闲置页
+                                    mSave.Save_PREFS(mContext, "Type", "mom");
+                                    mSave.Save_PREFS(mContext, "Vip", "no");
+                                    Intent mIntent = new Intent(mContext, MainActivity.class);
+                                    startActivity(mIntent);
+                                    if (type.equals("unLogin")) {
+                                        BaseAppManager.getInstance().clear();
+                                    } else {
+                                        if (Login_Static.mActivityList.size() > 0) {
+                                            getActivity().finish();
+                                            Login_Static.mActivityList.get(0).finish();
+                                        }
+                                    }
+
+
+                                }
+                            } else {
+                                HintText_Dialog hint = new HintText_Dialog(mContext, Json_Utils.getMessage(response), "fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //得到返回值后，2秒后加载框消失
+                                        mDialog.dismiss();
+                                    }
+                                }, Login_Static.hintTime);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+    //切换密码
+    private void changeUser(String userId) {
+        CLog.e("testing", "切换用户:" + userId);
+        mDialog.show();
+        HintText_Dialog hint = new HintText_Dialog(mContext, "切换中...", "");
+        OkHttpUtils.get().url(myApplication.getUrl() + "/User/SwitchUserStatusNoPwd")
+                .addParams("userid", userId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing", "切换用户登录失败" + e.toString());
+                        HintText_Dialog hint = new HintText_Dialog(mContext, "未知错误", "fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //得到返回值后，2秒后加载框消失
+                                mDialog.dismiss();
+                            }
+                        }, Login_Static.hintTime);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", "切换用户登录" + response);
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                HintText_Dialog hint = new HintText_Dialog(mContext, "登录成功", "success");
+                                final String error = Json_Utils.getTemplate(response);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //得到返回值后，2秒后加载框消失
+                                        mDialog.dismiss();
+                                        UserPrimaryKey beans = mGson.fromJson(error, UserPrimaryKey.class);
+
+                                        Login_Static.myUserAccount = beans.getAccountId();
+                                        Login_Static.myUserID = beans.getUserId();
+
+                                        mSave.Save_PREFS(mContext, beans.getUserId()+"token", beans.getToken());
+                                        mSave.Save_PREFS(mContext, "ismy", "no");//是否进入的我的主页，yes表示进入的是我的主页，no表示进入的是发现的闲置页
+                                        mSave.Save_PREFS(mContext, "Type", "baby");
+                                        mSave.Save_PREFS(mContext, "Vip", "no");
+                                        Intent mIntent = new Intent(mContext, MainActivity.class);
+                                        startActivity(mIntent);
+                                        getActivity().finish();
+                                        Login_Static.mActivityList.get(0).finish();
+                                    }
+                                }, Login_Static.hintTime);
+
+
+                            } else {
+                                HintText_Dialog hint = new HintText_Dialog(mContext, Json_Utils.getMessage(response), "fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //得到返回值后，2秒后加载框消失
+                                        mDialog.dismiss();
+                                    }
+                                }, Login_Static.hintTime);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 获取个人信息数据
+     */
+    private void getUser() {
+        OkHttpUtils.get().url(myApplication.getUrl() + "/User/GetUser")
+                .addParams("userid", Login_Static.myUserID)
+                .addParams("targetuserid", "0")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing", "个人信息 失败" + e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            CLog.e("testing", "个人信息：" + Json_Utils.getTemplate(response));
+                            if (Json_Utils.getCode(response) == 0) {
+                                User mUser = mGson.fromJson(Json_Utils.getTemplate(response), User.class);
+                                if ("".equals(mUser.getTogglePassword())) {
+                                    //没设置
+                                   /* mDialogHint = new Dialog_Hint(mContext, 0,
+                                            "您还没有设置切换密码,是否前往设置?", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            mDialogHint.dismiss();
+                                            Intent intent = new Intent(mContext, Login_FindPassword_Activity.class);
+                                            intent.putExtra("PassWordType", 1);
+                                            startActivity(intent);
+                                        }
+                                    });
+                                    mDialogHint.show();*/
+                                    changeUser(bean.getUserId(),"0");
+                                } else {
+                                    mPhone.setVisibility(View.INVISIBLE);
+                                    mPassWord.setVisibility(View.VISIBLE);
+                                    mPassWord.setText("");
+                                    mButton.setVisibility(View.INVISIBLE);
+                                    mHint.setVisibility(View.VISIBLE);
+                                    mTextLayout.setVisibility(View.INVISIBLE);
+                                    //设置弹出动画效果
+                                    mMyNumber_pop.setAnimationStyle(R.style.PopupAnimation);
+                                    //显示窗口  //设置layout在PopupWindow中显示的位置
+                                    mMyNumber_pop.showAtLocation(getActivity().findViewById(R.id.Setting_Change_ParentLayout),
+                                            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+}

@@ -1,0 +1,135 @@
+package com.multshows.Activity;
+
+import android.app.Dialog;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.multshows.Beans.UserFeedBack;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Utils.Time_Now;
+import com.multshows.Views.HintText_Dialog;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+
+import okhttp3.Call;
+
+/**
+ * 设置-意见反馈
+ */
+public class Setting_Suggestion_Activity extends AppCompatActivity {
+    //控件
+    ImageView mReturn;//返回
+    TextView mSend;//发送
+    EditText mPhone;//联系方式
+    EditText mContent;//内容
+    Gson mGson=new Gson();
+    Dialog mDialog;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_setting_suggestion);
+        MySystemBarTintManage_Utils manageUtils=new MySystemBarTintManage_Utils();
+        manageUtils.setSystemBarTintManage(Setting_Suggestion_Activity.this,R.color.app_topColor);
+        mReturn= (ImageView) findViewById(R.id.Setting_Suggestion_return);
+        mSend= (TextView) findViewById(R.id.Setting_Suggestion_send);
+        mPhone= (EditText) findViewById(R.id.Setting_Suggestion_tel);
+        mContent= (EditText) findViewById(R.id.Setting_Suggestion_suggestion);
+        mDialog=new HintText_Dialog(Setting_Suggestion_Activity.this,R.style.MyDialog);
+
+        //返回
+        mReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        //发送
+        mSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.show();
+                if(!"".equals(mContent.getText().toString())) {
+                    sendMessage(mContent.getText().toString(),mPhone.getText().toString());
+                }else {
+                    HintText_Dialog hintTextDialog=new HintText_Dialog(Setting_Suggestion_Activity.this,"请您输入意见内容",
+                    "fail");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDialog.dismiss();
+                        }
+                    },2000);
+                }
+            }
+        });
+    }
+
+    private void sendMessage(String content,String phone){
+        HintText_Dialog hintTextDialog=new HintText_Dialog(Setting_Suggestion_Activity.this,"发送中...","");
+        UserFeedBack userFeedBack=new UserFeedBack();
+        userFeedBack.setAddUserId(Login_Static.myUserID);
+        userFeedBack.setContent(content);
+        userFeedBack.setLinkInfo(phone);
+        userFeedBack.setRecordTime(Time_Now.getNowTime());
+        String data=mGson.toJson(userFeedBack);
+        CLog.e("testing","反馈意见data"+data);
+        OKHttp.OkHttpPost("/User/AddUserFeedBack", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","反馈意见失败"+e.toString());
+                HintText_Dialog hintTextDialog=new HintText_Dialog(Setting_Suggestion_Activity.this,"发送失败",
+                        "fail");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDialog.dismiss();
+                    }
+                },2000);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing","反馈意见"+response);
+                try {
+                    if (Json_Utils.getCode(response)==0){
+                        HintText_Dialog hintTextDialog=new HintText_Dialog(Setting_Suggestion_Activity.this,"发送成功",
+                                "success");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                                finish();
+                            }
+                        },2000);
+                    }else {
+                        HintText_Dialog hintTextDialog=new HintText_Dialog(Setting_Suggestion_Activity.this,"发送失败",
+                                "fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },2000);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/my_OrderLogistics_item_layoutTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/my_OrderLogistics_item_content"
+            style="@style/text_ww_16_light_grey"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="50dp"
+            android:text="【城市名称】"/>
+        <TextView
+            android:id="@+id/my_OrderLogistics_item_time"
+            style="@style/text_ww_11_light_grey"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="23dp"
+            android:layout_below="@id/my_OrderLogistics_item_content"
+            android:layout_marginLeft="50dp"
+            android:text="0000-00-00 00:00"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/my_OrderLogistics_item_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_alignTop="@id/my_OrderLogistics_item_layoutTop"
+        android:layout_alignBottom="@id/my_OrderLogistics_item_layoutTop">
+        <ImageView
+            android:id="@+id/my_OrderLogistics_item_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/item_logistics_chosen"/>
+        <TextView
+            android:id="@+id/my_OrderLogistics_item_text"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_below="@id/my_OrderLogistics_item_image"
+            android:layout_centerHorizontal="true"
+            android:background="@color/text_grey_3"/>
+    </RelativeLayout>
+
+</RelativeLayout>

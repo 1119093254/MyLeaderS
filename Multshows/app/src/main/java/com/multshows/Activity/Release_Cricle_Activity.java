@@ -1,0 +1,707 @@
+package com.multshows.Activity;
+
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.multshows.Beans.ImageInfo;
+import com.multshows.Beans.Photo_ImageItem_Beans;
+import com.multshows.Beans.ShowsAdd;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Emoji_Change;
+import com.multshows.Utils.HideInputManager_Utils;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+import com.multshows.Utils.NetUtil;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Utils.Photo_Bimp;
+import com.multshows.Utils.SavePicture_toLocal_Utils;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.MyGridView;
+import com.multshows.Views.MyPicpupWindow;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import okhttp3.Call;
+
+/**
+ * 描述：发布圈子页
+ * 作者：李萧萧
+ * 时间：2016.10/3
+ */
+public class Release_Cricle_Activity extends AppCompatActivity {
+
+    @Bind(R.id.ReleaseCricleActivity)
+    TextView mReleaseCricleActivity;//发布按钮
+    @Bind(R.id.WhoSeeText)
+    TextView mWhoSeeText;//谁可以看（已隐藏）
+    @Bind(R.id.ReleaseCricle_return)
+    ImageView mReleaseCricleReturn;//返回图标
+    @Bind(R.id.my_toplayout)
+    RelativeLayout mMyToplayout;//顶部布局
+    @Bind(R.id.Release_CricleContent)
+    EditText mReleaseCricleContent;//发布内容
+    @Bind(R.id.imageCricleGridview)
+    MyGridView mImageCricleGridview;//发布图片显示
+    @Bind(R.id.CricleWhoSee)
+    RelativeLayout mCricleWhoSee;//谁可以看布局点击（已隐藏）
+    private GridAdapter adapter;//发布图片显示适配器
+    MyPicpupWindow mPopWindow;//选择照片方式弹出框
+    int flag_upload = 0;//记录上传图片个数，用于判断是否上传所有
+    Gson mGson = new Gson();
+    String Imageurl = "";//上传图片地址
+    String token;//七牛云token
+    int IsVideo = 2;//是否是视频  1 视频 2图片
+    String VideoName;//上传七牛云的视频名称
+    private File file = null;
+    Emoji_Change mEmoji_change = new Emoji_Change();//表情，匹配符替换类
+    SaveSharedPreferences mSave = new SaveSharedPreferences();
+    MyApplication mApplication;
+    private static final String FILE_PATH2 = Environment
+            .getExternalStorageDirectory().getAbsolutePath() + "/multshows/";
+    Dialog mDialog;//消息提示框
+    Uri photoUri;
+    private static final int TAKE_PICTURE = 0x000001;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_cricle_activity);
+        ButterKnife.bind(this);
+        mApplication= (MyApplication) getApplication();
+        initData();
+        //判断SD卡是否存在或可用
+        if (getSDPath() != null) {
+            file = videoRename();
+        }
+        initLister();
+    }
+
+    //初始化监听事件
+    private void initLister() {
+        mImageCricleGridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == Photo_Bimp.albumSelectBitmap.size()) {
+                    //底部弹出框
+                    //实例化MyPicPopupWindow
+                    //隐藏软键盘
+                    HideInputManager_Utils.hideInputManager(Release_Cricle_Activity.this);
+                    mPopWindow = new MyPicpupWindow(Release_Cricle_Activity.this, itemsOnClick,
+                            "拍照", "拍摄视频", "手机相册", "");
+                    //设置弹出动画效果
+                    mPopWindow.setAnimationStyle(R.style.PopupAnimation);
+                    //显示窗口  //设置layout在PopupWindow中显示的位置
+                    mPopWindow.showAtLocation(findViewById(R.id.cricle_Layout),
+                            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                } else {
+                    Intent intent = new Intent(Release_Cricle_Activity.this,
+                            Photo_Preview_Activity.class);
+                    intent.putExtra("photoPosition", 1);
+                    intent.putExtra("ID", position);
+                    startActivity(intent);
+                }
+            }
+        });
+        mCricleWhoSee.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Release_Cricle_Activity.this, Release_WhoSee_Activity.class);
+                intent.putExtra("mWhoSeeText", mWhoSeeText.getText().toString());
+                startActivityForResult(intent, 4);
+
+            }
+        });
+        //添加图片点击长按事件
+        mImageCricleGridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ImageView imageView = (ImageView) view.findViewById(R.id.item_grida_image_delete);
+                imageView.setVisibility(View.VISIBLE);
+                adapter = new GridAdapter(Release_Cricle_Activity.this, "yes");
+                mImageCricleGridview.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+    }
+
+    //为弹出窗口实现监听类
+    public View.OnClickListener itemsOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.chioce_camera:
+                    if( Photo_Bimp.tempSelectBitmap.size()!=0){
+                        if(Photo_Bimp.tempSelectBitmap.get(0).isVideo()){
+                            mDialog.show();
+                            showError("不能选择图片", 0);
+                        }
+                    }else
+                        photo();
+                    break;
+                case R.id.chioce_video:
+                    Intent intent = new Intent(Release_Cricle_Activity.this, VideoRecording_Activity.class);
+                    if( Photo_Bimp.tempSelectBitmap.size()!=0){
+                        mDialog.show();
+                        showError("不能再次选择视频", 0);
+                    }else {
+                        startActivityForResult(intent, 200);
+                    }
+                    break;
+                case R.id.chioce_photo:
+                    if( Photo_Bimp.tempSelectBitmap.size()!=0){
+                        if(Photo_Bimp.tempSelectBitmap.get(0).isVideo()){
+                            mDialog.show();
+                            showError("不能选择图片", 0);
+                        }
+                    }else{
+                        intent = new Intent(Release_Cricle_Activity.this, Photo_Album_Activity.class);
+                        intent.putExtra("userId", Login_Static.myUserID);
+                        startActivity(intent);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            mPopWindow.dismiss();
+        }
+    };
+
+    //初始化数据
+    private void initData() {
+        MySystemBarTintManage_Utils tintManageUtils = new MySystemBarTintManage_Utils();
+        tintManageUtils.setSystemBarTintManage(Release_Cricle_Activity.this, R.color.green);
+        mDialog = new HintText_Dialog(Release_Cricle_Activity.this, R.style.MyDialog);
+        mImageCricleGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
+        adapter = new GridAdapter(this,"no");
+        adapter.update();
+        mImageCricleGridview.setAdapter(adapter);
+    }
+
+
+    @OnClick({R.id.ReleaseCricleActivity, R.id.ReleaseCricle_return})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ReleaseCricleActivity:
+                String name = Login_Static.myUserID + System.currentTimeMillis() + ".mp4";
+                if(VerificationParameters()||Photo_Bimp.albumSelectBitmap.size() != 0){
+                    boolean mBoolean=true;
+                    String[] res = mReleaseCricleContent.getText().toString().split("\n");
+                    String[] res2 = mReleaseCricleContent.getText().toString().split(" ");
+                    String[] res1 = mReleaseCricleContent.getText().toString().split("\n");
+                    String[] res3 = mReleaseCricleContent.getText().toString().split(" ");
+                    CLog.e("res",res.length+"");
+                    CLog.e("res1",res1.length+"");
+                    CLog.e("res2",res2.length+"");
+                    CLog.e("res3",res3.length+"");
+                    if((res.length>3&&res2.length>=5)||(res1.length>4&&res3.length>5)){
+                        mDialog.show();
+                        showError(this.getString(R.string.noPass),0);
+                        mReleaseCricleContent.setText("");
+                        mBoolean = false;
+                    }
+                    if(mBoolean){
+                        mDialog.show();
+                        HintText_Dialog hint = new HintText_Dialog(Release_Cricle_Activity.this,this.getString(R.string.release), "");
+                        if (Photo_Bimp.albumSelectBitmap.size() != 0) {
+                            if (Photo_Bimp.albumSelectBitmap.size()>0&&Photo_Bimp.albumSelectBitmap.get(0).isVideo()) {
+                                getQiNiuToken(Photo_Bimp.albumSelectBitmap.get(0).imagePath, name);//获取taken,及上传视频
+                            } else {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        UpLoadImage();//上传图片
+                                    }
+                                }).start();
+                            }
+                        } else {
+                            setReleaseCricle();
+                        }
+                    }
+                }else {
+                    mDialog.show();
+                    showError("文字图片至少选择一项",0);
+                }
+
+
+
+                break;
+            case R.id.ReleaseCricle_return:
+                Photo_Bimp.albumSelectBitmap.clear();
+                Photo_Bimp.taskSelectBitmap.clear();
+                Photo_Bimp.tempSelectBitmap.clear();
+                HideInputManager_Utils.hideInputManager(Release_Cricle_Activity.this);
+                finish();
+                break;
+        }
+    }
+
+    /**
+     * 判断SD卡是否可用
+     */
+    public String getSDPath() {
+        File sdDir = null;
+        boolean sdCardExist = Environment.getExternalStorageState()
+                .equals(Environment.MEDIA_MOUNTED);   //判断sd卡是否存在
+        if (sdCardExist) {
+            sdDir = Environment.getExternalStorageDirectory();//获取跟目录
+        } else {
+            //Toast.makeText(Release_Cricle_Activity.this, "msg" + "SD卡不可用" + Environment.getExternalStorageState(), Toast.LENGTH_SHORT).show();
+        }
+        return sdDir.toString();
+
+    }
+
+    //上传图片封装函数
+    public void UpLoadImage() {
+        File file = null;
+            for (int i = 0; i < Photo_Bimp.albumSelectBitmap.size(); i++) {
+                try {
+
+                    file = SavePicture_toLocal_Utils.saveCacheFile(Photo_Bimp.albumSelectBitmap.get(i).getBitmap(),
+                            Login_Static.myUserID + System.currentTimeMillis() + ".png",
+                            Release_Cricle_Activity.this);
+                    byte[] bytes = NetUtil.getByte(file);
+                    int[] pic = new int[bytes.length];
+                    //加128，去掉符号位
+                    for (int a = 0; a < pic.length; a++) {
+                        pic[a] = bytes[a] & 0xff;
+                    }
+                    MyApplication myApplication = new MyApplication();
+                    ImageInfo imageInfo = new ImageInfo();
+                    imageInfo.setExt(".png");
+                    imageInfo.setFileData(pic);
+                    imageInfo.setTemp(false);
+                    imageInfo.setMaxWidth(480);
+                    imageInfo.setMaxHeight(800);
+                    String data = mGson.toJson(imageInfo);
+                    CLog.e("testing", "上传图片" + data);
+                    //上传头像图片
+                    OkHttpUtils.postString()
+                            .url(myApplication.getFileUrl())
+                            .mediaType(okhttp3.MediaType.parse("application/json"))
+                            .content(data)
+                            //.addParams("", request)
+                            .build()
+                            .execute(new StringCallback() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    CLog.e("testing", "上传图片失败：" + e.toString());
+                                    {
+                                        showError("发布圈子失败",0);
+                                    }
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+
+
+                                    try {
+                                        if (Json_Utils.getIsUploadSuc(response)) {
+                                            flag_upload++;
+                                            CLog.e("testing", "上传图片成功：" + response);
+                                        }
+                                        if (flag_upload != Photo_Bimp.albumSelectBitmap.size()) {
+                                            Imageurl = Imageurl + (Json_Utils.getMessage(response)) + ",";
+                                        } else {
+                                            Imageurl = Imageurl + Json_Utils.getMessage(response);
+                                            CLog.e("testing", "flag_upload==" + flag_upload);
+                                            setReleaseCricle();
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+    }
+
+    //发布圈子
+    public void setReleaseCricle() {
+        ShowsAdd mShowsAdd = new ShowsAdd();
+        mShowsAdd.setUserId(Login_Static.myUserID);
+        mShowsAdd.setMomId(Login_Static.myUserID);
+        mShowsAdd.setShowsType(3);
+        //mShowsAdd.setTitle(mEmoji_change.EmojiChange(mReleaseCricleContent.getText().toString()));
+        mShowsAdd.setInfos(mEmoji_change.EmojiChange(mReleaseCricleContent.getText().toString()));
+        mShowsAdd.setIsShow(1);
+        mShowsAdd.setIsOver(0);
+        mShowsAdd.setIsVideo(IsVideo);
+        if (IsVideo == 1) {
+            mShowsAdd.setVideoName(VideoName);
+        }
+        IsVideo = 2;
+        if (mWhoSeeText.getText().equals("所有人可见"))
+            mShowsAdd.setSoType(0);
+        else if (mWhoSeeText.getText().equals("好友可见"))
+            mShowsAdd.setSoType(0);
+        else if (mWhoSeeText.getText().equals("仅自己可见"))
+            mShowsAdd.setSoType(0);
+
+        if (Photo_Bimp.albumSelectBitmap.size() != 0)
+            mShowsAdd.setShowsPhoto(Imageurl);
+        String data = mGson.toJson(mShowsAdd);
+        CLog.e("data", data);
+        OKHttp.OkHttpPost("/Shows/AddShows", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                {
+                    showError("发布圈子失败",0);
+                }
+                Log.e("testing", "错误");
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing", "changeNickName:" + response);
+                flag_upload = 0;
+                try {
+                    if (Json_Utils.getCode(response) == 0) {
+                        showError("发布圈子成功",1);
+                    } else {
+                        showError("发布圈子失败",0);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            Photo_Bimp.albumSelectBitmap.clear();
+            Photo_Bimp.taskSelectBitmap.clear();
+            Photo_Bimp.tempSelectBitmap.clear();
+            finish();
+        }
+
+        return false;
+    }
+
+    //选择图片显示gridview显示图片
+    public class GridAdapter extends BaseAdapter {
+        private LayoutInflater inflater;
+        private int selectedPosition = -1;
+        private boolean shape;
+        String deleteList;
+
+        public boolean isShape() {
+            return shape;
+        }
+
+        public void setShape(boolean shape) {
+            this.shape = shape;
+        }
+
+        public GridAdapter(Context context, String sDelete) {
+            inflater = LayoutInflater.from(context);
+            deleteList = sDelete;
+        }
+
+        public void update() {
+            loading();
+        }
+
+        public int getCount() {
+            if (Photo_Bimp.albumSelectBitmap.size() == 9) {
+                return 9;
+            }
+            return (Photo_Bimp.albumSelectBitmap.size() + 1);
+        }
+
+        public Object getItem(int arg0) {
+            return null;
+        }
+
+        public long getItemId(int arg0) {
+            return 0;
+        }
+
+        public void setSelectedPosition(int position) {
+            selectedPosition = position;
+        }
+
+        public int getSelectedPosition() {
+            return selectedPosition;
+        }
+
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.adapter_releasegridview,
+                        parent, false);
+                holder = new ViewHolder();
+                holder.image = (ImageView) convertView.findViewById(R.id.item_grida_image);
+                holder.mDelete = (ImageView) convertView.findViewById(R.id.item_grida_image_delete);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            if (position == Photo_Bimp.albumSelectBitmap.size()) {
+                holder.image.setImageBitmap(BitmapFactory.decodeResource(
+                        getResources(), R.drawable.upimg_logo));
+                holder.mDelete.setVisibility(View.INVISIBLE);
+                if (position == 9) {
+                    holder.image.setVisibility(View.GONE);
+                }
+            } else {
+                holder.image.setImageBitmap(Photo_Bimp.albumSelectBitmap.get(position).getBitmap());
+                holder.mDelete.setVisibility(View.VISIBLE);
+            }
+            //点击删除事件
+            holder.mDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Photo_Bimp.tempSelectBitmap.remove(position);
+                    Photo_Bimp.albumSelectBitmap.remove(position);
+                    v.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+                }
+            });
+            return convertView;
+        }
+
+        public class ViewHolder {
+            public ImageView image;
+            public ImageView mDelete;
+        }
+
+        Handler handler = new Handler() {
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+                super.handleMessage(msg);
+            }
+        };
+
+        public void loading() {
+            new Thread(new Runnable() {
+                public void run() {
+                    while (true) {
+                        if (Photo_Bimp.max == Photo_Bimp.albumSelectBitmap.size()) {
+                            Message message = new Message();
+                            message.what = 1;
+                            handler.sendMessage(message);
+                            break;
+                        } else {
+                            Photo_Bimp.max += 1;
+                            Message message = new Message();
+                            message.what = 1;
+                            handler.sendMessage(message);
+                        }
+                    }
+                }
+            }).start();
+        }
+    }
+
+    /*
+* 生成video文件名字
+*/
+    protected File videoRename() {
+        //用系统当前时间命名
+        String fileName = new SimpleDateFormat("yyyyMMddHHmmss")
+                .format(new Date()) + ".3gp";
+        //创建文件夹
+        File out = new File(FILE_PATH2);
+        if (!out.exists()) {
+            out.mkdirs();
+        }
+
+        return new File(FILE_PATH2 + fileName);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 4:
+                if(data!=null){
+                    String chioceString = data.getExtras().getString("chioceResult");
+                    mWhoSeeText.setText(chioceString);
+                }
+                break;
+            case TAKE_PICTURE:
+                if (Photo_Bimp.albumSelectBitmap.size() < 9 && resultCode == RESULT_OK) {
+				/*String fileName = String.valueOf(System.currentTimeMillis());
+				Bitmap bm = (Bitmap) data.getExtras().get("data");
+				FileUtils.saveBitmap(bm, fileName);*/
+                    //这里开始的第二部分，获取图片的存储路径：
+                    String[] proj = {MediaStore.Images.Media.DATA};
+                    //好像是android多媒体数据库的封装接口，具体的看Android文档
+                    Cursor cursor = managedQuery(photoUri, proj, null, null, null);
+                    //按我个人理解 这个是获得用户选择的图片的索引值
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    //将光标移至开头 ，这个很重要，不小心很容易引起越界
+                    cursor.moveToFirst();
+                    //最后根据索引值获取图片路径
+                    String path = cursor.getString(column_index);
+                    Photo_ImageItem_Beans takePhoto = new Photo_ImageItem_Beans();
+                    takePhoto.setImagePath(path);
+                    Photo_Bimp.tempSelectBitmap.add(takePhoto);
+                    Photo_Bimp.albumSelectBitmap=Photo_Bimp.tempSelectBitmap;
+                }
+                break;
+        }
+    }
+    //发布结果提示
+    public void showError(String errorString, final int is) {
+        String isString=null;
+        if(is==1){
+            isString="success";
+        }
+        if(is==0){
+            isString="fail";
+        }
+        HintText_Dialog hint = new HintText_Dialog(Release_Cricle_Activity.this, errorString, isString);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //得到返回值后，2秒后加载框消失
+                mDialog.dismiss();
+                if(is==1){
+                    Photo_Bimp.albumSelectBitmap.clear();
+                    Photo_Bimp.taskSelectBitmap.clear();
+                    Photo_Bimp.tempSelectBitmap.clear();
+                    mSave.Save_PREFS(Release_Cricle_Activity.this, "intent","cricle");//标记发布成功，主页显示的fragment
+                    finish();
+                }
+            }
+        }, 1000);
+    }
+    public void photo() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        SimpleDateFormat timeStampFormat = new SimpleDateFormat(
+                "yyyy_MM_dd_HH_mm_ss");
+        String filename = timeStampFormat.format(new Date());
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, filename);
+
+        photoUri = getContentResolver().insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri);
+        startActivityForResult(intent, TAKE_PICTURE);
+    }
+    /**
+     * 验证参数函数
+     */
+    private Boolean VerificationParameters() {
+        Boolean falg=true;
+        if(mReleaseCricleContent!=null&&mReleaseCricleContent.getText().toString().equals("")){
+            falg=false;
+        }
+        return falg;
+    }
+    public void getQiNiuToken(final String path, final String url) {
+        OkHttpUtils.get().url(mApplication.getUrl() + "/service/GetQiniuUploadToken")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        JSONObject jsonObject = null;
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                JSONObject jsonArray = new JSONObject(response);
+                                token = jsonArray.getString("token");
+                                //上传视频至七牛云
+                                UploadManager uploadManager = new UploadManager();
+                                uploadManager.put(path, url, token,
+                                        new UpCompletionHandler() {
+                                            @Override
+                                            public void complete(String key, ResponseInfo info,
+                                                                 JSONObject response) {
+                                                //CLog.e("ppp", "000"+imageName+"");
+                                                if (info.statusCode == 200) {
+                                                    CLog.e("path", "" + info.isOK());
+                                                    CLog.e("path", "成功");
+                                                    CLog.e("path", url);
+                                                    VideoName = url;
+                                                    IsVideo = 1;
+                                                    UpLoadImage();
+                                                } else {
+
+                                                    CLog.e("path", "上传失败");
+                                                }
+                                            }
+                                        }, null);
+                                CLog.e("token", "" + token);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+
+    }
+}

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Add_Friends_ParentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_grey"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.multshows.Activity.AddFriends_Activity">
+
+    <RelativeLayout
+        android:id="@+id/Add_Friends_returnLayout"
+        style="@style/top_APP"
+        android:background="@drawable/layout_border_bottom1_white">
+
+        <ImageView
+            android:id="@+id/Add_Friends_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+
+        <TextView
+            android:id="@+id/Add_Friends_TopTitle"
+            style="@style/text_ww_20_text_grey_2"
+            android:layout_centerInParent="true"
+            android:text="添加好友"/>
+    </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="17dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/shape_white_1">
+
+            <ImageView
+                android:id="@+id/Add_Friends_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/money_glass"/>
+            <TextView
+                android:id="@+id/Add_Friends_Search"
+                style="@style/text_ww_13_light_grey"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:visibility="invisible"
+                android:text="搜索"/>
+            <EditText
+                android:singleLine="true"
+                android:id="@+id/Add_Friends_editText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="8dp"
+                android:layout_toRightOf="@id/Add_Friends_image"
+                android:layout_toLeftOf="@id/Add_Friends_Search"
+                android:inputType="number"
+                android:background="@null"
+                android:gravity="left|center_vertical"
+                android:hint="请输入手机号"/>
+
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/Add_Friends_ListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:scrollbars="none"
+            />
+</LinearLayout>

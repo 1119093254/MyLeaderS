@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Friends_Order_ParentsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:background="@color/background_grey"
+    tools:context="com.multshows.Activity.Friends_Order_Activity">
+    <RelativeLayout
+        android:id="@+id/Friends_Order_returnLayout"
+        style="@style/top_APP"
+        android:background="@drawable/layout_border_bottom1_white">
+        <ImageView
+            android:id="@+id/Friends_Order_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+        <TextView
+            android:id="@+id/Friends_Order_Title"
+            style="@style/text_ww_20_text_grey_2"
+            android:layout_centerInParent="true"
+            android:text="订单信息"/>
+    </RelativeLayout>
+    <com.multshows.Views.PullToRefresh
+        android:id="@+id/Friends_Order_Refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/Friends_Order_ListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:divider="@null"/>
+        <include
+            android:id="@+id/Friends_Order_No_View"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/no_view"/>
+    </com.multshows.Views.PullToRefresh>
+
+</LinearLayout>

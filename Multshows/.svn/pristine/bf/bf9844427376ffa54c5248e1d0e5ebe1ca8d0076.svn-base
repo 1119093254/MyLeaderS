@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.multshows.Activity.InvitationActivity">
+
+    <RelativeLayout
+        android:id="@+id/my_toplayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/green">
+
+        <TextView
+            android:id="@+id/idleDetail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="领秀S邀请码"
+            android:textColor="@color/white"
+            android:textSize="17sp"/>
+
+        <ImageView
+            android:id="@+id/Idle_ProduceDetails_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/index_return_arrow"/>
+
+        <ImageView
+            android:id="@+id/shareimage"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/item_share"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/my_toplayout">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/invitation_codebgimg"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="140dp"
+                    android:src="@drawable/invitation_codetext"/>
+
+                <com.multshows.Views.TextSpaceView
+                    android:id="@+id/InviteCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="170dp"
+                    android:text="2wtef"
+                    android:textColor="@color/bg_black"
+                    android:textSize="45sp"
+                    android:textStyle="bold"/>
+
+                <ImageView
+                    android:id="@+id/ShareMoney"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/InviteCode"
+                    android:layout_marginTop="50dp"
+                    android:src="@drawable/invitation_button"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:paddingBottom="42dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/icon_one"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/icon_one"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/icon_one"
+                        android:textSize="15sp"
+                        android:textColor="#FFAE00"
+                        android:layout_marginLeft="6dp"
+                        android:text="邀请好友1年内可以获得五级佣金："
+                        />
+
+                </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/icon_one"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="16dp"
+                    android:textColor="@color/white"
+                    android:text="例：A用户通过邀请码邀请 B用户，B用户邀请了C用户，C用户邀请了D用户，D用户邀请了E用户;\n可获得佣金的方式：被邀请人在app上收到他人打赏、交易物品所产生的盈利\nA用户可拿到B用户1年内在app所产生盈利的2.5%的佣金，拿到C用户1%的佣金，拿到D用户0.7%的佣金，拿到E用户0.5%的佣金，依次循环"/>
+                <RelativeLayout
+                    android:layout_marginTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/icon_tow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/icon_tow"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/icon_tow"
+                        android:textColor="#FFAE00"
+                        android:layout_marginLeft="6dp"
+                        android:text="您获得了领秀s的专属邀请码，可邀请好友一起来体验领秀s独特的育儿方式！"
+                        />
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/iocn_three"
+                        android:layout_marginLeft="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/iocn_three"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/iocn_three"
+                        android:textColor="#FFAE00"
+                        android:layout_marginLeft="6dp"
+                        android:text="点击“立即分享”按钮，或页面右上角的分享，即可将您的专属邀请码分享给QQ好友、QQ空间、微信好友、微信朋友圈、新浪微博等！"
+                        />
+
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/My_MyWallet_ParentsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_grey"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.multshows.Activity.My_MyWallet_Activity">
+
+    <RelativeLayout
+        android:id="@+id/My_MyWallet_returnLayout"
+        style="@style/top_APP"
+        android:background="@color/app_topColor">
+
+        <ImageView
+            android:id="@+id/My_MyWallet_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/index_return_arrow"/>
+
+        <TextView
+            android:id="@+id/My_MyWallet_TopTitle"
+            style="@style/text_ww_20_white"
+            android:layout_centerInParent="true"
+            android:text="我的钱包"/>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/text_green"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="22dp"
+                    android:text="我的总余额(元)"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/My_MyWallet_Balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="13dp"
+                    android:text="0.00"
+                    android:textColor="@color/white"
+                    android:textSize="59sp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginTop="36dp"
+                    android:background="@color/background_black_alight">
+
+                    <RelativeLayout
+                        android:id="@+id/My_MyWallet_Recharge"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/add_img"/>
+
+                            <TextView
+                                style="@style/text_ww_16_white"
+                                android:layout_marginLeft="8dp"
+                                android:text="充值"/>
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/My_MyWallet_Kitting"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/reduce_img"/>
+
+                            <TextView
+                                style="@style/text_ww_16_white"
+                                android:layout_marginLeft="8dp"
+                                android:text="提现"/>
+                        </LinearLayout>
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/layout_border_top1_bottom1_white"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/My_MyWallet_layout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/layout_border_bottom1_white">
+
+                    <ImageView
+                        android:id="@+id/My_MyWallet_images_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/transaction_record"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="17dp"
+                        android:layout_toRightOf="@id/My_MyWallet_images_1"
+                        android:text="交易记录"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/My_MyWallet_layout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/layout_border_bottom1_white">
+
+                    <ImageView
+                        android:id="@+id/My_MyWallet_images_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/playing_record"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="17dp"
+                        android:layout_toRightOf="@id/My_MyWallet_images_2"
+                        android:text="打赏记录"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/My_MyWallet_layout3"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/layout_border_bottom1_white">
+
+                    <ImageView
+                        android:id="@+id/My_MyWallet_images_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/item_ymdlogo"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="17dp"
+                        android:layout_toRightOf="@id/My_MyWallet_images_3"
+                        android:text="绑定一麻袋"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/My_MyWallet_layout4"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="16dp">
+
+                    <ImageView
+                        android:id="@+id/My_MyWallet_images_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/item_bankcard"/>
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="17dp"
+                        android:layout_toRightOf="@id/My_MyWallet_images_4"
+                        android:text="我的银行卡"/>
+
+                    <ImageView
+                        android:id="@+id/My_MyWallet_images_BankNumber"
+                        android:layout_width="8dp"
+                        android:layout_height="13dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/item_shipping_address_gonext"/>
+
+                    <TextView
+                        android:id="@+id/My_MyWallet_images_BankNumberText"
+                        style="@style/text_ww_16_light_grey"
+                        android:layout_marginRight="9dp"
+                        android:layout_toLeftOf="@id/My_MyWallet_images_BankNumber"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/My_MyWallet_PassWordLayout"
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/layout_border_top1_bottom1_white">
+
+                <ImageView
+                    android:id="@+id/My_MyWallet_PassWordimages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/set_password"/>
+
+                <TextView
+                    style="@style/text_ww_16_text_grey_2"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="17dp"
+                    android:layout_toRightOf="@id/My_MyWallet_PassWordimages"
+                    android:text="设置支付密码"/>
+
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/item_shipping_address_gonext"/>
+            </RelativeLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg">
+
+    <RelativeLayout
+        android:id="@+id/phoneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:layout_marginTop="67dp"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/AreaCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:text="+86"
+            android:textColor="#000000"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:id="@+id/phoneEditextImage"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:layout_toRightOf="@+id/AreaCode"
+            android:src="@drawable/item_register_chocedown"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+           android:layout_toLeftOf="@+id/ClearImage"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="5dp"
+            android:inputType="number"
+            android:singleLine="true"
+            android:layout_toRightOf="@+id/phoneEditextImage"
+            android:background="@null"
+            android:id="@+id/phoneEditext"
+            android:hint="请输入手机号"
+            android:textSize="16sp"/>
+        <ImageView
+            android:id="@+id/ClearImage"
+            android:layout_width="26dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible"
+            android:src="@drawable/icon_delete"/>
+    </RelativeLayout>
+    <Button
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/phoneLayout"
+        android:id="@+id/next"
+        android:text="下一步"
+        android:textColor="@color/text_gray"
+        android:enabled="false"
+        style="@style/btnstyle"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击下一步即阅读并同意"
+        android:layout_below="@+id/next"
+        android:layout_marginTop="33dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="11sp"
+        android:textColor="#81838E"
+        android:id="@+id/agreeText"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="《领秀S用户协议》"
+        android:layout_alignTop="@+id/agreeText"
+        android:layout_toRightOf="@+id/agreeText"
+        android:textColor="@color/green"
+        android:textSize="11sp"
+        android:id="@+id/Agreement"
+
+       />
+</RelativeLayout>

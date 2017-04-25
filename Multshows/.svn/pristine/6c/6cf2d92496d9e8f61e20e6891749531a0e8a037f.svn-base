@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ListView
+                    android:id="@+id/friends_Friend_ListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="@null"
+                    android:scrollbars="none"/>
+                <include
+                    android:id="@+id/friends_Friend_No_View"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    layout="@layout/no_view"/>
+
+                <com.multshows.Views.SideBar
+                    android:id="@+id/friends_Friend_sideBar"
+                    android:layout_width="17dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="60dp"
+                    android:layout_marginBottom="30dp"
+                    />
+            </RelativeLayout>
+</LinearLayout>

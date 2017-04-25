@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Setting_Change_ParentsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_grey"
+    android:fitsSystemWindows="true"
+    tools:context="com.multshows.Activity.Setting_Change_Activity">
+    <RelativeLayout
+        android:id="@+id/Setting_Change_topLayout"
+        style="@style/top_APP"
+        android:background="@color/green">
+        <ImageView
+            android:id="@+id/Setting_Change_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/index_return_arrow"/>
+        <TextView
+            android:id="@+id/Setting_Change_TopTitle"
+            style="@style/text_ww_20_text_grey_2"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:text="切换账号"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="忘记密码？"
+            android:id="@+id/ForgetPassword"
+            android:layout_centerVertical="true"
+            android:textSize="10sp"
+            android:textColor="@color/white"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/Setting_Change_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/Setting_Change_topLayout"/>
+
+        <RadioGroup
+            android:id="@+id/Setting_Change_Group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+        </RadioGroup>
+
+</RelativeLayout>

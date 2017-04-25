@@ -1,0 +1,319 @@
+package com.multshows.Activity;
+
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.multshows.Beans.UpdatePwdAPI;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.MomORBaby_Utils;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyEditText;
+import com.multshows.Views.MyNumber_Pop;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+
+import okhttp3.Call;
+
+/**
+ * 修改切换密码
+ */
+public class Setting_ChangePassword_2_Activity extends AppCompatActivity {
+    //控件
+    ImageView mReturn;//返回
+    RelativeLayout mReturnLayout;//顶部布局
+    LinearLayout mParentLayout;//父布局
+    TextView mTopTitle;//大标题
+    TextView mHint;//提示性文字
+    MyEditText mPassWord;//密码输入框
+    TextView mOk;//确定
+    TextView mForget;//忘记密码
+
+    private MyNumber_Pop mMyNumber_pop;
+    Dialog mDialog;
+    Gson mGson=new Gson();
+    String newPassWord="";//记录新密码
+    String oldPassWord="";//记录旧密码
+    String flag="old";//记录进行到第几步操作的标志位(old,new,again)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_setting_change_password_2);
+        MySystemBarTintManage_Utils manageUtils = new MySystemBarTintManage_Utils();
+        manageUtils.setSystemBarTintManage(Setting_ChangePassword_2_Activity.this, R.color.app_topColor);
+        initView();
+        initData();
+        initListen();
+
+    }
+
+    /**
+     * 初始化
+     */
+    private void initView() {
+        mReturn = (ImageView) findViewById(R.id.Setting_ChangePassword2_return);
+        mReturnLayout= (RelativeLayout) findViewById(R.id.Setting_ChangePassword2_returnLayout);
+        mParentLayout= (LinearLayout) findViewById(R.id.Setting_ChangePassword2_ParentLayout);
+        mTopTitle= (TextView) findViewById(R.id.Setting_ChangePassword2_TopTitle);
+        mPassWord = (MyEditText) findViewById(R.id.Setting_ChangePassword2_EditText);
+        mHint = (TextView) findViewById(R.id.Setting_ChangePassword2_Hint);
+        mOk= (TextView) findViewById(R.id.Setting_ChangePassword2_OK);
+        mForget= (TextView) findViewById(R.id.Setting_ChangePassword2_ForgetPassWord);
+
+        MomORBaby_Utils momORBabyUtils=new MomORBaby_Utils();
+        momORBabyUtils.isMomORBaby(Setting_ChangePassword_2_Activity.this,mReturnLayout,mParentLayout,
+                mReturn,mTopTitle,mOk);
+
+        mMyNumber_pop = new MyNumber_Pop(Setting_ChangePassword_2_Activity.this);
+
+        //强制不弹出软键盘
+        mPassWord.setInputType(InputType.TYPE_NULL);
+        mDialog=new HintText_Dialog(Setting_ChangePassword_2_Activity.this,R.style.MyDialog);
+    }
+
+    /**
+     * 数据处理
+     */
+    private void initData() {
+
+    }
+
+    /**
+     * 事件监听
+     */
+    private void initListen() {
+        //数字键盘监听
+        mMyNumber_pop.setNum(new MyNumber_Pop.Num() {
+            @Override
+            public void num(String text) {
+                CLog.e("testing", text);
+                mPassWord.setText(text);
+                if(text.length()==4){
+                    mMyNumber_pop.dismiss();
+                }
+            }
+        });
+        //返回
+        mReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        //忘记密码
+        mForget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Setting_ChangePassword_2_Activity.this, Login_FindPassword_Activity.class);
+                intent.putExtra("PassWordType",1);
+                startActivity(intent);
+            }
+        });
+        //弹出数字键盘
+        mPassWord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mMyNumber_pop.isShowing()) {
+                    //设置弹出动画效果
+                    mMyNumber_pop.setAnimationStyle(R.style.PopupAnimation);
+                    //显示窗口  //设置layout在PopupWindow中显示的位置
+                    mMyNumber_pop.showAtLocation(findViewById(R.id.Setting_ChangePassword2_ParentLayout),
+                            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                }
+            }
+        });
+
+            //确定
+            mOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOk.setEnabled(false);
+                    if(mPassWord.getText().toString().length()<4){
+                        mDialog.show();
+                        HintText_Dialog hint = new HintText_Dialog(Setting_ChangePassword_2_Activity.this, "密码必须为4位数", "fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //得到返回值后，2秒后加载框消失
+                                mDialog.dismiss();
+                                mOk.setEnabled(true);
+                            }
+                        }, Login_Static.hintTime);
+                    }else {
+                        if ("old".equals(flag)) {
+                            //验证旧密码
+                            oldPassWord();
+                        } else if ("new".equals(flag)) {
+                            //输入新密码
+                            newPassWord = mPassWord.getText().toString();
+                            mHint.setText("请再次输入新密码");
+                            mPassWord.setText("");
+                            //清空数字键盘文本
+                            mMyNumber_pop.setNumText();
+                            //更新步骤标志位
+                            flag = "again";
+                            mOk.setEnabled(true);
+                        } else if ("again".equals(flag)) {
+                            //再次输入新密码
+                            if (!newPassWord.equals(mPassWord.getText().toString())) {
+                                mDialog.show();
+                                HintText_Dialog hint = new HintText_Dialog(Setting_ChangePassword_2_Activity.this, "两次密码输入不一致", "fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //得到返回值后，2秒后加载框消失
+                                        mDialog.dismiss();
+                                        mOk.setEnabled(true);
+                                    }
+                                }, Login_Static.hintTime);
+                            } else {
+                                //修改密码
+                                newPassWord();
+                            }
+
+                        }
+                    }
+                }
+            });
+
+
+    }
+
+    //验证旧密码
+    private void oldPassWord(){
+        UpdatePwdAPI updatePwdAPI=new UpdatePwdAPI();
+        updatePwdAPI.setOldPwd(mPassWord.getText().toString());
+        updatePwdAPI.setAccountId(Login_Static.myUserAccount);
+        updatePwdAPI.setNewPwd(mPassWord.getText().toString());
+        updatePwdAPI.setType(2);
+        String data=mGson.toJson(updatePwdAPI);
+        CLog.e("testing",data);
+        OKHttp.OkHttpPost("/User/UpdatePwd","",data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","修改切换密码——输入旧密码验证失败"+e.toString());
+                mDialog.show();
+                HintText_Dialog hint=new HintText_Dialog(Setting_ChangePassword_2_Activity.this,"未知错误,验证失败","fail");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //得到返回值后，2秒后加载框消失
+                        mDialog.dismiss();
+                        mOk.setEnabled(true);
+                    }
+                }, Login_Static.hintTime);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing","修改切换密码——输入旧密码"+response);
+                try {
+                    if(Json_Utils.getCode(response)==1006){
+                        mDialog.show();
+                        HintText_Dialog hint=new HintText_Dialog(Setting_ChangePassword_2_Activity.this,"密码错误","fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //得到返回值后，2秒后加载框消失
+                                mDialog.dismiss();
+                                mOk.setEnabled(true);
+                            }
+                        }, Login_Static.hintTime);
+                    }else if(Json_Utils.getCode(response)==0){
+                        //输入旧密码验证成功
+                        oldPassWord=mPassWord.getText().toString();
+                        mHint.setText("请输入新密码");
+                        mPassWord.setText("");
+                        //清空数字键盘文本
+                        mMyNumber_pop.setNumText();
+                        //更新步骤标志位
+                        flag="new";
+                        mOk.setEnabled(true);
+                    }else {
+                        mDialog.show();
+                        HintText_Dialog hint=new HintText_Dialog(Setting_ChangePassword_2_Activity.this,Json_Utils.getMessage(response),"fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //得到返回值后，2秒后加载框消失
+                                mDialog.dismiss();
+                                mOk.setEnabled(true);
+                            }
+                        }, Login_Static.hintTime);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    //修改切换密码
+    private void newPassWord(){
+        UpdatePwdAPI updatePwdAPI=new UpdatePwdAPI();
+        updatePwdAPI.setOldPwd(oldPassWord);
+        updatePwdAPI.setAccountId(Login_Static.myUserAccount);
+        updatePwdAPI.setNewPwd(newPassWord);
+        updatePwdAPI.setType(2);
+        String data=mGson.toJson(updatePwdAPI);
+        CLog.e("testing","修改切换密码data:"+data);
+        OKHttp.OkHttpPost("/User/UpdatePwd","",data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","修改切换密码失败"+e.toString());
+                mDialog.show();
+                HintText_Dialog hint=new HintText_Dialog(Setting_ChangePassword_2_Activity.this,"未知错误,修改失败","fail");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //得到返回值后，2秒后加载框消失
+                        mDialog.dismiss();
+                        mOk.setEnabled(true);
+                    }
+                }, Login_Static.hintTime);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing","修改切换密码"+response);
+                try {
+                    if(Json_Utils.getCode(response)==0){
+                        //输入旧密码验证成功
+                        mDialog.show();
+                        HintText_Dialog hint=new HintText_Dialog(Setting_ChangePassword_2_Activity.this,"修改成功","success");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //得到返回值后，2秒后加载框消失
+                                mDialog.dismiss();
+                                mOk.setEnabled(true);
+                                finish();
+                            }
+                        }, Login_Static.hintTime);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+}

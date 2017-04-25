@@ -1,0 +1,163 @@
+package com.multshows.Activity;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+
+import com.multshows.Adapter.HomeFrament_Adapter;
+import com.multshows.Fragment.Home_AcyivityListMyRelease_Fragment;
+import com.multshows.Fragment.Home_AcyivityListMySignup_Fragment;
+import com.multshows.R;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+import com.multshows.Utils.SaveSharedPreferences;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+/**
+ * 描述：已发布任务列表
+ * 作者：李萧萧
+ * 时间：2016.10/8
+ */
+public class Activity_Show_Activity extends AppCompatActivity {
+
+    @Bind(R.id.Completed_return)
+    ImageView mCompletedReturn;//返回图标
+    @Bind(R.id.friends_fragment_parent)
+    LinearLayout friends_fragment_parent;//最外层布局
+    @Bind(R.id.ActivityTopLayout)
+    RelativeLayout ActivityTopLayout;//顶部布局，用于换背景颜色
+    @Bind(R.id.tasknoCompleted)
+    RadioButton mTasknoCompleted;//我创建的活动导航
+    @Bind(R.id.taskCompleted)
+    RadioButton mTaskCompleted;//我报名的活动
+    @Bind(R.id.Completed)
+    RadioGroup mCompleted;
+    @Bind(R.id.Completed_fragment_viewPager)
+    ViewPager mCompletedFragmentViewPager;
+    Home_AcyivityListMySignup_Fragment mCompleteFragment;//已完成界面
+    Home_AcyivityListMyRelease_Fragment mNoCompleteFragment;//待未完成界面
+    //工具
+    FragmentManager mFragmentManager;
+    //适配器
+    HomeFrament_Adapter mAdapter;
+    //数据集合
+    List<Fragment> mFramentList;
+    SaveSharedPreferences mSharedPreferences=new SaveSharedPreferences();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_activity_show);
+        ButterKnife.bind(this);
+        initData();
+        initListen();
+    }
+
+    @OnClick(R.id.Completed_return)
+    public void onClick() {
+        finish();
+    }
+    /**
+     * 事件监听
+     */
+    private void initListen() {
+        //RadioGroup事件监听，根据选中的不同进行viewpager界面切换
+        mCompleted.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                resetViewPager(checkedId);
+            }
+        });
+        //viewPager监听事件
+        mCompletedFragmentViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //滑动中
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                //滑动结束时
+                switch (position) {
+                    case 0:
+                        mTasknoCompleted.setChecked(true);
+                        break;
+                    case 1:
+                        mTaskCompleted.setChecked(true);
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                //滑动状态改变时（调用三次）
+            }
+        });
+    }
+    /**
+     * 功能：ViewPager监听事件
+     * 参数：无
+     * 返回：无
+     */
+    private void resetViewPager(int checkId) {
+        switch (checkId) {
+            case R.id.tasknoCompleted:
+                mCompletedFragmentViewPager.setCurrentItem(0, false);
+                break;
+            case R.id.taskCompleted:
+                mCompletedFragmentViewPager.setCurrentItem(1, false);
+                break;
+        }
+    }
+    /**
+     * 数据处理
+     */
+    private void initData() {
+        if (mSharedPreferences.Get_PREFS(Activity_Show_Activity.this, "Type").equals("baby")) {
+            mTaskCompleted.setText("我参与的活动");
+            MySystemBarTintManage_Utils tintManageUtils = new MySystemBarTintManage_Utils();
+            //tintManageUtils.setSystemBarTintManage(MainActivity.this, R.color.app_babyColor);
+            tintManageUtils.setSystemBarTintManage_noColor(Activity_Show_Activity.this);
+            ActivityTopLayout.setBackgroundResource(R.drawable.head_bgimg);
+            mCompletedReturn.setImageResource(R.drawable.return_arrow);
+            mTasknoCompleted.setTextColor(getResources().getColor(R.color.red_grey));
+            mTaskCompleted.setTextColor(getResources().getColor(R.color.red_grey));
+            mTasknoCompleted.setBackgroundResource(R.drawable.radiobtn_background_check);
+            mTaskCompleted.setBackgroundResource(R.drawable.radiobtn_background_check);
+            mTasknoCompleted.setVisibility(View.GONE);
+        }else  if (mSharedPreferences.Get_PREFS(Activity_Show_Activity.this, "Type").equals("mom")) {
+            friends_fragment_parent.setBackgroundColor(getResources().getColor(R.color.white));
+            MySystemBarTintManage_Utils tintManageUtils = new MySystemBarTintManage_Utils();
+            tintManageUtils.setSystemBarTintManage(Activity_Show_Activity.this, R.color.green);
+        }
+        mFramentList=new ArrayList<>();
+        mCompleteFragment=new Home_AcyivityListMySignup_Fragment();
+        mNoCompleteFragment=new Home_AcyivityListMyRelease_Fragment();
+        mFramentList.add(mNoCompleteFragment);
+        mFramentList.add(mCompleteFragment);
+        //初始化适配器
+        mFragmentManager = getSupportFragmentManager();
+        mAdapter = new HomeFrament_Adapter(mFragmentManager, mFramentList);
+        mCompletedFragmentViewPager.setAdapter(mAdapter);
+        if (mSharedPreferences.Get_PREFS(Activity_Show_Activity.this, "Type").equals("baby"))
+        {
+            mCompletedFragmentViewPager.setCurrentItem(1, false);
+            mTaskCompleted.setTextColor(getResources().getColor(R.color.red_grey));
+            mTaskCompleted.setBackgroundResource(R.drawable.radiobtn_background_check);
+            mTaskCompleted.setChecked(true);
+        }
+
+    }
+}

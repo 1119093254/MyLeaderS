@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat_ParentsLayouts"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_alight_2"
+    android:fitsSystemWindows="true"
+    tools:context="com.multshows.Activity.Chat_Activity">
+
+    <RelativeLayout
+        android:id="@+id/chat_TopLayout"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:background="@drawable/layout_border_bottom1_white">
+
+        <ImageView
+            android:id="@+id/chat_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/chat_title"
+                style="@style/text_ww_20_text_grey_2"
+                android:layout_marginRight="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="对方昵称"/>
+
+            <ImageView
+                android:id="@+id/chat_Voice"
+                android:layout_width="16dp"
+                android:layout_height="18dp"
+                android:src="@drawable/item_talking_quiet"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/chat_person"
+            android:layout_width="20dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/item_talking_person"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/chat_BottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/edit_grey">
+
+        <RelativeLayout
+            android:id="@+id/chat_editTextLayout"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            >
+
+            <ImageView
+                android:id="@+id/chat_Add"
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/info_addicon"
+                />
+
+            <ImageView
+                android:id="@+id/chat_Face"
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@id/chat_Add"
+                android:src="@drawable/info_face"/>
+
+            <TextView
+                android:id="@+id/chat_Send"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:paddingRight="16dp"
+                android:text="发送"
+                android:textColor="@color/text_green"
+                android:textSize="14sp"/>
+
+            <com.rockerhieu.emojicon.EmojiconEditText
+                android:id="@+id/chat_EditText"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="18dp"
+                android:layout_toLeftOf="@id/chat_Send"
+                android:layout_toRightOf="@id/chat_Face"
+                android:background="@drawable/border_9_white"
+                android:hint="输入内容..."
+                android:paddingLeft="10dp"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/chat_bottom_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chat_editTextLayout"
+            android:visibility="gone"
+            >
+
+            <FrameLayout
+                android:id="@+id/chat_bottom_fragment"
+                class="com.rockerhieu.emojicon.EmojiconsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <com.multshows.Views.PullToRefresh2
+        android:id="@+id/chat_Refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/chat_BottomLayout"
+        android:layout_below="@id/chat_TopLayout">
+
+        <ListView
+            android:id="@+id/chat_ListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:scrollbars="none"
+            />
+    </com.multshows.Views.PullToRefresh2>
+
+
+</RelativeLayout>

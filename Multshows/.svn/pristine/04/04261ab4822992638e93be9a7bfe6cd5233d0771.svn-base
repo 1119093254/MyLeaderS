@@ -1,0 +1,156 @@
+package com.multshows.Activity;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
+
+import com.multshows.Utils.BaseAppManager;
+import com.multshows.Utils.FindViewById;
+
+public abstract class BaseActivity extends AppCompatActivity {
+    private Class<?> clazz;
+    public static final int NON_CODE = -1;
+    protected static String TAG = null;
+    protected Context mContext = null;
+
+    protected void onCreate(Bundle savedInstanceState) {
+        // TODO 自动生成的方法存根
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        super.onCreate(savedInstanceState);
+        clazz = this.getClass();
+        // 加入到Activity栈
+        mContext = this;
+        TAG = this.getClass().getSimpleName();
+        BaseAppManager.getInstance().addActivity(this);
+        //finviewbyid注解
+        findViews();
+        addListeners();
+    }
+
+
+
+    //查找id
+    public abstract void findViews();
+    //监听事件
+    public abstract void addListeners();
+
+    /**
+     * startActivity
+     *
+     * @param clazz target Activity
+     */
+    protected void go(Class<? extends Activity> clazz) {
+        _goActivity(clazz, null, NON_CODE, false);
+    }
+
+    /**
+     * startActivity with bundle
+     *
+     * @param clazz  target Activity
+     * @param bundle
+     */
+    protected void go(Class<? extends Activity> clazz, Bundle bundle) {
+        _goActivity(clazz, bundle, NON_CODE, false);
+    }
+
+    /**
+     * startActivity then finish this
+     *
+     * @param clazz target Activity
+     */
+    protected void goAndFinish(Class<? extends Activity> clazz) {
+        _goActivity(clazz, null, NON_CODE, true);
+    }
+
+    /**
+     * startActivity with bundle and then finish this
+     *
+     * @param clazz  target Activity
+     * @param bundle bundle extra
+     */
+    protected void goAndFinish(Class<? extends Activity> clazz, Bundle bundle) {
+        _goActivity(clazz, bundle, NON_CODE, true);
+    }
+
+    /**
+     * startActivityForResult
+     *
+     * @param clazz
+     * @param requestCode
+     */
+    protected void goForResult(Class<? extends Activity> clazz, int requestCode) {
+        _goActivity(clazz, null, requestCode, false);
+    }
+
+    /**
+     * startActivityForResult with bundle
+     *
+     * @param clazz
+     * @param bundle
+     * @param requestCode
+     */
+    protected void goForResult(Class<? extends Activity> clazz, Bundle bundle, int requestCode) {
+        _goActivity(clazz, bundle, requestCode, false);
+    }
+
+    /**
+     * startActivityForResult then finish this
+     *
+     * @param clazz
+     * @param requestCode
+     */
+    protected void goForResultAndFinish(Class<? extends Activity> clazz, int requestCode) {
+        _goActivity(clazz, null, requestCode, true);
+    }
+
+    /**
+     * startActivityForResult with bundle and then finish this
+     *
+     * @param clazz
+     * @param bundle
+     * @param requestCode
+     */
+    protected void goForResultAndFinish(Class<? extends Activity> clazz, Bundle bundle, int requestCode) {
+        _goActivity(clazz, bundle, requestCode, true);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        BaseAppManager.getInstance().removeActivity(this);
+
+    }
+
+    /**
+     * Activity 跳转
+     *
+     * @param clazz  目标activity
+     * @param bundle 传递参数
+     * @param finish 是否结束当前activity
+     */
+    private void _goActivity(Class<? extends Activity> clazz, Bundle bundle, int requestCode, boolean finish) {
+        if (null == clazz) {
+            throw new IllegalArgumentException("you must pass a target activity where to go.");
+        }
+        Intent intent = new Intent(this, clazz);
+        if (null != bundle) {
+            intent.putExtras(bundle);
+        }
+        if (requestCode > NON_CODE) {
+            startActivityForResult(intent, requestCode);
+        } else {
+            startActivity(intent);
+        }
+        if (finish) {
+            finish();
+        }
+    }
+}

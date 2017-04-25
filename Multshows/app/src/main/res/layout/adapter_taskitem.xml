@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:id="@+id/taskTypeLayout"
+        android:visibility="gone"
+        android:background="@color/bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
+            android:text="自定义"
+            android:id="@+id/taskTypeText"
+            android:textColor="@color/text"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="81dp"
+        android:background="@color/white">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/task_image"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
+            fresco:placeholderImage="@drawable/info_photoyou"
+            />
+        <Button
+            android:text="发布任务"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@drawable/btn_closestyle"
+            android:layout_height="28dp"
+            android:textColor="@color/green"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:id="@+id/releaseTaskButton"
+            android:layout_alignParentRight="true"
+            android:layout_width="80dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+           android:layout_toRightOf="@id/task_image"
+            android:layout_toLeftOf="@id/releaseTaskButton"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="扫地"
+            android:id="@+id/task_Text"
+            android:layout_marginLeft="16dp"
+            android:textColor="@color/bg_black"
+            android:textSize="14sp"/>
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@+id/username"
+        android:layout_below="@+id/user_image"
+        android:layout_marginLeft="18dp"
+        android:background="#E1DFE0"/>
+</LinearLayout>

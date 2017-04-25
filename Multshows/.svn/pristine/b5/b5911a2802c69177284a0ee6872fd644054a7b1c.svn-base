@@ -1,0 +1,41 @@
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">领秀S</string>
+    <string name="select">%1$s/%2$s</string>
+    <string name="tab_menu_alert">提醒</string>
+    <string name="tab_menu_profile">信息</string>
+    <string name="tab_menu_pay">我的</string>
+    <string name="tab_menu_setting">设置</string>
+    <string name="mys">我的</string>
+    <string name="news">好友</string>
+    <string name="find">发现</string>
+    <string name="home">主页</string>
+    <string name="Classification">分类</string>
+    <string name="comment">评论</string>
+    <string name="pictureNum">至少选取一张图片</string>
+    <string name="NoRelease">请完善发表内容</string>
+    <string name="noPass">输入文字内容不符合要求</string>
+    <string name="release">正在发表</string>
+    <string name="replycomment">回复评论</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="findPassword">找回密码</string>
+    <string name="steuppassword">设置密码</string>
+    <string name="CompleteData">用户信息补全</string>
+    <string name="close">关闭</string>
+    <string name="finish">完成</string>
+
+    <string name="userid_found">用户信息已存在，正在跳转登录操作…</string>
+    <string name="logining">使用%s帐号登录中…</string>
+    <string name="auth_cancel">授权操作已取消</string>
+    <string name="auth_error">授权操作遇到错误，请阅读Logcat输出</string>
+    <string name="auth_complete">授权成功，正在跳转登录操作…</string>
+    <string name="if_register_needed">如果您需要注册功能…</string>
+    <string name="after_auth">一般来说第三方登录时，第三方平台已经为您完成用户身份校验，您可以放心让用户登录。\n\n但如果您需要判断用户是否为新用户，可以在授权操作完成后，将用户的信息通过字段“HashMap userInfo”携带给login方法。客户端通过“String userId”执行登录请求，如果服务端判定此userId为未注册用户，可以将userInfo发送给注册接口，获取用户在此平台上的昵称、头像等数据，然后执行注册</string>
+    <string name="ok">确定</string>
+    <string name="task">任务</string>
+    <string name="work">作品</string>
+    <string name="pleaseunlogin">请先登录</string>
+
+</resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+<RelativeLayout
+    android:id="@+id/chat_item_me_topTimeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp">
+    <TextView
+        android:id="@+id/chat_item_me_sendTime"
+        style="@style/text_ww_10_white"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shape_grey2_4"
+        android:padding="4dp"
+        android:text=""
+        />
+</RelativeLayout>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="70dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginTop="16dp">
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/chat_item_me_header"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        fresco:roundAsCircle="true"
+        fresco:placeholderImage="@drawable/info_photoyou"
+        fresco:failureImage="@drawable/info_photoyou"/>
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/chat_item_me_imageContent"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_toLeftOf="@id/chat_item_me_header"
+        />
+
+    <LinearLayout
+        android:id="@+id/chat_item_me_contextLyout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/ifno_mesend"
+        android:layout_toLeftOf="@id/chat_item_me_header">
+
+        <com.rockerhieu.emojicon.EmojiconTextView
+            android:id="@+id/chat_item_me_context"
+            style="@style/text_ww_17_white"
+            android:textIsSelectable="true"
+            android:text=""/>
+    </LinearLayout>
+   
+</RelativeLayout>
+
+</LinearLayout>

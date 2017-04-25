@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:id="@+id/ActivityDetailsLayout"
+    >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/my_toplayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/green">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="活动详情"
+                android:textColor="@color/white"
+                android:textSize="17sp"/>
+
+            <ImageView
+                android:id="@+id/Activity_return"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_centerVertical="true"
+                android:src="@drawable/index_return_arrow"/>
+
+            <TextView
+                android:id="@+id/Activity_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:visibility="gone"
+                android:text="编辑"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="#E1DFE0"/>
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bottomLayout"
+            android:layout_below="@+id/my_toplayout">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:id="@+id/activityLayout"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/ActivityDetails_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        fresco:roundAsCircle="true"
+                        fresco:placeholderImage="@drawable/info_photoyou"
+                        />
+
+                    <TextView
+                        android:id="@+id/ActivityDetails_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_toRightOf="@+id/ActivityDetails_image"
+                        android:text=""
+                        android:textColor="@color/text_black"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/ActivityDetails_username"
+                        android:layout_below="@+id/ActivityDetails_username"
+                        android:layout_marginTop="8dp"
+                        android:text=""
+                        android:textColor="@color/text"
+                        android:textSize="14sp"/>
+
+                 <!--   <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/set_more_icon"/>-->
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white">
+
+                    <TextView
+                        android:id="@+id/TitleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="15dp"
+                        android:textColor="#333333"
+                        android:textSize="14sp"
+                        />
+                    <TextView
+                        android:layout_below="@+id/TitleText"
+                        android:id="@+id/TitleDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="16dp"
+                        android:textColor="#333333"
+                        android:textSize="14sp"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="#E1DFE0"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/timeImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/activity_icontime"/>
+
+                    <TextView
+                        android:id="@+id/TimeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@+id/timeImage"
+                        android:text=""
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="#E1DFE0"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/AddressImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/activity_iconaddress"/>
+
+                    <TextView
+                        android:id="@+id/AddressText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@+id/AddressImage"
+                        android:text=""
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        />
+                </RelativeLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="#E1DFE0"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/OvertimeImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/activity_icontimeend"/>
+
+                    <TextView
+                        android:id="@+id/OverTimeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@+id/OvertimeImage"
+                        android:text=""
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        />
+                </RelativeLayout>
+
+                <com.multshows.Views.MyListView
+                    android:id="@+id/Activity_details_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:background="@color/white">
+                </com.multshows.Views.MyListView>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:id="@+id/BabyisLookLayout"
+                    android:background="@color/white">
+                    <TextView
+                        android:id="@+id/babyLook"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+
+                        android:text="宝贝可看"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        />
+                    <ImageView
+                        android:id="@+id/BabyisLook"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/switch_off"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    >
+                    <TextView
+                        android:id="@+id/personNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:text="已报名："
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/looknum"
+                        android:layout_marginRight="11dp"
+                        android:src="@drawable/item_password_visible"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:id="@+id/looknum"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:textSize="16sp"
+                        android:layout_marginRight="16dp"
+                        android:textColor="@color/text"/>
+                </RelativeLayout>
+
+                <com.multshows.Views.MyListView
+                    android:id="@+id/Activity_persondetails_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:background="@color/white">
+                </com.multshows.Views.MyListView>
+            </LinearLayout>
+
+        </ScrollView>
+
+        <RelativeLayout
+            android:id="@+id/bottomLayout"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_alignParentBottom="true"
+           >
+            <Button
+                android:id="@+id/Mysignup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@color/green"
+                android:text="我要报名"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:textSize="17sp"/>
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

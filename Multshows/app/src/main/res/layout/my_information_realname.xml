@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/background_grey"
+              android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/layout_border_top1_bottom1_white"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/layout_border_bottom1_white">
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:text="姓名 :"/>
+
+                    <EditText
+                        android:id="@+id/My_Information_RealName_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="76dp"
+                        android:background="@null"
+                        android:gravity="left|center_vertical"
+                        android:hint="请输入姓名"
+                        android:singleLine="true"
+                        android:textColorHint="@color/light_grey_2"
+                        android:textSize="16sp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="16dp">
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:text="身份证号 :"/>
+
+                    <EditText
+                        android:id="@+id/My_Information_RealName_IDCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="76dp"
+                        android:background="@null"
+                        android:digits="0123456789xyzXYZ"
+                        android:gravity="left|center_vertical"
+                        android:hint="请输入与姓名一致的身份证号"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColorHint="@color/light_grey_2"
+                        android:textSize="16sp"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/layout_border_top1_bottom1_white"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/layout_border_bottom1_white">
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:text="银行卡号 :"/>
+
+                    <EditText
+                        android:id="@+id/My_Information_RealName_bankId"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="76dp"
+                        android:background="@null"
+                        android:gravity="left|center_vertical"
+                        android:hint="请输入与身份证一致的银行卡号"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColorHint="@color/light_grey_2"
+                        android:textSize="16sp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/layout_border_bottom1_white">
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:text="手机号 :"/>
+
+                    <Button
+                        android:id="@+id/My_Information_RealName_sendCord"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="17dp"
+                        android:background="@drawable/shape_alight_green_2"
+                        android:text="发送验证码"
+                        android:textColor="@color/text_green"
+                        android:textSize="13sp"
+                        />
+
+                    <EditText
+                        android:id="@+id/My_Information_RealName_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="76dp"
+                        android:layout_marginRight="9dp"
+                        android:layout_toLeftOf="@id/My_Information_RealName_sendCord"
+                        android:background="@null"
+                        android:gravity="left|center_vertical"
+                        android:hint="预留手机号"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColorHint="@color/light_grey_2"
+                        android:textSize="16sp"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="16dp">
+
+                    <TextView
+                        style="@style/text_ww_16_text_grey_2"
+                        android:layout_centerVertical="true"
+                        android:text="验证码 :"/>
+
+                    <ImageView
+                        android:id="@+id/My_Information_RealName_delete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/icon_delete"
+                        android:visibility="invisible"/>
+
+                    <EditText
+                        android:id="@+id/My_Information_RealName_Code"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="76dp"
+                        android:layout_marginRight="9dp"
+                        android:layout_toLeftOf="@id/My_Information_RealName_delete"
+                        android:background="@null"
+                        android:gravity="left|center_vertical"
+                        android:hint="请输入短信验证码"
+                        android:singleLine="true"
+                        android:textColorHint="@color/light_grey_2"
+                        android:textSize="16sp"/>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="6dp">
+
+                <TextView
+                    style="@style/text_ww_10_grey"
+                    android:text="备注:"/>
+
+                <TextView
+                    style="@style/text_ww_10_grey"
+                    android:text="1.务必要保证输入的姓名、身份证号、卡号信息真实性与一致性\n2.一经认证则无法更改\n3.后期资金只能提现到与账户姓名相同的银行卡上\n4.建设卡不支持实名认证"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/My_Information_RealName_button"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="17dp"
+                android:layout_marginTop="38dp"
+                android:background="@drawable/shape_grey3_4"
+                android:enabled="false"
+                android:text="完 成"
+                android:textColor="@color/text_white_c"
+                android:textSize="17sp"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:id="@+id/release_activity_Layout"
+              android:background="@color/bg"
+              android:orientation="vertical"
+              android:fitsSystemWindows="true"
+              tools:context="com.multshows.Activity.Release_Activity_Activity">
+
+    <RelativeLayout
+        android:id="@+id/my_toplayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/green">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="发布活动"
+            android:textColor="@color/white"
+            android:textSize="17sp"/>
+
+        <TextView
+            android:id="@+id/releaseActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="7dp"
+            android:padding="10dp"
+            android:text="发布"
+            android:textColor="@color/white"/>
+
+        <ImageView
+            android:id="@+id/Release_return"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="7dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/index_return_arrow"/>
+    </RelativeLayout>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/lookmyActivity"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginTop="9dp"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/activityName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:text="活动名称："
+                android:textColor="@color/bg_black"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:singleLine="true"
+                android:layout_width="match_parent"
+                android:layout_marginRight="16dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:id="@+id/activityTitle"
+                android:layout_toRightOf="@+id/activityName"
+                android:background="@null"
+                android:hint="在这里写下活动名称"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginTop="9dp"
+            android:id="@+id/StartimeLayout"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/beginTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:text="开始时间:"
+                android:textColor="@color/bg_black"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="135dp"
+                android:hint="点击选择"
+                android:textColor="@color/bg_black"
+                android:id="@+id/StarTime"
+                android:textSize="17sp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:id="@+id/activityStartimeImage"
+                android:src="@drawable/item_more"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignLeft="@+id/beginTime"
+                android:layout_alignParentBottom="true"
+                android:background="@color/text_gray"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:id="@+id/StoptimeLayout"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/overTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:text="结束时间:"
+                android:textColor="@color/bg_black"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="135dp"
+                android:hint="点击选择"
+                android:textColor="@color/bg_black"
+                android:id="@+id/StopTime"
+                android:textSize="17sp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/activityStoptimeImage"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/item_more"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignLeft="@+id/overTime"
+                android:layout_alignParentBottom="true"
+                android:background="@color/text_gray"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:id="@+id/AbortLayout"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/overTime2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:text="报名截止时间:"
+                android:textColor="@color/bg_black"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="135dp"
+                android:hint="点击选择"
+                android:textColor="@color/bg_black"
+                android:id="@+id/AbortTime"
+                android:textSize="17sp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:id="@+id/activitytimeImage"
+                android:src="@drawable/item_more"/>
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+                >
+
+                <TextView
+                    android:id="@+id/Activity_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:text="活动地点:"
+                    android:textColor="@color/bg_black"
+                    android:textSize="17sp"/>
+
+
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:layout_marginLeft="135dp"
+                    android:hint="请输入活动地点"
+                    android:textColor="#000000"
+                    android:id="@+id/ActivityAddress"
+                    android:singleLine="true"
+                    android:textSize="17sp"/>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignLeft="@+id/Activity_address"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/text_gray"/>
+            </RelativeLayout>
+
+
+            <EditText
+                android:id="@+id/ActivityDetails"
+                android:layout_width="fill_parent"
+                android:layout_height="180dp"
+                android:layout_marginLeft="16dp"
+                android:background="@null"
+                android:gravity="left|top"
+                android:hint="活动详情..."
+                android:paddingTop="5dp">
+            </EditText>
+            <com.multshows.Views.MyGridView
+                android:id="@+id/noScrollgridview"
+                android:layout_width="match_parent"
+                android:layout_marginRight="16dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:horizontalSpacing="3dp"
+                android:numColumns="4"
+                android:scrollbars="none"
+                android:layout_marginBottom="10dp"
+                android:verticalSpacing="5dp" >
+            </com.multshows.Views.MyGridView>
+        </LinearLayout>
+
+        <Button
+            style="@style/btnClosestyle"
+            android:text="关闭活动"
+            android:id="@+id/closeButton"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+</ScrollView>
+
+
+
+</LinearLayout>

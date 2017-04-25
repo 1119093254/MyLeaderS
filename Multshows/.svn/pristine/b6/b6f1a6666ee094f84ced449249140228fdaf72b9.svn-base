@@ -1,0 +1,683 @@
+package com.multshows.Adapter;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Handler;
+import android.support.annotation.MainThread;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.multshows.Activity.Chat_Activity;
+import com.multshows.Activity.Login_FindPassword_Activity;
+import com.multshows.Activity.My_MyWallet_Activity;
+import com.multshows.Activity.My_Order_Editor_Activity;
+import com.multshows.Activity.My_Order_Logistics_Activity;
+import com.multshows.Activity.My_Order_SendOut_Activity;
+import com.multshows.Activity.OrderInformation_Activity;
+import com.multshows.Activity.OrderInformation_out_Activity;
+import com.multshows.Beans.ChatEvent_Model;
+import com.multshows.Beans.My_OrderList_Beans;
+import com.multshows.Beans.Order;
+import com.multshows.Beans.OrderPaymentAdd;
+import com.multshows.Beans.ShowsBase;
+import com.multshows.Beans.User;
+import com.multshows.Beans.UserBase;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Utils.SubString_Utils;
+import com.multshows.Views.Dialog_Hint;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.MyPicPopupWindow;
+import com.multshows.Views.RechangeNumber_Pop;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+
+import java.util.List;
+
+import okhttp3.Call;
+
+/**
+ * 我的订单 适配器
+ */
+public class My_OrderList_Adapter extends BaseAdapter {
+    //上下文
+    Context mContext;
+    //数据集合
+    List<Order> mList;
+    LayoutInflater mInflater;
+    int mFlag;//0 买入;1 卖出
+    RechangeNumber_Pop mNumberPop;
+    Dialog_Hint hintText_dialog;
+    Dialog mDialog;
+    Activity mActivity;
+    MyApplication mMyApplication;
+    Gson mGson=new Gson();
+    int po=0;
+
+    public My_OrderList_Adapter(Context context, Activity activity, List<Order> list, int flag) {
+        mContext = context;
+        mList = list;
+        mFlag = flag;
+        mActivity = activity;
+        mInflater = LayoutInflater.from(mContext);
+        mMyApplication= (MyApplication) mContext.getApplicationContext();
+    }
+
+    @Override
+    public int getCount() {
+        return mList.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return mList.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    class OrderListViewHolder {
+        SimpleDraweeView mPhoto;//商品展示图
+        TextView mTitle;//订单标题
+        TextView mMoney;//商品价格
+        TextView mState;//订单状态
+        TextView mCall;//联系卖家
+        TextView mCount;//数量
+         LinearLayout mChatLayout;
+        Button mClose;//关闭交易
+        Button mGive;//我要付款
+        RelativeLayout mInformation;//详情
+
+        RelativeLayout mMoneyLayout;
+        RelativeLayout mFeiLayout;
+        LinearLayout mRealMoneyLayout;
+        LinearLayout mMoneyLayout_;
+        TextView mMoneym;
+        TextView mFei;
+        TextView mRealMoney1;
+        TextView mRealMoney2;
+
+    }
+
+    @Override
+    public View getView(final int i, View view, ViewGroup viewGroup) {
+        if (mFlag == 0) {
+            //买入（我是买家联系卖家）
+            final OrderListViewHolder mViewHolder;
+            if (view == null) {
+                view = mInflater.inflate(R.layout.my_order_list_item, null);
+                mViewHolder = new OrderListViewHolder();
+                mViewHolder.mPhoto = (SimpleDraweeView) view.findViewById(R.id.My_OrderList_items_photo);
+                mViewHolder.mTitle = (TextView) view.findViewById(R.id.My_OrderList_items_title);
+                mViewHolder.mMoney = (TextView) view.findViewById(R.id.My_OrderList_items_money);
+                mViewHolder.mState = (TextView) view.findViewById(R.id.My_OrderList_items_state);
+                mViewHolder.mCall = (TextView) view.findViewById(R.id.My_OrderList_items_call);
+                mViewHolder.mClose = (Button) view.findViewById(R.id.My_OrderList_items_close);
+                mViewHolder.mChatLayout= (LinearLayout) view.findViewById(R.id.My_OrderList_items_callLayout);
+                mViewHolder.mGive = (Button) view.findViewById(R.id.My_OrderList_items_give);
+                mViewHolder.mCount= (TextView) view.findViewById(R.id.My_OrderList_items_Count);
+                mViewHolder.mInformation = (RelativeLayout) view.findViewById(R.id.My_OrderList_items_information);
+                view.setTag(mViewHolder);
+            } else {
+                mViewHolder = (OrderListViewHolder) view.getTag();
+            }
+            final Order beans = mList.get(i);
+            final UserBase sell=beans.getSeller();//卖家
+            ShowsBase show=beans.getShows();
+            //图片展示
+            if (show.getShowsPhoto()!=null && !show.getShowsPhoto().equals("null")) {
+                if(!"".equals(SubString_Utils.getPhotoUrl(show.getShowsPhoto()))){
+                    mViewHolder.mPhoto.setImageURI(Uri.parse(SubString_Utils.getImageUrl(SubString_Utils.getPhotoUrl(show.getShowsPhoto()))));
+                }else {
+                    mViewHolder.mPhoto.setImageURI(Uri.parse(""));
+                }
+            }else {
+                mViewHolder.mPhoto.setImageURI(Uri.parse(""));
+            }
+            mViewHolder.mCount.setText("x"+beans.getCount());
+            mViewHolder.mTitle.setText(show.getTitle());
+            mViewHolder.mMoney.setText(beans.getRealPrice()+"");
+            mViewHolder.mState.setText(beans.getStateName());
+            mViewHolder.mClose.setVisibility(View.VISIBLE);
+            mViewHolder.mGive.setVisibility(View.VISIBLE);
+            //订单状态 0全部 1已取消 2已拍下/待付款 3已付款/待发货 4已发货/待收货 5已收货
+            if ("待收货".equals(beans.getStateName()) || "已发货".equals(beans.getStateName())) {
+                //查看物流
+                mViewHolder.mClose.setText("查看物流");
+                mViewHolder.mClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(mContext, My_Order_Logistics_Activity.class);
+                        intent.putExtra("order",beans);
+                        mContext.startActivity(intent);
+                    }
+                });
+                //确认收货
+                mViewHolder.mGive.setText("确认收货");
+                mViewHolder.mGive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setOrderState(beans.getId(),5,i);
+                    }
+                });
+            } else if ("待付款".equals(beans.getStateName()) || "已拍下".equals(beans.getStateName())) {
+                //关闭交易
+                mViewHolder.mClose.setText("关闭交易");
+                mViewHolder.mClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        CLog.e("testing","修改订单状态id:"+beans.getId());
+                        setOrderState(beans.getId(),1,i);
+                    }
+                });
+                //我要付款
+                mViewHolder.mGive.setText("我要付款");
+                mViewHolder.mGive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mViewHolder.mGive.setEnabled(false);
+                        getUser(mViewHolder.mGive,beans.getId(),i,beans.getRealPrice());
+
+                    }
+                });
+            } else if("已付款".equals(beans.getStateName()) || "待发货".equals(beans.getStateName())){
+                //mViewHolder.mClose.setVisibility(View.GONE);
+                //关闭交易
+                mViewHolder.mClose.setText("关闭交易");
+                mViewHolder.mClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        CLog.e("testing","修改订单状态id:"+beans.getId());
+                        setOrderState(beans.getId(),1,i);
+                    }
+                });
+                //我要付款
+                mViewHolder.mGive.setText("提醒发货");
+                mViewHolder.mGive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mViewHolder.mGive.setEnabled(false);
+                        sendNotic(mViewHolder.mGive,beans.getId());
+
+                    }
+                });
+            }else {
+                mViewHolder.mClose.setVisibility(View.GONE);
+                mViewHolder.mGive.setVisibility(View.GONE);
+            }
+            mViewHolder.mInformation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, OrderInformation_Activity.class);
+                    intent.putExtra("orderId",beans.getId());
+                    intent.putExtra("position",i);
+                    mContext.startActivity(intent);
+                }
+            });
+            //联系卖家
+            mViewHolder.mChatLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(mContext, Chat_Activity.class);
+                    intent.putExtra("userId",sell.getUserId());
+                    mContext.startActivity(intent);
+                }
+            });
+
+        } else if (mFlag == 1) {
+            OrderListViewHolder mViewHolder;
+            if (view == null) {
+                view = mInflater.inflate(R.layout.my_order_list_item, null);
+                mViewHolder = new OrderListViewHolder();
+                mViewHolder.mPhoto = (SimpleDraweeView) view.findViewById(R.id.My_OrderList_items_photo);
+                mViewHolder.mTitle = (TextView) view.findViewById(R.id.My_OrderList_items_title);
+                mViewHolder.mMoney = (TextView) view.findViewById(R.id.My_OrderList_items_money);
+                mViewHolder.mState = (TextView) view.findViewById(R.id.My_OrderList_items_state);
+                mViewHolder.mCall = (TextView) view.findViewById(R.id.My_OrderList_items_call);
+                mViewHolder.mClose = (Button) view.findViewById(R.id.My_OrderList_items_close);
+                mViewHolder.mGive = (Button) view.findViewById(R.id.My_OrderList_items_give);
+                mViewHolder.mCount= (TextView) view.findViewById(R.id.My_OrderList_items_Count);
+                mViewHolder.mChatLayout= (LinearLayout) view.findViewById(R.id.My_OrderList_items_callLayout);
+                mViewHolder.mInformation = (RelativeLayout) view.findViewById(R.id.My_OrderList_items_information);
+                mViewHolder.mMoneyLayout= (RelativeLayout) view.findViewById(R.id.My_OrderList_items_moneymLayout);
+                mViewHolder.mMoneyLayout_= (LinearLayout) view.findViewById(R.id.My_OrderList_items_moneyLayout);
+                mViewHolder.mFeiLayout= (RelativeLayout) view.findViewById(R.id.My_OrderList_items_moneyFeiLayout);
+                mViewHolder.mRealMoneyLayout= (LinearLayout) view.findViewById(R.id.My_OrderList_items_RealMoneyLayout);
+                mViewHolder.mMoneym = (TextView) view.findViewById(R.id.My_OrderList_items_moneym);
+                mViewHolder.mFei = (TextView) view.findViewById(R.id.My_OrderList_items_moneyFei);
+                mViewHolder.mRealMoney1 = (TextView) view.findViewById(R.id.My_OrderList_items_Realmoney1);
+                mViewHolder.mRealMoney2 = (TextView) view.findViewById(R.id.My_OrderList_items_Realmoney2);
+                view.setTag(mViewHolder);
+            } else {
+                mViewHolder = (OrderListViewHolder) view.getTag();
+            }
+            final Order beans = mList.get(i);
+            final UserBase buyer=beans.getBuyer();//买家
+            ShowsBase show=beans.getShows();
+            //商品图片
+            if (show.getShowsPhoto()!=null && !"null".equals(show.getShowsPhoto())) {
+                if(!"".equals(SubString_Utils.getPhotoUrl(show.getShowsPhoto()))){
+                    mViewHolder.mPhoto.setImageURI(Uri.parse(SubString_Utils.getImageUrl(SubString_Utils.getPhotoUrl(show.getShowsPhoto()))));
+                }else {
+                    mViewHolder.mPhoto.setImageURI(Uri.parse(""));
+                }
+            }else {
+                mViewHolder.mPhoto.setImageURI(Uri.parse(""));
+            }
+
+            //布局
+            mViewHolder.mMoneyLayout_.setVisibility(View.GONE);
+            mViewHolder.mMoneyLayout.setVisibility(View.VISIBLE);
+            mViewHolder.mFeiLayout.setVisibility(View.VISIBLE);
+            mViewHolder.mRealMoneyLayout.setVisibility(View.VISIBLE);
+            mViewHolder.mMoneym.setText("¥"+beans.getRealPrice());
+            mViewHolder.mFei.setText("-¥"+beans.getTransFee());
+            double real=beans.getRealPrice()-beans.getTransFee();
+            String[] sMoney=(real+"").split("\\.");
+            if(sMoney.length==2) {
+                mViewHolder.mRealMoney1.setText("¥"+sMoney[0]);
+                mViewHolder.mRealMoney2.setText("."+sMoney[1]);
+            }else if(sMoney.length!=0){
+                mViewHolder.mRealMoney1.setText("¥"+sMoney[0]);
+            }
+
+            mViewHolder.mCount.setText("x"+beans.getCount());
+            mViewHolder.mTitle.setText(show.getTitle());
+            //mViewHolder.mMoney.setText(beans.getRealPrice()+"");//真实价格（包含运费）
+            mViewHolder.mState.setText(beans.getStateName());
+            mViewHolder.mClose.setVisibility(View.VISIBLE);
+            mViewHolder.mGive.setVisibility(View.VISIBLE);
+            mViewHolder.mCall.setText("联系买家");
+            //订单状态 0全部 1已取消 2已拍下/待付款 3已付款/待发货 4已发货/待收货 5已收货
+            if ("待发货".equals(beans.getStateName())||"已付款".equals(beans.getStateName())) {
+                //关闭交易
+                mViewHolder.mClose.setText("关闭交易");
+                mViewHolder.mClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setOrderState(beans.getId(),1,i);
+                    }
+                });
+                //发货
+                mViewHolder.mGive.setText("发货");
+                mViewHolder.mGive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        po=i;
+                        Intent intent = new Intent(mContext, My_Order_SendOut_Activity.class);
+                        intent.putExtra("orderBean",beans);
+                        intent.putExtra("position",i);
+                        mContext.startActivity(intent);
+                    }
+                });
+            } else if ("待付款".equals(beans.getStateName()) || "已拍下".equals(beans.getStateName())) {
+                //关闭交易
+                mViewHolder.mClose.setText("关闭交易");
+                mViewHolder.mClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setOrderState(beans.getId(),1,i);
+                    }
+                });
+                //编辑
+                mViewHolder.mGive.setText("编辑");
+                mViewHolder.mGive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        po=i;
+                        Intent intent = new Intent(mContext, My_Order_Editor_Activity.class);
+                        intent.putExtra("orderBean",beans);
+                        intent.putExtra("position",i);
+                        mContext.startActivity(intent);
+                    }
+                });
+            }else if("已发货".equals(beans.getStateName())||"待收货".equals(beans.getStateName())){
+                mViewHolder.mClose.setVisibility(View.GONE);
+                //查看物流
+                mViewHolder.mGive.setText("查看物流");
+                mViewHolder.mGive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(mContext, My_Order_Logistics_Activity.class);
+                        intent.putExtra("order",beans);
+                        mContext.startActivity(intent);
+                    }
+                });
+            } else {
+                mViewHolder.mClose.setVisibility(View.GONE);
+                mViewHolder.mGive.setVisibility(View.GONE);
+            }
+            mViewHolder.mInformation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, OrderInformation_out_Activity.class);
+                    intent.putExtra("orderId",beans.getId());
+                    intent.putExtra("position",i);
+                    mContext.startActivity(intent);
+                }
+            });
+            //联系买家
+            mViewHolder.mChatLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(mContext, Chat_Activity.class);
+                    intent.putExtra("userId",buyer.getUserId());
+                    mContext.startActivity(intent);
+                }
+            });
+        }
+        return view;
+    }
+
+
+    //修改订单状态
+    private void setOrderState(String id, final int state, final int position){
+        CLog.e("testing","修改订单状态"+id+":::"+state);
+        OkHttpUtils.get()
+                .url(mMyApplication.getUrl()+"/Order/ChangeOrderState")
+                .addParams("orderId",id)
+                .addParams("state",state+"")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","修改订单状态失败"+e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","修改订单状态"+response);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                if(state==1) {
+                                    mList.get(position).setState(1);//"已取消"
+                                    mList.get(position).setStateName("已取消");
+                                    notifyDataSetChanged();
+                                }else if(state==5){
+                                    mList.get(position).setState(5);//"已完成"
+                                    mList.get(position).setStateName("已完成");
+                                    notifyDataSetChanged();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    /**
+     * 验证支付密码
+     */
+    private void isRecharge(String pwd, final String orderID, final int position){
+        OkHttpUtils.get().url(mMyApplication.getUrl()+"/User/IsCheckPayPassword")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("pwd",pwd)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","验证支付密码失败"+e.toString());
+                        HintText_Dialog mTextDialog=new HintText_Dialog(mContext,
+                                "网络异常","fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },Login_Static.hintTime);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","验证支付密码"+response);
+                        try {
+                            if(Integer.parseInt(Json_Utils.getTemplate(response))==1){
+                                //正确时调用——付款
+                                sendMoney(orderID,position);
+
+                            }else {
+                                //错误时执行——
+                                mDialog.dismiss();
+                                hintText_dialog = new Dialog_Hint(mContext
+                                        , 0, "您的输入密码不正确,是否重新输入?", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mNumberPop.setNumText();
+                                        hintText_dialog.dismiss();
+                                    }
+                                });
+                                hintText_dialog.show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+    //付款接口
+    private void sendMoney(String orderID, final int position){
+        CLog.e("testing","orderID:"+orderID);
+        OkHttpUtils.get().url(mMyApplication.getUrl()+"/Order/ToPayByOrderId")
+                .addParams("orderId",orderID)
+                .addParams("type","1")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","付款失败"+e.toString());
+                        HintText_Dialog mTextDialog=new HintText_Dialog(mContext,
+                                "网络异常","fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },Login_Static.hintTime);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","付款"+response);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                HintText_Dialog mTextDialog=new HintText_Dialog(mContext,
+                                        "支付成功","success");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDialog.dismiss();
+                                        mList.get(position).setState(3);//"已取消"
+                                        mList.get(position).setStateName("已付款");
+                                        mNumberPop.setNumText();
+                                        mNumberPop.dismiss();
+                                        notifyDataSetChanged();
+                                    }
+                                },Login_Static.hintTime);
+                            }else {
+                                HintText_Dialog mTextDialog=new HintText_Dialog(mContext,
+                                        Json_Utils.getMessage(response),"fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDialog.dismiss();
+                                    }
+                                },Login_Static.hintTime);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+
+    /**
+     * 获取个人信息数据
+     */
+    private void getUser(final Button mButton, final String Uid, final int position, final double price) {
+        OkHttpUtils.get().url(mMyApplication.getUrl() + "/User/GetUser")
+                .addParams("userid", Login_Static.myUserID)
+                .addParams("targetuserid", "0")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing", "个人信息 失败" + e.toString());
+                        mButton.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onResponse(String response, final int id) {
+                        mButton.setEnabled(true);
+                        try {
+                            CLog.e("testing", "个人信息：" + Json_Utils.getTemplate(response));
+                            if (Json_Utils.getCode(response) == 0) {
+                                User mUser = mGson.fromJson(Json_Utils.getTemplate(response), User.class);
+                                if("".equals(mUser.getTogglePassword())){
+                                    //没设置
+                                    hintText_dialog = new Dialog_Hint(mContext, 0,
+                                            "您还没有设置支付密码,是否前往设置?", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            hintText_dialog.dismiss();
+                                            Intent intent = new Intent(mContext, Login_FindPassword_Activity.class);
+                                            intent.putExtra("PassWordType", 2);
+                                            mContext.startActivity(intent);
+                                        }
+                                    });
+                                    hintText_dialog.show();
+                                }else if(mUser.getBalance()<price){
+                                    //没设置
+                                    hintText_dialog = new Dialog_Hint(mContext, 0,
+                                            "您的余额已不足,是否前往充值?", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            hintText_dialog.dismiss();
+                                            Intent intent = new Intent(mContext, My_MyWallet_Activity.class);
+                                            mContext.startActivity(intent);
+                                        }
+                                    });
+                                    hintText_dialog.show();
+                                }else {
+                                    mNumberPop=new RechangeNumber_Pop(mActivity,price+"");
+                                    //设置弹出动画效果
+                                    mNumberPop.setAnimationStyle(R.style.PopupAnimation);
+                                    //显示窗口  //设置layout在PopupWindow中显示的位置
+                                    mNumberPop.showAtLocation(mActivity.findViewById(R.id.My_OrderList_ParentsLayout),
+                                            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                                    mNumberPop.setNum(new RechangeNumber_Pop.Num() {
+                                        @Override
+                                        public void num(String text) {
+                                            CLog.e("testing", text);
+                                            mDialog=new HintText_Dialog(mContext,R.style.MyDialog);
+                                            mDialog.show();
+                                            HintText_Dialog mTextDialog=new HintText_Dialog(mContext,
+                                                    "支付中...","");
+                                            //判断密码是否正确
+                                            isRecharge(text,Uid,position);
+
+                                        }
+                                    });
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    /**
+     * 提醒发货
+     */
+    private void sendNotic(final Button mButton, String OrderID){
+        mDialog=new HintText_Dialog(mContext,R.style.MyDialog);
+        OkHttpUtils.get().url(mMyApplication.getUrl()+"/Order/RemindOrderSend")
+                .addParams("orderId",OrderID)//订单id
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","提醒发货失败"+e.toString());
+                        mButton.setEnabled(true);
+                        mDialog.show();
+                        HintText_Dialog mhit=new HintText_Dialog(mContext,"网络异常","fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },Login_Static.hintTime);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","提醒发货"+response);
+                        mButton.setEnabled(true);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                if("0".equals(Json_Utils.getTemplate(response))){
+                                    //原先还未提醒
+                                    mDialog.show();
+                                    HintText_Dialog mhit=new HintText_Dialog(mContext,"提醒成功","success");
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mDialog.dismiss();
+                                        }
+                                    },Login_Static.hintTime);
+                                }else {
+                                    //原先已提醒
+                                    mDialog.show();
+                                    HintText_Dialog mhit=new HintText_Dialog(mContext,"今日已提醒,请勿重复提醒","fail");
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mDialog.dismiss();
+                                        }
+                                    },Login_Static.hintTime);
+                                }
+                            }else {
+                                mDialog.show();
+                                HintText_Dialog mhit=new HintText_Dialog(mContext,Json_Utils.getMessage(response),"fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDialog.dismiss();
+                                    }
+                                },Login_Static.hintTime);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+}

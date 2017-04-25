@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/border_grey"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:id="@+id/My_Fragment_lookTask_Layout"
+        style="@style/Layout_m_49_white"
+        android:background="@color/white">
+
+        <TextView
+            style="@style/text_ww_16_text_grey_2"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="32dp"
+            android:text="查看已发布的任务"
+            android:textColor="@color/bg_black"
+            android:textSize="17sp"/>
+
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_height="13dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/item_shipping_address_gonext"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#E1DFE0"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/leftLayout"
+            android:layout_width="90dp"
+            android:layout_height="match_parent">
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <RadioGroup
+                    android:id="@+id/Completed"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                </RadioGroup>
+            </ScrollView>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:background="#E1DFE0"/>
+        </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/taskList_DIY"
+                    android:scrollbars="none"
+                    android:divider="@null"
+                    android:background="@color/white"/>
+
+                <!--<com.multshows.Views.MyListView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/taskList_Home"
+                    android:scrollbars="none"
+                    android:divider="@null"
+                    android:background="@color/white"/>
+
+
+                <com.multshows.Views.MyListView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/taskList_Love"
+                    android:scrollbars="none"
+                    android:divider="@null"
+                    android:background="@color/white"/>-->
+            </LinearLayout>
+
+
+
+    </LinearLayout>
+</LinearLayout>

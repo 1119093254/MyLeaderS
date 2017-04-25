@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/green">
+
+        <RadioGroup
+            android:id="@+id/find_Group"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/find_RadioBtn1"
+                android:layout_width="74dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="任务"
+                android:textColor="@drawable/text_change_orange"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"/>
+
+            <RadioButton
+                android:id="@+id/find_RadioBtn2"
+                android:layout_width="74dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:button="@null"
+                android:gravity="center"
+                android:text="闲置"
+                android:textColor="@drawable/text_change_orange"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"/>
+
+            <RadioButton
+                android:id="@+id/find_RadioBtn3"
+                android:layout_width="74dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:button="@null"
+                android:gravity="center"
+                android:text="活动"
+                android:textColor="@drawable/text_change_orange"
+                android:textSize="15sp"/>
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#E1DFE0"/>
+    </RelativeLayout>
+
+    <com.multshows.Views.CustomViewPager
+        android:id="@+id/find_viewpage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+</LinearLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/My_OrderList_ParentsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:background="@color/background_grey"
+    tools:context="com.multshows.Activity.My_OrderList_Activity">
+    <RelativeLayout
+        android:id="@+id/My_OrderList_returnLayout"
+        style="@style/top_APP"
+        android:background="@drawable/layout_border_bottom1_white">
+        <ImageView
+            android:id="@+id/My_OrderList_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+        <RadioGroup
+            android:id="@+id/My_OrderList_radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/My_OrderList_Layout1"
+                android:layout_width="58dp"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="买入"
+                android:textColor="@drawable/text_change_orange"
+                android:textSize="17sp"/>
+
+            <RadioButton
+                android:id="@+id/My_OrderList_Layout2"
+                android:layout_width="58dp"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:gravity="center"
+                android:text="卖出"
+                android:textColor="@drawable/text_change_orange"
+                android:textSize="17sp"/>
+        </RadioGroup>
+    </RelativeLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/My_OrderList_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+</LinearLayout>

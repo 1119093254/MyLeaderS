@@ -1,0 +1,110 @@
+package com.multshows.Views.NineGridview;
+
+import java.io.Serializable;
+
+/**
+ * ================================================
+ * 作    者：廖子尧
+ * 版    本：1.0
+ * 创建日期：2016/3/21
+ * 描    述：
+ * 修订历史：
+ * ================================================
+ */
+public class ImageInfo implements Serializable {
+    public String thumbnailUrl;
+    public String bigImageUrl;
+    public int imageViewHeight;
+    public int imageViewWidth;
+    public int imageViewX;
+    public int imageViewY;
+    public int IsVideo;//是否是视频  1 视频 2图片
+    public String VideoName;//视频名称
+    public String workId="";//作品id，用来查看大图增加其浏览量
+
+    public int getIsVideo() {
+        return IsVideo;
+    }
+
+    public void setIsVideo(int isVideo) {
+        IsVideo = isVideo;
+    }
+
+    public String getVideoName() {
+        return VideoName;
+    }
+
+    public void setVideoName(String videoName) {
+        VideoName = videoName;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getBigImageUrl() {
+        return bigImageUrl;
+    }
+
+    public void setBigImageUrl(String bigImageUrl) {
+        this.bigImageUrl = bigImageUrl;
+    }
+
+    public int getImageViewHeight() {
+        return imageViewHeight;
+    }
+
+    public void setImageViewHeight(int imageViewHeight) {
+        this.imageViewHeight = imageViewHeight;
+    }
+
+    public int getImageViewWidth() {
+        return imageViewWidth;
+    }
+
+    public void setImageViewWidth(int imageViewWidth) {
+        this.imageViewWidth = imageViewWidth;
+    }
+
+    public int getImageViewX() {
+        return imageViewX;
+    }
+
+    public void setImageViewX(int imageViewX) {
+        this.imageViewX = imageViewX;
+    }
+
+    public int getImageViewY() {
+        return imageViewY;
+    }
+
+    public void setImageViewY(int imageViewY) {
+        this.imageViewY = imageViewY;
+    }
+
+    public String getWorkId() {
+        return workId;
+    }
+
+    public void setWorkId(String workId) {
+        this.workId = workId;
+    }
+
+    @Override
+    public String toString() {
+        return "ImageInfo{" +
+                "thumbnailUrl='" + thumbnailUrl + '\'' +
+                ", bigImageUrl='" + bigImageUrl + '\'' +
+                ", imageViewHeight=" + imageViewHeight +
+                ", imageViewWidth=" + imageViewWidth +
+                ", imageViewX=" + imageViewX +
+                ", imageViewY=" + imageViewY +
+                ", IsVideo=" + IsVideo +
+                ", VideoName='" + VideoName + '\'' +
+                '}';
+    }
+}

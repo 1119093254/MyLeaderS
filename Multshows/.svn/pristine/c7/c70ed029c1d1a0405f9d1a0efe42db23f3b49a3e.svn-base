@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:id="@+id/Group_Add_ParentsLayout"
+              android:background="@color/background_grey"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/Group_Add_returnLayout"
+        style="@style/top_APP"
+        android:background="@drawable/layout_border_bottom1_white">
+
+        <ImageView
+            android:id="@+id/Group_Add_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+
+        <TextView
+            android:id="@+id/Group_Add_TopTitle"
+            style="@style/text_ww_20_text_grey_2"
+            android:layout_centerInParent="true"
+            android:text="选择联系人"/>
+
+        <TextView
+            android:id="@+id/Group_Add_Number"
+            style="@style/text_ww_16_black"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:text="确定(0)"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/Group_Add_TopLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/button_grey"
+        >
+
+        <!--android:cacheColorHint="#00000000"
+                        android:columnWidth="108dip"
+                        android:horizontalSpacing="1.0dip"
+                        android:listSelector="#00000000"
+                        android:verticalSpacing="1.0dip"-->
+        <HorizontalScrollView
+            android:id="@+id/Group_Add_ScrollView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                >
+                <LinearLayout
+                    android:id="@+id/liear"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    >
+                    <GridView
+                        android:id="@+id/Group_Add_MyGridView"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:columnWidth="120dp"
+                        android:gravity="center"
+                        android:horizontalSpacing="5dp"
+                        android:numColumns="auto_fit"
+                        android:transcriptMode="alwaysScroll"
+                         >
+                    </GridView>
+                </LinearLayout>
+            </FrameLayout>
+        </HorizontalScrollView>
+
+
+        <RelativeLayout
+            android:id="@+id/Group_Add_SearchLayout"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_toRightOf="@id/Group_Add_ScrollView"
+            android:background="@drawable/border_4_grey_1">
+
+            <ImageView
+                android:id="@+id/Group_Add_serchImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/money_glass"
+                />
+
+            <EditText
+                android:id="@+id/Group_Add_searchText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                android:layout_toRightOf="@id/Group_Add_serchImage"
+                android:background="@null"
+                android:hint="搜索"/>
+        </RelativeLayout>
+        <!--<android.support.v7.widget.RecyclerView
+            android:id="@+id/Group_Add_imageLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/Group_Add_SearchLayout"
+            android:scrollbars="none"/>-->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/friends_Friend_ListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:scrollbars="none"/>
+
+        <include
+            android:id="@+id/friends_Friend_No_View"
+            layout="@layout/no_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.multshows.Views.SideBar
+            android:id="@+id/friends_Friend_sideBar"
+            android:layout_width="17dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="60dp"
+            />
+    </RelativeLayout>
+</LinearLayout>

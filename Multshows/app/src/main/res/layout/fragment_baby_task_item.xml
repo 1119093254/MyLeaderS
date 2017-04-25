@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/fragment_BabyTask_Item_ParentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background_grey"
+    >
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/fragment_BabyTask_Item_Parents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:failureImage="@drawable/info_photoyou"
+        fresco:failureImageScaleType="centerCrop"
+        fresco:placeholderImage="@drawable/info_photoyou"
+        fresco:placeholderImageScaleType="centerCrop"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="17dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/fragment_BabyTask_Item_ContentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/fragment_BabyTask_Item_Header"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                fresco:failureImage="@drawable/info_photoyou"
+                fresco:placeholderImage="@drawable/info_photoyou"
+                fresco:roundAsCircle="true"/>
+
+            <LinearLayout
+                android:id="@+id/fragment_BabyTask_Item_contentLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="13dp"
+                android:background="@drawable/chat_bubble"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/fragment_BabyTask_Item_Header">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/icon_voice"/>
+                <TextView
+                    android:id="@+id/fragment_BabyTask_Item_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="9dp"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+            
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fragment_BabyTask_Item_ImageLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            >
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/fragment_BabyTask_Item_Header2"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                fresco:failureImage="@drawable/info_photoyou"
+                fresco:placeholderImage="@drawable/info_photoyou"
+                fresco:roundAsCircle="true"/>
+
+            <RelativeLayout
+                android:layout_width="150dp"
+                android:layout_height="110dp"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/fragment_BabyTask_Item_Header2">
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/fragment_BabyTask_Item_Vodio"
+                    android:layout_width="150dp"
+                    android:layout_height="110dp"
+                    fresco:actualImageScaleType="centerCrop"
+                    fresco:failureImage="@drawable/info_photoyou"
+                    fresco:failureImageScaleType="centerCrop"
+                    fresco:placeholderImage="@drawable/info_photoyou"
+                    fresco:placeholderImageScaleType="centerCrop"
+                    fresco:roundedCornerRadius="4dp"/>
+                <ImageView
+                    android:id="@+id/fragment_BabyTask_Item_VodioHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    android:src="@drawable/icon_playpic"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/fragment_BabyTask_Item_Anim01"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="45dp"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/task_img02"/>
+
+    <ImageView
+        android:id="@+id/fragment_BabyTask_Item_TaskImage01"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="14dp"
+        android:src="@drawable/task_img01"/>
+    <!--上下移动-->
+    <RelativeLayout
+        android:id="@+id/fragment_BabyTask_Item_Anim05Layout"
+        android:layout_width="155dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="14dp"
+        android:visibility="gone"
+        >
+        <ImageView
+            android:id="@+id/fragment_BabyTask_Item_Anim05"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/task_img03"/>
+        </RelativeLayout>
+    <!--渐显-->
+    <RelativeLayout
+        android:id="@+id/fragment_BabyTask_Item_Anim04Layout"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="14dp"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:id="@+id/fragment_BabyTask_Item_Anim04"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/task_img06"/>
+        <TextView
+            android:id="@+id/fragment_BabyTask_Item_hint_new"
+            style="@style/text_ww_14_white"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:text="累计坚持0天"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_BabyTask_Item_TextLayout"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="14dp"
+        >
+
+        <TextView
+            android:id="@+id/fragment_BabyTask_Item_hint_old"
+            style="@style/text_ww_14_white"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:text="累计坚持0天"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_BabyTask_Item_TASK02"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="14dp"
+       android:visibility="gone"
+        >
+
+        <com.multshows.Views.DrawHookView
+            android:id="@+id/fragment_BabyTask_Item_Anim03"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_BabyTask_Item_TASK01"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="14dp"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                style="@style/text_ww_20_white"
+                android:text="¥"/>
+
+            <TextView
+                android:id="@+id/fragment_BabyTask_Item_money1"
+                style="@style/text_ww_40_white"
+                android:text="0"/>
+
+            <TextView
+                android:id="@+id/fragment_BabyTask_Item_money2"
+                style="@style/text_ww_20_white"
+                android:text=".00"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/fragment_BabyTask_Item_Anim02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="6dp"
+            android:src="@drawable/task_fingerimg"/>
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp">
+
+        <TextView
+            android:id="@+id/fragment_BabyTask_Item_Title"
+            style="@style/text_ww_16_black"
+            android:textColor="@color/yellow"
+            android:layout_centerInParent="true"
+            android:text=""/>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/friends_fragment_parent"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:fitsSystemWindows="true"
+              android:background="@color/background_grey"
+              android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:id="@+id/Completed_returnLayout"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:background="@drawable/layout_border_bottom1_alightwhite"
+        >
+
+        <ImageView
+            android:id="@+id/Completed_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+
+        <RadioGroup
+            android:id="@+id/Completed"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/tasknoCompleted"
+                android:layout_width="116dp"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="待完成的任务"
+                android:textColor="@drawable/text_change_orange"
+                android:textSize="17sp"/>
+
+            <RadioButton
+                android:id="@+id/taskCompleted"
+                android:layout_width="116dp"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:gravity="center"
+                android:text="已完成的任务"
+                android:textColor="@drawable/text_change_orange"
+                android:textSize="17sp"/>
+        </RadioGroup>
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/Completed_fragment_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</LinearLayout>

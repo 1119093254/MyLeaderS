@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/Release_ParrentLayout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg"
+              android:orientation="vertical"
+              android:fitsSystemWindows="true"
+              tools:context="com.multshows.Activity.Release_Activity_Activity">
+
+    <RelativeLayout
+        android:id="@+id/Release_ReturnLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/green">
+
+        <TextView
+            android:id="@+id/Release_TopTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="发布任务"
+            android:textColor="@color/white"
+            android:textSize="17sp"/>
+
+        <TextView
+            android:id="@+id/Release_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="7dp"
+            android:padding="10dp"
+            android:text="发布"
+            android:textColor="@color/white"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/text_gray"/>
+
+        <ImageView
+            android:id="@+id/Release_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+            android:layout_marginLeft="7dp"
+            android:src="@drawable/index_return_arrow"/>
+    </RelativeLayout>
+
+    <com.multshows.Views.MyScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/layout_border_top1_bottom1_white"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="39dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/layout_border_bottom1_white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="分配给宝宝"/>
+                </RelativeLayout>
+
+                <ListView
+                    android:id="@+id/Release_babyList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:scrollbars="none"/>
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/Release_TaskTitle_center"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white">
+
+                <EditText
+                    android:id="@+id/Release_TaskTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@null"
+                    android:singleLine="true"
+                    android:hint="在这里写下标题"
+                    android:textSize="16sp"/>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignLeft="@+id/Release_TaskTitle"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/text_gray"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/Release_TaskTitle_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <EditText
+                    android:id="@+id/Release_TaskContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:background="@null"
+                    android:gravity="left|top"
+                    android:hint="描述一下你的任务"
+                    android:padding="10dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Release_TaskContent"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="16dp"
+                   >
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp">
+
+                        <ImageView
+                            android:id="@+id/Release_icon"
+                            android:layout_width="76dp"
+                            android:layout_height="76dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="16dp"
+                            android:background="@color/background_grey"/>
+                        <ImageView
+                            android:id="@+id/Taskpaly"
+                            android:layout_width="76dp"
+                            android:layout_height="76dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="16dp"
+                            android:src="@drawable/video_icon"
+                            android:visibility="gone"
+                            ></ImageView>
+                        <ImageView
+                            android:id="@+id/mDelete"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="-25dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_toRightOf="@+id/Release_icon"
+                            android:src="@drawable/sns_closeimg_icon"
+                            ></ImageView>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        >
+
+                        <ImageView
+                            android:id="@+id/Release_addIcon"
+                            android:layout_width="76dp"
+                            android:layout_height="76dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/upimg_logo"/>
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <!--<com.multshows.Views.MyGridView
+                    android:id="@+id/Release_GridView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Release_TaskContent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    />-->
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignLeft="@+id/Release_TaskContent"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/text_gray"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </com.multshows.Views.MyScrollView>
+
+
+</LinearLayout>

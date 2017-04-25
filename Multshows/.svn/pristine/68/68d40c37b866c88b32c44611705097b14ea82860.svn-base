@@ -1,0 +1,703 @@
+package com.multshows.Fragment;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.multshows.Activity.BoundBankList_Activity;
+import com.multshows.Activity.Bound_BankList_Mom_Activity;
+import com.multshows.Activity.Login_FindPassword_Activity;
+import com.multshows.Activity.MainActivity;
+import com.multshows.Activity.My_MyWallet_Activity;
+import com.multshows.Beans.CashOutRecordAdd;
+import com.multshows.Beans.ChatEvent_Model;
+import com.multshows.Beans.Kitting_Model;
+import com.multshows.Beans.SystemBankCard;
+import com.multshows.Beans.User;
+import com.multshows.Beans.UserAmount;
+import com.multshows.Beans.UserBank;
+import com.multshows.Beans.UserCashOutRecordAddBank;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Utils.SubString_Utils;
+import com.multshows.Utils.Time_Now;
+import com.multshows.Views.Dialog_Hint;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.RechangeNumber_Pop;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import okhttp3.Call;
+
+/**
+ * 提现界面 Fragment
+ */
+public class My_Kitting_Fragment extends Fragment{
+    public static final int BABY_REQUEST_CODE = 1;
+    public static final int MOM_REQUEST_CODE = 2;
+    View mView;
+    Context mContext;
+    RelativeLayout mBountBankCord;//绑定银行卡
+    RelativeLayout mBountBankCord_mom;//绑定银行卡
+    TextView BankName;//银行卡名称
+    TextView BankName_mom;//银行卡名称
+    ImageView BankIcon;//银行卡图标
+    ImageView BankIcon_mom;//银行卡图标
+    SimpleDraweeView BankIcon_mom2;//银行卡图标
+    SimpleDraweeView BankIcon2;//银行卡图标
+    TextView BoundHint;//点击绑定银行卡时隐藏布局
+    TextView BoundHint_mom;//点击绑定银行卡时隐藏布局
+    EditText mKittingEdit;//提现输入框
+    TextView mCanKitMoney;//可提现金额
+    TextView mAllKitting;//全部体现
+    LinearLayout mLayout1;//提示布局
+    LinearLayout mLayout2;//提示布局
+    TextView mHintKitting;//提现提示信息
+    Button mKitting;//提现按钮
+    TextView mHintMoney;//提现手续费提示
+    Dialog mDialog;
+    boolean isHave=false;
+
+    double money;
+    SaveSharedPreferences mSharedPreferences=new SaveSharedPreferences();
+    Gson mGson=new Gson();
+    MyApplication myApplication;
+    String type;
+    String YMD_="";
+    String YMDNumber="";//一麻袋数字证书
+    String bankID="";//银行卡id
+    String number="";//尾号
+    String bankName="";//银行卡名称
+    int flags=0;//0一麻袋1银行卡
+
+    String kitting_money="";
+    Dialog_Hint hintText_dialog;
+    RechangeNumber_Pop mNumberPop;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext=activity;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mView=inflater.inflate(R.layout.my_fragment_no,null);
+        type=mSharedPreferences.Get_PREFS(getActivity(),"Type");//代表此页妈妈界面还是宝宝页面unlogin没登录
+        myApplication= (MyApplication) getActivity().getApplication();
+        initView();
+        if("mom".equals(type)) {
+            //妈妈端
+            flags=0;
+            mBountBankCord_mom.setVisibility(View.VISIBLE);
+            mBountBankCord.setVisibility(View.GONE);
+        }else if("baby".equals(type)){
+            //宝宝端
+            flags=1;
+            getBankList();
+            mBountBankCord_mom.setVisibility(View.GONE);
+            mBountBankCord.setVisibility(View.VISIBLE);
+        }
+        initData();
+        initListen();
+        return mView;
+    }
+
+    /**
+     * 初始化
+     */
+    private void initView() {
+        mBountBankCord= (RelativeLayout) mView.findViewById(R.id.my_fragment_no_BoundBankCord);
+        mBountBankCord_mom= (RelativeLayout) mView.findViewById(R.id.my_fragment_no_BoundBankCord_Baby);
+        BankName= (TextView) mView.findViewById(R.id.my_fragment_no_BankName);
+        BankIcon= (ImageView) mView.findViewById(R.id.my_fragment_no_BankIcon);
+        BankName_mom= (TextView) mView.findViewById(R.id.my_fragment_no_Baby_BankName);
+        BankIcon_mom= (ImageView) mView.findViewById(R.id.my_fragment_no_Baby_BankIcon);
+        BankIcon_mom2= (SimpleDraweeView) mView.findViewById(R.id.my_fragment_no_Baby_BankIcon2);
+        BankIcon2= (SimpleDraweeView) mView.findViewById(R.id.my_fragment_no_BankIcon2);
+        BoundHint= (TextView) mView.findViewById(R.id.my_fragment_no_BountHint);
+        BoundHint_mom= (TextView) mView.findViewById(R.id.my_fragment_no_Baby_BountHint);
+        mCanKitMoney= (TextView) mView.findViewById(R.id.my_fragment_no_CanKitting);
+        mAllKitting= (TextView) mView.findViewById(R.id.my_fragment_no_AllKitting);
+        mKittingEdit= (EditText) mView.findViewById(R.id.my_fragment_no_EditText);
+        mLayout1= (LinearLayout) mView.findViewById(R.id.my_fragment_no_HintLayout);
+        mLayout2= (LinearLayout) mView.findViewById(R.id.my_fragment_no_HintLayout2);
+        mHintKitting= (TextView) mView.findViewById(R.id.my_fragment_no_KittingHint);
+        mKitting= (Button) mView.findViewById(R.id.my_fragment_no_KittingBtn);
+        mHintMoney= (TextView) mView.findViewById(R.id.my_fragment_no_HintMoneyText);
+        mDialog=new HintText_Dialog(mContext,R.style.MyDialog);
+    }
+
+    /**
+     * 数据处理
+     */
+    private void initData() {
+        //获取账户余额
+        getMoney();
+        if("mom".equals(type)) {
+            getYMD();
+        }
+
+    }
+
+    /**
+     * 事件监听
+     */
+    private void initListen() {
+        //提现绑定银行卡
+        mBountBankCord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, BoundBankList_Activity.class);
+                startActivityForResult(intent,BABY_REQUEST_CODE);
+            }
+        });
+        //妈妈端 提现
+        mBountBankCord_mom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, Bound_BankList_Mom_Activity.class);
+                startActivityForResult(intent,MOM_REQUEST_CODE);
+            }
+        });
+        //输入框状态监听
+        mKittingEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()>0){
+                    if(Double.parseDouble(s.toString())>Double.parseDouble(mCanKitMoney.getText().toString())){
+                        //超出金额
+                        mLayout2.setVisibility(View.VISIBLE);
+                        mLayout1.setVisibility(View.GONE);
+                        mKitting.setBackgroundResource(R.drawable.shape_button_grey_4);
+                        mKitting.setEnabled(false);
+                    }else {
+                        mLayout2.setVisibility(View.GONE);
+                        mLayout1.setVisibility(View.VISIBLE);
+                        mKitting.setBackgroundResource(R.drawable.shape_green_4);
+                        mKitting.setEnabled(true);
+                    }
+                }else {
+                    mLayout2.setVisibility(View.GONE);
+                    mLayout1.setVisibility(View.VISIBLE);
+                    mKitting.setBackgroundResource(R.drawable.shape_button_grey_4);
+                    mKitting.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        //全部体现
+        mAllKitting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mKittingEdit.setText(""+money);
+            }
+        });
+        //提现
+        mKitting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mKitting.setEnabled(false);
+                kitting_money=mKittingEdit.getText().toString();
+                if("".equals(kitting_money)){
+                    mKitting.setEnabled(true);
+                    mDialog.show();
+                    HintText_Dialog mTextDialog=new HintText_Dialog(mContext,"请输入提现金额","fail");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                          mDialog.dismiss();
+                        }
+                    },Login_Static.hintTime);
+                }else if(Double.parseDouble(kitting_money)<=1){
+                    mKitting.setEnabled(true);
+                    mDialog.show();
+                    HintText_Dialog mTextDialog=new HintText_Dialog(mContext,"提现金额必须大于1元","fail");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDialog.dismiss();
+                        }
+                    },Login_Static.hintTime);
+                }else if(!isHave){
+                    mKitting.setEnabled(true);
+                    mDialog.show();
+                    HintText_Dialog mTextDialog=new HintText_Dialog(mContext,"请选择提现方式","fail");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDialog.dismiss();
+                        }
+                    },Login_Static.hintTime);
+                }else {
+                    getUser();
+                }
+
+
+            }
+        });
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case BABY_REQUEST_CODE:
+                //宝宝
+                if(resultCode==3){
+                    flags=1;
+                    BankIcon2.setVisibility(View.VISIBLE);
+                    BankIcon.setVisibility(View.GONE);
+                    UserBank userBank= (UserBank) data.getSerializableExtra("UserBank");
+                    if(userBank!=null) {
+                        isHave=true;
+                        bankID=userBank.getId();
+                        SystemBankCard bankCard=userBank.getBank();
+                        if(userBank.getCard().length()>=4){
+                            number=userBank.getCard().substring(userBank.getCard().length()-4,userBank.getCard().length());
+                        }
+                        BankName.setText(bankCard.getName()+" ("+number+")");
+                        BoundHint.setText(" ");
+                        if(bankCard.getIcon()!=null && !"null".equals(bankCard.getIcon())) {
+                            BankIcon2.setImageURI(Uri.parse(SubString_Utils.getImageUrl(bankCard.getIcon())));
+                        }else {
+                            BankIcon2.setImageURI(Uri.parse(""));
+                        }
+                        bankName=bankCard.getName();
+                    }
+
+                }
+                break;
+            case MOM_REQUEST_CODE:
+                //妈妈端
+                if(resultCode==1){
+                    //银行卡
+                    flags=1;
+                    mHintMoney.setVisibility(View.VISIBLE);
+                    mHintMoney.setText("手续费=银行服务手续费1元/笔");
+                    BankIcon_mom.setVisibility(View.GONE);
+                    BankIcon_mom2.setVisibility(View.VISIBLE);
+                    UserBank userBank= (UserBank) data.getSerializableExtra("UserBank");
+                    if(userBank!=null) {
+                        isHave=true;
+                        bankID=userBank.getId();
+                        SystemBankCard bankCard=userBank.getBank();
+                        if(userBank.getCard().length()>=4){
+                            number=userBank.getCard().substring(userBank.getCard().length()-4,userBank.getCard().length());
+                        }
+                        BoundHint_mom.setText(" ");
+                        if(bankCard.getIcon()!=null && !"null".equals(bankCard.getIcon())) {
+                            BankIcon_mom2.setImageURI(Uri.parse(SubString_Utils.getImageUrl(bankCard.getIcon())));
+                        }else {
+                            BankIcon_mom2.setImageURI(Uri.parse(""));
+                        }
+                        BankName_mom.setText(bankCard.getName()+" ("+number+")");
+                        bankName=bankCard.getName();
+                    }
+                }
+                if(resultCode==2){
+                     //一麻袋
+                    flags=0;
+                    mHintMoney.setVisibility(View.GONE);
+                    isHave=true;
+                    BankIcon_mom.setVisibility(View.VISIBLE);
+                    BankIcon_mom2.setVisibility(View.GONE);
+                    String ymd= data.getStringExtra("YMD");
+                    YMDNumber= data.getStringExtra("YMDNumber");
+                    if(ymd.length()>=11) {
+                        String account = ymd.substring(0, 4) + "****" +
+                                ymd.substring(8, ymd.length());
+                        BoundHint_mom.setText(account);
+                    }
+                    BankIcon_mom.setImageResource(R.drawable.item_ymdlogo);
+                    BankName_mom.setText("一麻袋账户");
+                    YMD_=ymd;
+                }
+                break;
+        }
+    }
+
+    /**
+     * 获取一麻袋信息
+     */
+    private void getYMD(){
+        OkHttpUtils.get().url(myApplication.getUrl() + "/User/GetUser")
+                .addParams("userid", Login_Static.myUserID)
+                .addParams("targetuserid", "0")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing", "个人信息 失败" + e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, final int id) {
+                        try {
+                            CLog.e("testing", "个人信息：" + Json_Utils.getTemplate(response));
+                            if (Json_Utils.getCode(response) == 0) {
+                                User mUser = mGson.fromJson(Json_Utils.getTemplate(response), User.class);
+                                if("".equals(mUser.getYmdAccount()) || "null".equals(mUser.getYmdAccount())){
+                                    //未绑定一麻袋
+                                    getBankList();
+                                }else {
+                                    if(mUser.getYmdAccount()!=null && mUser.getYmdAccount().length()>=11) {
+                                        YMD_=mUser.getYmdAccount();
+                                        YMDNumber=mUser.getYmdNumber();
+                                        isHave=true;
+                                        String account = mUser.getYmdAccount().substring(0, 4) + "****" +
+                                                mUser.getYmdAccount().substring(8, mUser.getYmdAccount().length());
+                                        BoundHint_mom.setText(account);
+                                    }
+                                    BankIcon_mom.setImageResource(R.drawable.item_ymdlogo);
+                                    BankName_mom.setText("一麻袋账户");
+                                    mHintMoney.setVisibility(View.GONE);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+    /**
+     * 获取账户余额信息
+     */
+    private void getMoney(){
+        OkHttpUtils.get().url(myApplication.getUrl()+"/User/GetUserAmount")
+                .addParams("userid", Login_Static.myUserID)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","onResponse"+response);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                UserAmount bean=mGson.fromJson(Json_Utils.getTemplate(response),UserAmount.class);
+                                money=bean.getQuotaAmount();
+                                mCanKitMoney.setText(""+money);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 提现(提现到一麻袋)
+     */
+    private void getKitting(final double money, String YMD){
+        CashOutRecordAdd cashOutRecordAdd=new CashOutRecordAdd();
+        cashOutRecordAdd.setUserId(Login_Static.myUserID);
+        cashOutRecordAdd.setTradeCash(money);
+        cashOutRecordAdd.setYmdNumber(YMD);
+        String data=mGson.toJson(cashOutRecordAdd);
+        CLog.e("testing","提现至一麻袋data"+data);
+        OKHttp.OkHttpPost("/User/Withdrawals", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","提现至一麻袋失败"+e.toString());
+                HintText_Dialog mTextDialog=new HintText_Dialog(mContext,"提现失败","fail");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDialog.dismiss();
+                    }
+                },Login_Static.hintTime);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing","提现至一麻袋"+response);
+                try {
+                    if(Json_Utils.getCode(response)==0){
+                        mDialog.dismiss();
+                        EventBus.getDefault().post(new Kitting_Model(money+"","一麻袋账户",YMD_,
+                                Time_Now.getRongTime(),Json_Utils.getTemplate(response),flags));
+                    }else {
+                        HintText_Dialog mTextDialog=new HintText_Dialog(mContext,Json_Utils.getMessage(response),"fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },Login_Static.hintTime);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    /**
+     * 提现(提现到银行卡)
+     */
+    private void getKittingBank(final double money, String bankID){
+        UserCashOutRecordAddBank cashOutRecordAdd=new UserCashOutRecordAddBank();
+        cashOutRecordAdd.setUserId(Login_Static.myUserID);
+        cashOutRecordAdd.setTradeCash(money);
+        cashOutRecordAdd.setBankId(bankID);
+        String data=mGson.toJson(cashOutRecordAdd);
+        CLog.e("testing","提现至银行卡data"+data);
+        OKHttp.OkHttpPost("/User/WithdrawalsBank", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","提现至银行卡失败"+e.toString());
+                HintText_Dialog mTextDialog=new HintText_Dialog(mContext,"提现失败","fail");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDialog.dismiss();
+                    }
+                },Login_Static.hintTime);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing","提现至银行卡"+response);
+                try {
+                    if(Json_Utils.getCode(response)==0){
+                        mDialog.dismiss();
+                        EventBus.getDefault().post(new Kitting_Model(money+"",bankName,"尾号 "+number,
+                                Time_Now.getRongTime(),Json_Utils.getTemplate(response),flags));
+                    }else {
+                        HintText_Dialog mTextDialog=new HintText_Dialog(mContext,Json_Utils.getMessage(response),"fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },Login_Static.hintTime);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    /**
+     * 获取银行卡列表
+     */
+    private void getBankList(){
+        CLog.e("testing","userId="+Login_Static.myUserID+"&isdefault=1");
+        OkHttpUtils.get().url(myApplication.getUrl()+"/User/GetUserBankList")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("isdefault","1")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","获取银行卡列表失败"+e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","获取银行卡列表"+response);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                JSONArray jsonArray=new JSONArray(Json_Utils.getTemplate(response));
+                                UserBank bean=null;
+                                if(jsonArray.length()!=0){
+                                    bean=mGson.fromJson(jsonArray.getString(0),UserBank.class);
+                                }
+                                flags=1;
+                                if(bean!=null) {
+                                    mHintMoney.setVisibility(View.VISIBLE);
+                                    mHintMoney.setText("手续费=银行服务手续费1元/笔");
+                                    BankIcon2.setVisibility(View.VISIBLE);
+                                    BankIcon.setVisibility(View.GONE);
+                                    isHave=true;
+                                    bankID=bean.getId();
+                                    SystemBankCard bankCard=bean.getBank();
+                                    if(bean.getCard().length()>=4){
+                                        number=bean.getCard().substring(bean.getCard().length()-4,bean.getCard().length());
+                                    }
+                                    BankName.setText(bankCard.getName()+" ("+number+")");
+                                    BoundHint.setText(" ");
+                                    if(bankCard.getIcon()!=null && !"null".equals(bankCard.getIcon())) {
+                                        BankIcon2.setImageURI(Uri.parse(SubString_Utils.getImageUrl(bankCard.getIcon())));
+                                    }else {
+                                        BankIcon2.setImageURI(Uri.parse(""));
+                                    }
+                                    bankName=bankCard.getName();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+
+
+    /**
+     * 获取个人信息数据
+     */
+    private void getUser() {
+
+        OkHttpUtils.get().url(myApplication.getUrl() + "/User/GetUser")
+                .addParams("userid", Login_Static.myUserID)
+                .addParams("targetuserid", "0")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing", "个人信息 失败" + e.toString());
+                        mKitting.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", "个人信息：" + response);
+                        try {
+                            CLog.e("testing", "个人信息：" + Json_Utils.getTemplate(response));
+                            if (Json_Utils.getCode(response) == 0) {
+                                User mUser = mGson.fromJson(Json_Utils.getTemplate(response), User.class);
+                                if("".equals(mUser.getPayPassword())){
+                                    //没设置
+                                    hintText_dialog = new Dialog_Hint(mContext, 0,
+                                            "您还没有设置支付密码,是否前往设置?", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            hintText_dialog.dismiss();
+                                            Intent intent = new Intent(mContext, Login_FindPassword_Activity.class);
+                                            intent.putExtra("PassWordType", 2);
+                                            mContext.startActivity(intent);
+                                        }
+                                    });
+                                    hintText_dialog.show();
+                                    mKitting.setEnabled(true);
+                                }else {
+                                    mNumberPop=new RechangeNumber_Pop(getActivity(),"");
+                                    //设置弹出动画效果
+                                    mNumberPop.setAnimationStyle(R.style.PopupAnimation);
+                                    //显示窗口  //设置layout在PopupWindow中显示的位置
+                                    mNumberPop.showAtLocation(getActivity().findViewById(R.id.my_fragment_no_ParentLayout),
+                                            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                                    mNumberPop.setNum(new RechangeNumber_Pop.Num() {
+                                        @Override
+                                        public void num(String text) {
+                                            CLog.e("testing", text);
+                                            //判断密码是否正确
+                                            isRecharge(text);
+
+                                        }
+                                    });
+                                    mKitting.setEnabled(true);
+                                }
+                            }else {
+                                mKitting.setEnabled(true);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    /**
+     * 验证支付密码
+     */
+    private void isRecharge(String pwd){
+        OkHttpUtils.get().url(myApplication.getUrl()+"/User/IsCheckPayPassword")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("pwd",pwd)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","验证支付密码失败"+e.toString());
+                        mDialog.show();
+                        HintText_Dialog mText_dialog=new HintText_Dialog(mContext,"支付失败","fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },Login_Static.hintTime);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","验证支付密码"+response);
+                        try {
+                            if(Integer.parseInt(Json_Utils.getTemplate(response))==1){
+                                mNumberPop.setNumText();
+                                mNumberPop.dismiss();
+                                mDialog.show();
+                                HintText_Dialog mTextDialog=new HintText_Dialog(mContext,"提现中...","");
+                                if(flags==0){
+                                    //一麻袋
+                                    getKitting(Double.parseDouble(kitting_money),YMDNumber);
+                                }else {
+                                    //银行卡
+                                    getKittingBank(Double.parseDouble(kitting_money),bankID);
+                                }
+                            }else {
+                                //错误时执行——
+                                hintText_dialog = new Dialog_Hint(mContext, 0, "您的输入密码不正确,是否重新输入?", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mNumberPop.setNumText();
+                                        hintText_dialog.dismiss();
+                                    }
+                                });
+                                hintText_dialog.show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+
+
+}

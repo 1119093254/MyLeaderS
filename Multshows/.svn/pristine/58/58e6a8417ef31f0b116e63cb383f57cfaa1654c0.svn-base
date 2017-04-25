@@ -1,0 +1,653 @@
+package com.multshows.Activity;
+
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.multshows.Adapter.ImageHeader_Adapter;
+import com.multshows.Adapter.Sort_Adapter;
+import com.multshows.Beans.ChatEvent_Model;
+import com.multshows.Beans.Friends_friend_Beans;
+import com.multshows.Beans.GroupMember;
+import com.multshows.Beans.GroupUser;
+import com.multshows.Beans.UserFriendTerm;
+import com.multshows.Beans.UserFriend_Beans;
+import com.multshows.Beans.User_;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.CharacterParser;
+import com.multshows.Utils.HideInputManager_Utils;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.MomORBaby_Utils;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Utils.PinyinComparator;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.MyGridView;
+import com.multshows.Views.SideBar;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import io.rong.imlib.RongIMClient;
+import okhttp3.Call;
+
+/**
+ * 群聊添加用户界面
+ */
+public class Group_AddPerson_Activity extends AppCompatActivity {
+    //控件
+    public TextView dialog;
+    ImageView mReturn;//返回
+    RelativeLayout mReturnLayout;//顶部布局
+    LinearLayout mParentLayout;//父布局
+    RelativeLayout mTopLayout;//顶部搜索布局
+    RelativeLayout mSearchLayout;//搜索布局
+    TextView mTopTitle;//大标题
+    TextView mNumber;//数量
+    SideBar sideBar;
+    private ListView sortListView;
+    ImageView mImageView;//搜索图标
+    EditText mSearch;//搜索
+    GridView mGridView;
+    HorizontalScrollView mScrollView;
+    //RecyclerView mRecyclerView;
+    Gson mGson=new Gson();
+    //加载数据
+    List<Friends_friend_Beans> mList=new ArrayList<>();
+    List<Friends_friend_Beans> mCheckList=new ArrayList<>();
+    /**
+     * 显示字母的TextView
+     */
+
+    private Sort_Adapter adapter;
+    private ImageHeader_Adapter mHeaderAdapter;//选择头像显示适配器
+    // private SearchEditText_Views mEditText;
+
+    /**
+     * 汉字转换成拼音的类
+     */
+    private CharacterParser characterParser;
+    //新数据
+    private List<Friends_friend_Beans> SourceDateList=new ArrayList<>();
+    Friends_friend_Beans top;//搜索布局
+    CheckBox mCheckBox;
+
+    /**
+     * 根据拼音来排列ListView里面的数据类
+     */
+    private PinyinComparator pinyinComparator;
+
+    //空视图
+    View mNoView;
+    ImageView mNoImage;//空视图图标
+    TextView mNoText;//空视图信息
+    Button mNoButton;//空视图按钮
+    //已选的id
+    String otherID="";
+    Dialog mDialog;
+
+    int InType;//进入条件
+    List<GroupMember> mUserList=new ArrayList<>();
+    String RCGroupID="";
+    List<GroupMember> memberList=new ArrayList<>();
+
+    String data="";
+    String name="";
+    MyApplication myApplication;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_group_add_person);
+        myApplication= (MyApplication) getApplication();
+        initViews();
+        initData();
+        initListen();
+    }
+
+    /**
+     * 初始化
+     */
+    private void initViews() {
+        LayoutInflater factory = LayoutInflater.from(Group_AddPerson_Activity.this);
+        View layout = factory.inflate(R.layout.sort_text_item, null);
+        dialog= (TextView) layout.findViewById(R.id.sort_text_item_textView);
+        mReturn= (ImageView) findViewById(R.id.Group_Add_return);
+        mTopTitle= (TextView) findViewById(R.id.Group_Add_TopTitle);
+        mReturnLayout= (RelativeLayout) findViewById(R.id.Group_Add_returnLayout);
+        mParentLayout= (LinearLayout) findViewById(R.id.Group_Add_ParentsLayout);
+        mNumber= (TextView) findViewById(R.id.Group_Add_Number);
+        mImageView= (ImageView) findViewById(R.id.Group_Add_serchImage);
+        mTopLayout= (RelativeLayout) findViewById(R.id.Group_Add_TopLayout);
+        mSearchLayout= (RelativeLayout) findViewById(R.id.Group_Add_SearchLayout);
+        mGridView= (GridView) findViewById(R.id.Group_Add_MyGridView);
+        mScrollView= (HorizontalScrollView) findViewById(R.id.Group_Add_ScrollView);
+       /* mRecyclerView= (RecyclerView) findViewById(R.id.Group_Add_imageLayout);
+        //设置布局管理器
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);*/
+        mSearch= (EditText) findViewById(R.id.Group_Add_searchText);
+        mSearch.clearFocus();//默认不获取焦点
+        mNoView=findViewById(R.id.friends_Friend_No_View);
+        mNoImage= (ImageView) mNoView.findViewById(R.id.no_view_image);
+        mNoText= (TextView) mNoView.findViewById(R.id.no_view_text);
+        mNoButton= (Button) mNoView.findViewById(R.id.no_view_Button);
+        mNoImage.setImageResource(R.drawable.error_pic5);
+        mNoText.setText("暂无好友!");
+        mNoButton.setVisibility(View.GONE);
+        //实例化汉字转拼音类
+        characterParser = CharacterParser.getInstance();
+        pinyinComparator = new PinyinComparator();
+        sideBar= (SideBar)findViewById(R.id.friends_Friend_sideBar);
+        sideBar.setTextView(dialog);
+
+        sortListView = (ListView)findViewById(R.id.friends_Friend_ListView);
+        //mEditText = (SearchEditText_Views) mView.findViewById(R.id.friends_Friend_editText);
+        sortListView.setEmptyView(mNoView);
+        mHeaderAdapter=new ImageHeader_Adapter(Group_AddPerson_Activity.this,mCheckList);
+        getData();
+
+        MomORBaby_Utils momORBabyUtils=new MomORBaby_Utils();
+        momORBabyUtils.isMomORBaby(Group_AddPerson_Activity.this,mReturnLayout,mParentLayout,mReturn,mTopTitle,mNumber);
+    }
+
+    private void getData(){
+        ViewGroup.LayoutParams params = mGridView.getLayoutParams();
+        ViewGroup.LayoutParams params_2 = mScrollView.getLayoutParams();
+        // dishtype，welist为ArrayList
+        int dishtypes = mCheckList.size();
+        params.width = 120* dishtypes;
+        mGridView.setLayoutParams(params);
+        if(mCheckList.size()<=6){
+            params_2.width=120* dishtypes;
+        }
+        mScrollView.setLayoutParams(params_2);
+        mGridView.setNumColumns(mCheckList.size());
+        //mRecyclerView.setAdapter(mHeaderAdapter);
+        mGridView.setAdapter(mHeaderAdapter);
+    }
+    /**
+     * 数据处理
+     */
+    private void initData() {
+        Intent intent=getIntent();
+        otherID=intent.getStringExtra("ID");
+        InType=intent.getIntExtra("Group",0);
+        if(InType==2){
+            //添加成员标志
+            RCGroupID=intent.getStringExtra("RCGroupId");
+            mUserList= (List<GroupMember>) intent.getSerializableExtra("GroupUser");
+        }
+        //提取用户名首字母(重新插入数据)
+        SourceDateList = filledData(mList);
+        // 根据a-z进行排序源数据
+        Collections.sort(SourceDateList, pinyinComparator);
+        adapter = new Sort_Adapter(Group_AddPerson_Activity.this,SourceDateList,1,otherID,mUserList);
+        sortListView.setAdapter(adapter);
+        getFriendsList(1);
+    }
+
+    /**
+     * 事件监听
+     */
+    private void initListen() {
+        //返回
+        mReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HideInputManager_Utils.hideInputManager(Group_AddPerson_Activity.this);
+                finish();
+            }
+        });
+        //确定
+        mNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCheckList.size()!=0) {
+                    mDialog = new HintText_Dialog(Group_AddPerson_Activity.this, R.style.MyDialog);
+                    mDialog.show();
+                    if (InType != 2) {
+                        HintText_Dialog hint = new HintText_Dialog(Group_AddPerson_Activity.this, "群创建中...", "");
+                        List<String> list_ids = new ArrayList<>();
+                        list_ids.add(Login_Static.myUserID);
+                        list_ids.add(otherID);
+                        data = otherID;
+                        name = "";
+                        if(Login_Static.mAccount!=null)
+                            name =Login_Static.mAccount.getNickName();
+                        for (int i = 0; i < mCheckList.size(); i++) {
+                            list_ids.add(mCheckList.get(i).getTargetUserId());
+                            data = data + "," + mCheckList.get(i).getTargetUserId();
+                            if (i < 3) {
+                               if (i == 2) {
+                                    name = name + ","+ mCheckList.get(i).getNickName() + "等";
+                                } else {
+                                    name = name+ "," + mCheckList.get(i).getNickName() ;
+                                }
+                            }
+                        }
+                        RongIMClient.getInstance().createDiscussion(name, list_ids, new RongIMClient.CreateDiscussionCallback() {
+                            @Override
+                            public void onSuccess(String s) {
+                                CLog.e("RongLib", "融云创建群成功" + s);
+                                setGroup(data, name, s);
+                            }
+
+                            @Override
+                            public void onError(RongIMClient.ErrorCode errorCode) {
+                                CLog.e("RongLib", "融云创建群失败" + errorCode);
+                                HintText_Dialog hint = new HintText_Dialog(Group_AddPerson_Activity.this, "群创建失败", "fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDialog.dismiss();
+                                    }
+                                }, 2000);
+                            }
+                        });
+
+                    } else {
+                        //添加群聊成员
+                        HintText_Dialog hint = new HintText_Dialog(Group_AddPerson_Activity.this, "添加中...", "");
+                        List<String> list_ids = new ArrayList<>();
+                        memberList.clear();
+                        for (int i = 0; i < mCheckList.size(); i++) {
+                            GroupMember member = new GroupMember();
+                            member.setUserHead(new GroupUser(mCheckList.get(i).getUserPic()));
+                            member.setAlias(mCheckList.get(i).getNickName());
+                            memberList.add(member);
+                            list_ids.add(mCheckList.get(i).getTargetUserId());
+                            if (i == mCheckList.size() - 1) {
+                                data = data + mCheckList.get(i).getTargetUserId();
+                            } else {
+                                data = data + mCheckList.get(i).getTargetUserId() + ",";
+                            }
+                        }
+                        RongIMClient.getInstance().addMemberToDiscussion(RCGroupID, list_ids, new RongIMClient.OperationCallback() {
+                            @Override
+                            public void onSuccess() {
+                                CLog.e("RongLib", "融云添加成员成功");
+                                sentPlease(data, RCGroupID, memberList);
+                            }
+
+                            @Override
+                            public void onError(RongIMClient.ErrorCode errorCode) {
+                                CLog.e("RongLib", "融云添加成员失败" + errorCode.toString());
+                                HintText_Dialog hint = new HintText_Dialog(Group_AddPerson_Activity.this, "成员添加失败", "fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDialog.dismiss();
+                                    }
+                                }, 2000);
+                            }
+                        });
+
+                    }
+                }else {
+
+                }
+            }
+        });
+        sortListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(otherID!=null && otherID.equals(SourceDateList.get(position).getTargetUserId())){
+
+                }else if(mUserList!=null && mUserList.size()!=0){
+                    boolean isFlag=true;
+                    for (int i = 0; i <mUserList.size() ; i++) {
+                        if(SourceDateList.get(position).getTargetUserId().equals(mUserList.get(i).getUserId())){
+                            isFlag=false;
+                        }
+                    }
+                    if(isFlag) {
+                        mCheckBox = (CheckBox) view.findViewById(R.id.sort_Add_checkBox);
+                        if (SourceDateList.get(position).isCheck()) {
+                            SourceDateList.get(position).setCheck(false);
+                            mCheckBox.setChecked(false);
+                            for (int j = 0; j < mCheckList.size(); j++) {
+                                if (mCheckList.get(j).getId().equals(SourceDateList.get(position).getId())) {
+                                    mCheckList.remove(j);
+                                    mNumber.setText("确定(" + mCheckList.size() + ")");
+                                    getData();
+                                    mHeaderAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        } else {
+                            SourceDateList.get(position).setCheck(true);
+                            mCheckBox.setChecked(true);
+                            mCheckList.add(SourceDateList.get(position));
+                            mNumber.setText("确定(" + mCheckList.size() + ")");
+                            getData();
+                            mHeaderAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }else {
+                    mCheckBox= (CheckBox) view.findViewById(R.id.sort_Add_checkBox);
+                    if(SourceDateList.get(position).isCheck()){
+                        SourceDateList.get(position).setCheck(false);
+                        mCheckBox.setChecked(false);
+                        for (int i = 0; i < mCheckList.size(); i++) {
+                            if(mCheckList.get(i).getId().equals(SourceDateList.get(position).getId())){
+                                mCheckList.remove(i);
+                                mNumber.setText("确定("+mCheckList.size()+")");
+                                getData();
+                                mHeaderAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }else {
+                        SourceDateList.get(position).setCheck(true);
+                        mCheckBox.setChecked(true);
+                        mCheckList.add(SourceDateList.get(position));
+                        mNumber.setText("确定("+mCheckList.size()+")");
+                        getData();
+                        mHeaderAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                if(mCheckList.size()>0){
+                    mTopLayout.setBackgroundResource(R.color.white);
+                    mSearchLayout.setBackground(null);
+                    mImageView.setVisibility(View.GONE);
+                }else {
+                    mTopLayout.setBackgroundResource(R.color.button_grey);
+                    mSearchLayout.setBackgroundResource(R.drawable.border_4_grey_1);
+                    mImageView.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+        //设置右侧触摸监听
+        sideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
+
+            @Override
+            public void onTouchingLetterChanged(String s) {
+                //该字母首次出现的位置
+                int position = adapter.getPositionForSection_add(s.charAt(0));
+                if(position != -1){
+                    sortListView.setSelection(position);
+                }
+
+            }
+        });
+        //根据输入框输入值的改变来过滤搜索
+        mSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //当输入框里面的值为空，更新为原来的列表，否则为过滤数据列表
+                filterData(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+
+    }
+    /**
+     * 为ListView填充数据
+     * @param list
+     * @return
+     */
+    private List<Friends_friend_Beans> filledData(List<Friends_friend_Beans> list){
+        for(int i=0; i<list.size(); i++){
+            //汉字转换成拼音
+            if("".equals(list.get(i).getNickName()) || list.get(i).getNickName()==null) {
+                list.get(i).setSortLetters("#");
+            }else {
+                String pinyin = characterParser.getSelling(list.get(i).getNickName());
+                String sortString = pinyin.substring(0, 1).toUpperCase();
+
+
+                // 正则表达式，判断首字母是否是英文字母
+                if(sortString.matches("[A-Z]")){
+                    list.get(i).setSortLetters(sortString.toUpperCase());
+                }else{
+                    list.get(i).setSortLetters("#");
+                }
+            }
+        }
+        return list;
+
+    }
+    /**
+     * 根据输入框中的值来过滤数据并更新ListView
+     * @param filterStr
+     */
+    private void filterData(String filterStr) {
+        List<Friends_friend_Beans> filterDateList = new ArrayList<>();
+
+        if (TextUtils.isEmpty(filterStr)) {
+            filterDateList = SourceDateList;
+        } else {
+            filterDateList.clear();
+            for (Friends_friend_Beans sortModel : SourceDateList) {
+                String name = sortModel.getNickName();
+                if (name.toUpperCase().indexOf(
+                        filterStr.toString().toUpperCase()) != -1
+                        || characterParser.getSelling(name).toUpperCase()
+                        .startsWith(filterStr.toString().toUpperCase())) {
+                    filterDateList.add(sortModel);
+                }
+            }
+        }
+
+        // 根据a-z进行排序
+        Collections.sort(filterDateList, pinyinComparator);
+        adapter.updateListView(filterDateList);
+    }
+
+    /**
+     * 获取好友列表
+     * @param pageIndex
+     */
+    private void getFriendsList(final int pageIndex){
+        UserFriendTerm userFriendTerm=new UserFriendTerm();
+        userFriendTerm.setUserId(Login_Static.myUserID);
+        userFriendTerm.setState(1);
+        userFriendTerm.setPageSize(20);
+        userFriendTerm.setPageIndex(pageIndex);
+        String data=mGson.toJson(userFriendTerm);
+        CLog.e("testing",data);
+        OKHttp.OkHttpPost("/User/GetFriendList", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","获取好友列表失败："+e.toString());
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing","获取好友列表："+response);
+                try {
+                    if(Json_Utils.getCode(response)==0) {
+                        if(pageIndex==1) {
+                            mList.clear();
+                        }
+                        JSONArray jsonArray = new JSONArray(Json_Utils.getTemplate(response));
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            UserFriend_Beans b = mGson.fromJson(jsonArray.getString(i), UserFriend_Beans.class);
+                            User_ target=b.getTargetUser();
+                            Friends_friend_Beans bean = new Friends_friend_Beans(b.getId(),Login_Static.myUserID,
+                                    target.getUserId(),target.getNickName(),target.getPortrait(),
+                                    target.getUserTagList(), b.getState(), "",false,1);
+                            mList.add(bean);
+                        }
+                        //提取用户名首字母(重新插入数据)
+                        SourceDateList = filledData(mList);
+                        // 根据a-z进行排序源数据
+                        Collections.sort(SourceDateList, pinyinComparator);
+                        adapter.notifyDataSetChanged();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+    }
+    /**
+     * 创建群
+     *
+     */
+    private void setGroup(String data, final String name, final String ids){
+        OkHttpUtils.get().url(myApplication.getUrl()+"/GroupChat/EstablishGroup")
+                .addParams("currentUserId",Login_Static.myUserID)//加密当前用户id
+                .addParams("memberUserIds",data)//逗号拼接的加密的其他成员id
+                .addParams("groupName",name)//群名称
+                .addParams("RCGroupId",ids)//融云提供的群id
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","创建群失败"+e.toString());
+                HintText_Dialog hint=new HintText_Dialog(Group_AddPerson_Activity.this,"群创建失败","fail");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDialog.dismiss();
+                    }
+                },2000);
+            }
+
+            @Override
+            public void onResponse(String response,int id) {
+                CLog.e("testing","创建群"+response);
+                try {
+                    if(Json_Utils.getCode(response)==0){
+                        HintText_Dialog hint=new HintText_Dialog(Group_AddPerson_Activity.this,"群创建成功","success");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                                Intent intent=new Intent(Group_AddPerson_Activity.this,Group_Chat_Activity.class);
+                                intent.putExtra("groupId",ids+"");
+                                intent.putExtra("groupName",name);
+                                startActivity(intent);
+                                if(Login_Static.mPlaceActivity!=null){
+                                    for (int i = 0; i < Login_Static.mPlaceActivity.size(); i++) {
+                                        Login_Static.mPlaceActivity.get(i).finish();
+                                    }
+                                }
+                                finish();
+                            }
+                        },2000);
+                    }else {
+                        HintText_Dialog hint=new HintText_Dialog(Group_AddPerson_Activity.this,
+                                Json_Utils.getMessage(response),"fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },2000);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    //	邀请好友加入群聊
+    private void sentPlease(String users, String RCids, final List<GroupMember> memberList){
+        CLog.e("testing","邀请好友加入群聊data:"+"currentUserId="+Login_Static.myUserID+"&targetUserIds="+users+"&RCGroupId="+RCids);
+        OkHttpUtils.get().url(myApplication.getUrl()+"/GroupChat/InviteMembers")
+                .addParams("currentUserId",Login_Static.myUserID)//加密当前用户id
+                .addParams("targetUserIds",users)//逗号拼接的加密的用户id
+                .addParams("RCGroupId",RCids)//融云提供的群id
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","邀请好友加入群聊失败"+e.toString());
+                        HintText_Dialog hint = new HintText_Dialog(Group_AddPerson_Activity.this,
+                                "成员添加失败", "fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        }, 2000);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","邀请好友加入群聊"+response);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                HintText_Dialog hint = new HintText_Dialog(Group_AddPerson_Activity.this,
+                                        "成员添加成功", "fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDialog.dismiss();
+                                        //回调，通知添加成功
+                                        ChatEvent_Model model=new ChatEvent_Model();
+                                        model.setFlag("AddUser");
+                                        model.setMembers(memberList);
+                                        EventBus.getDefault().post(model);
+                                        finish();
+                                    }
+                                }, 2000);
+                            }else {
+                                HintText_Dialog hint = new HintText_Dialog(Group_AddPerson_Activity.this,
+                                        Json_Utils.getMessage(response), "fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDialog.dismiss();
+                                    }
+                                }, 2000);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+}

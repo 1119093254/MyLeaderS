@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--旋转补间动画-->
+    <!--
+    android:duration:  动画持续时间
+    android:fromDegrees: 起始角度
+    android:interpolator:  动画的变化速度linear_interpolator匀速accelerate_interpolator加速
+                            decelerate_interpolator减速
+    android:pivotX:   旋转中心X轴坐标值
+    android:pivotY:   旋转中心Y轴坐标值
+    android:toDegrees:  结尾角度
+    android:startOffset:   运行顺序——同时或按顺序运行动画，默认同时运行
+    android:repeatCount:   0 转一圈，1转二圈；-1 永不停
+    -->
+    <rotate
+        android:duration="1000"
+        android:fromDegrees="0"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toDegrees="359"
+        android:repeatCount="-1"
+        >
+    </rotate>
+    <!--<rotate
+        android:duration="2000"
+        android:fromDegrees="360"
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="2000"
+        android:toDegrees="0" >
+    </rotate>-->
+</set>

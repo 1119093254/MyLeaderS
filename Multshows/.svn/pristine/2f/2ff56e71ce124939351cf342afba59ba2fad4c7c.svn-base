@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--自定义Dialog
+    android:windowNoTitle:是否显示title
+    android:windowFrame:Dialog的windowFrame框为无
+    android:windowIsFloating:是否浮现在activity之上
+    -->
+    <style name="MyDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimAmount">0.1</item>
+    </style>
+</resources>

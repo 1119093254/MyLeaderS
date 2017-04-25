@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:fitsSystemWindows="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/Id_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/my_toplayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/green">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="发布闲置"
+                android:textColor="@color/white"
+                android:textSize="17sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/text_gray"/>
+
+            <ImageView
+                android:id="@+id/Release_return"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="7dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/index_return_arrow"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发布"
+                android:id="@+id/ReleaseIdleButton"
+                android:layout_centerVertical="true"
+                android:textColor="@color/white"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="17dp"
+                android:textSize="13sp"/>
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <RelativeLayout
+                    android:id="@+id/Idle_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:background="@color/white">
+
+                    <EditText
+                        android:singleLine="true"
+                        android:id="@+id/Release_IdleTitle"
+                        android:layout_width="match_parent"
+                        android:layout_marginRight="16dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:background="@null"
+                        android:hint="在这里写下标题"
+                        android:textSize="16sp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignLeft="@+id/Release_IdleTitle"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignLeft="@+id/Release_IdleTitle"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
+
+                    <EditText
+                        android:id="@+id/Release_IdleContent"
+                        android:layout_width="fill_parent"
+                        android:layout_height="90dp"
+                        android:layout_marginLeft="16dp"
+                        android:background="@null"
+                        android:gravity="left|top"
+                        android:hint="在这里写下内容...."
+                        android:paddingTop="5dp"/>
+
+                    <com.multshows.Views.MyGridView
+                        android:id="@+id/imageIdGridview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/Release_IdleContent"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:horizontalSpacing="3dp"
+                        android:numColumns="4"
+                        android:scrollbars="none"
+                        android:verticalSpacing="5dp">
+                    </com.multshows.Views.MyGridView>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignLeft="@+id/Release_workContent"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/Release_workContent_Place"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:visibility="gone"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/local_image"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/item_shipping_address_local"/>
+
+                    <TextView
+                        android:id="@+id/chioce"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@+id/local_image"
+                        android:text="所在位置:"
+                        android:textColor="@color/bg_black"
+                        android:textSize="16sp"/>
+                    <ImageView
+                        android:id="@+id/IdleAddress_Image_"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/set_more_icon"/>
+                    <TextView
+                        android:id="@+id/IdleAddressText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toLeftOf="@id/IdleAddress_Image_"
+                        android:layout_marginRight="8dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:hint="点击选择位置"
+                        android:textColor="@color/bg_black"
+                        android:textSize="16sp"/>
+
+
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:visibility="gone"
+                    android:id="@+id/IdleAddressText2Layout"
+                    android:background="@color/white">
+                    <EditText
+                        android:singleLine="true"
+                        android:id="@+id/IdleAddressText2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@null"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:inputType="numberDecimal"
+                        android:textSize="17sp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:background="@color/white">
+                    <TextView
+                        android:id="@+id/workprice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:text="宝贝价格:"
+                        android:textColor="@color/bg_black"
+                        android:textSize="16sp"/>
+
+
+                    <EditText
+                        android:singleLine="true"
+                        android:id="@+id/IdlePrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="135dp"
+                        android:background="@null"
+                        android:hint="请输入价格"
+                        android:inputType="numberDecimal"
+                        android:textSize="17sp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignLeft="@+id/workprice"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:background="@color/white"
+                    >
+
+                    <TextView
+                        android:id="@+id/price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:text="运费:"
+                        android:textColor="@color/bg_black"
+                        android:textSize="16sp"/>
+
+
+                    <EditText
+                        android:singleLine="true"
+                        android:id="@+id/Idle_Freightprice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="135dp"
+                        android:background="@null"
+                        android:hint="请输入价格"
+                        android:inputType="numberDecimal"
+                        android:textSize="17sp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignLeft="@+id/price"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginBottom="56dp"
+                    android:background="@color/white"
+                    >
+                    <TextView
+                        android:id="@+id/Idle_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:text="宝贝数量:"
+                        android:textColor="@color/bg_black"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="135dp"
+                        android:background="@null"
+                        android:textColor="#bdb4bb"
+                        android:textSize="17sp"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="135dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="11dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/Idle_num_reduce"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/text_angle_gray"
+                            android:gravity="center"
+                            android:text="-"
+                            android:textColor="@color/text"/>
+
+                        <TextView
+                            android:id="@+id/IdleNum"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/text_angle"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="1"
+                            android:textColor="@color/text"/>
+
+                        <TextView
+                            android:id="@+id/Idle_num_add"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/text_angle_right"
+                            android:gravity="center"
+                            android:text="+"
+                            android:textColor="@color/text"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignLeft="@+id/Idle_number"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/text_gray"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+  <!--  <Button
+        android:id="@+id/ReleaseIdleButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_style"
+        android:text="确定发布"
+        android:textColor="@color/white"/>-->
+
+</RelativeLayout>

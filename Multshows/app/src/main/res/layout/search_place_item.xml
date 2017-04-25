@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:layout_marginLeft="25dp"
+        android:background="@drawable/layout_border_top1_white">
+        <TextView
+            android:id="@+id/Search_Place_Title"
+            style="@style/text_ww_16_black"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text=""/>
+        <TextView
+            android:id="@+id/Search_Place_Address"
+            style="@style/text_ww_11_light_grey"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="16dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text=""/>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/a_myinfo_changeApplication"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00000000"
+    android:gravity="center"
+    android:orientation="vertical" >
+	<RelativeLayout
+		android:id="@+id/ly_myinfo_changebirth"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#00000000"
+		android:orientation="vertical"
+		>
+		<LinearLayout
+			android:id="@+id/ly_a_changeApplication_child"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/bg_dialog_selector"
+			android:orientation="vertical"
+			android:layout_alignParentBottom="true">
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="200dp"
+				android:orientation="horizontal"
+				android:layout_marginLeft="20dip"
+				android:layout_marginRight="20dip"
+				android:gravity="center_vertical">
+				<com.multshows.Views.WheelView
+					android:id="@+id/Application_Restrictions"
+					android:layout_width="0dip"
+					android:layout_weight="1"
+					android:layout_height="match_parent"
+					android:layout_gravity="center_vertical"
+					/>
+			</LinearLayout>
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="54dp"
+				android:background="@drawable/layout_border"
+				>
+				<Button
+					android:id="@+id/btn_Application_sure"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:layout_alignParentRight="true"
+					android:text="@string/finish"
+					android:textColor="@color/white"
+					android:background="@drawable/btn_style"
+					android:layout_centerVertical="true"
+					android:textSize="16sp"  />
+			</RelativeLayout>
+		</LinearLayout>
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="#F1F1F1"
+			android:layout_alignParentBottom="true"
+			android:layout_marginBottom="175dp"
+			/>
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="#F1F1F1"
+			android:layout_alignParentBottom="true"
+			android:layout_marginBottom="135dp"
+			/>
+	</RelativeLayout>
+
+
+</RelativeLayout>

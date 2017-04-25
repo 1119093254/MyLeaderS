@@ -1,0 +1,609 @@
+package com.multshows.Views;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.os.Handler;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.multshows.Activity.Login_FindPassword_Activity;
+import com.multshows.Activity.MainActivity;
+import com.multshows.Activity.My_MyWallet_Activity;
+import com.multshows.Beans.User;
+import com.multshows.Beans.WorkAll_Beans;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.HideInputManager_Utils;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.SubString_Utils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+
+import okhttp3.Call;
+
+
+/**
+ * 描述：自定义dialog实现添加相册的弹出框效果
+ * 作者：贾强胜
+ * 时间：2016.7.14
+ */
+public class Dialog_Reward extends Dialog{
+    //控件
+    EditText mEditText;//输入框
+    Button mSave;//保存
+    ImageView mCancel;//取消
+    //上下文
+    private FlakeRewardView flakeView;
+    Context mContext;
+    EditTextContent mText;
+    TextView mUserName;//用户昵称
+    SimpleDraweeView mUserPic;//用户昵称
+    String image="";//头像
+    String name="";//昵称
+    String texts="";
+    RechangeNumber_Pop mNumberPop;
+    Activity mActivity;
+    Dialog_Hint hintText_dialog;
+    Dialog mDialog;
+    //选择打赏点击布局控件
+    RelativeLayout mReward1;
+    RelativeLayout mReward10;
+    RelativeLayout mReward20;
+    RelativeLayout mReward5;
+    RelativeLayout mReward100;
+    RelativeLayout mReward200;
+    RelativeLayout flower_ParentLayout;
+    RelativeLayout RewordLayout2;
+    //选择打赏显示选中图片
+    ImageView chiocetrue1;
+    ImageView chiocetrue2;
+    ImageView chiocetrue3;
+    ImageView chiocetrue4;
+    ImageView chiocetrue5;
+    ImageView chiocetrue6;
+    Gson mGson=new Gson();
+    String edText="";//输入框提示文字
+    String btText="";//按钮提示文字
+    //textview选中后变色
+    TextView num1;
+    TextView num2;
+    TextView num3;
+    TextView num4;
+    TextView num5;
+    TextView num6;
+    TextView yuan;
+    TextView yuan2;
+    TextView yuan3;
+    TextView yuan4;
+    TextView yuan5;
+    TextView yuan6;
+    //回调函数
+    Handler handlerRain = new Handler();
+    Runnable runnableRain = new Runnable() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            flakeView.addFlakes(15);
+            //handlerRain.postDelayed(runnableRain, 500);
+            if(flakeView.getNumFlakes() > 70)
+            {
+                handlerRain.removeCallbacks(runnableRain);
+                handlerRain.removeCallbacks(runnableRain);
+                handlerRain.removeCallbacks(runnableRain);
+            }
+        }
+    };
+
+    public interface EditTextContent{
+        void getEditText(String text);
+    }
+
+
+    public Dialog_Reward(Context context) {
+        super(context);
+        mContext=context;
+    }
+
+    public Dialog_Reward(Activity activity,Context context, int themeResId, String header, String names,
+                         EditTextContent editText,String text_1,String text_2) {
+        super(context, themeResId);
+        mActivity=activity;
+        mContext=context;
+        mText=editText;
+        image= SubString_Utils.getImageUrl(header);
+        name=names;
+        edText=text_1;
+        btText=text_2;
+    }
+    public Dialog_Reward(Activity activity,Context context, int themeResId, WorkAll_Beans bean,EditTextContent editText) {
+        super(context, themeResId);
+        mActivity=activity;
+        mContext=context;
+        mText=editText;
+        image=bean.getUserPic();
+        name=bean.getUsername();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //绑定自定义布局
+        this.setContentView(R.layout.dialog_reward);
+        this.setCancelable(true);// 设置点击屏幕Dialog消失
+        setCanceledOnTouchOutside(true);
+
+        //去黑角
+        getWindow().setBackgroundDrawable(new BitmapDrawable());
+        initView();
+        initData();
+        initListen();
+
+    }
+
+
+    private void initData() {
+        flakeView = new FlakeRewardView(mContext);
+        flower_ParentLayout.addView(flakeView);
+        handlerRain.postDelayed(runnableRain, 0);
+        handlerRain.postDelayed(runnableRain, 0);
+        handlerRain.postDelayed(runnableRain, 0);
+
+
+
+
+
+        mUserPic.setImageURI(Uri.parse(image));
+        mUserName.setText(name);
+        if(!"".equals(edText) && !"".equals(btText)){
+            mEditText.setHint(edText);
+            mSave.setText(btText);
+        }
+    }
+
+
+    /**
+     * 初始化
+     */
+    private void initView() {
+        flower_ParentLayout= (RelativeLayout) findViewById(R.id.flower_ParentLayout);
+        mCancel= (ImageView) findViewById(R.id.Rewadrclose);
+        RewordLayout2= (RelativeLayout) findViewById(R.id.RewordLayout2);
+        mReward1= (RelativeLayout) findViewById(R.id.reward1);
+        mReward10= (RelativeLayout) findViewById(R.id.reward10);
+        mReward20= (RelativeLayout) findViewById(R.id.reward20);
+        mReward5= (RelativeLayout) findViewById(R.id.reward5);
+        mReward100= (RelativeLayout) findViewById(R.id.reward100);
+        mReward200= (RelativeLayout) findViewById(R.id.reward200);
+        mEditText= (EditText) findViewById(R.id.TextNumReward);
+        mUserName= (TextView) findViewById(R.id.reward_userName);
+        chiocetrue1= (ImageView) findViewById(R.id.chiocetrue1);
+        chiocetrue2= (ImageView) findViewById(R.id.chiocetrue2);
+        chiocetrue3= (ImageView) findViewById(R.id.chiocetrue3);
+        chiocetrue4= (ImageView) findViewById(R.id.chiocetrue4);
+        chiocetrue5= (ImageView) findViewById(R.id.chiocetrue5);
+        chiocetrue6= (ImageView) findViewById(R.id.chiocetrue6);
+        mUserPic= (SimpleDraweeView)findViewById(R.id.reward_userPic);
+        mSave= (Button) findViewById(R.id.SureRewardSend);
+        num1= (TextView) findViewById(R.id.num1);
+        num2= (TextView) findViewById(R.id.num2);
+        num3= (TextView) findViewById(R.id.num3);
+        num4= (TextView) findViewById(R.id.num4);
+        num5= (TextView) findViewById(R.id.num5);
+        num6= (TextView) findViewById(R.id.num6);
+        yuan= (TextView) findViewById(R.id.yuan);
+        yuan2= (TextView) findViewById(R.id.yuan2);
+        yuan3= (TextView) findViewById(R.id.yuan3);
+        yuan4= (TextView) findViewById(R.id.yuan4);
+        yuan5= (TextView) findViewById(R.id.yuan5);
+        yuan6= (TextView) findViewById(R.id.yuan6);
+    }
+
+    /**
+     * 事件监听
+     */
+    private void initListen() {
+       //限制只能两位小数，小于1
+        mEditText.addTextChangedListener(new TextWatcher()
+        {
+            public void afterTextChanged(Editable edt)
+            {
+                String temp = edt.toString();
+                if(!temp.equals("")){
+                    if(temp.equals(".")){
+                        mEditText.setText("");
+                    }else {
+                        String mInt[]=temp.split("\\.");
+                        if(mInt.length>0)
+                            if(Integer.parseInt(mInt[0])<1){
+                                mEditText.setText("1");
+                                mEditText.setSelection(mEditText.getText().length());
+                            }
+                        int posDot = temp.indexOf(".");
+                        if (posDot <= 0) return;
+                        if (temp.length() - posDot - 1 > 2)
+                        {
+                            edt.delete(posDot + 3, posDot + 4);
+                        }
+                    }
+
+                }
+
+
+            }
+
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+        });
+        flower_ParentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        RewordLayout2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        //取消
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        mReward1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditText.setText("1");
+                mEditText.setSelection(mEditText.getText().length());
+                chiocetrue1.setVisibility(View.VISIBLE);
+                chiocetrue2.setVisibility(View.INVISIBLE);
+                chiocetrue3.setVisibility(View.INVISIBLE);
+                chiocetrue4.setVisibility(View.INVISIBLE);
+                chiocetrue5.setVisibility(View.INVISIBLE);
+                chiocetrue6.setVisibility(View.INVISIBLE);
+                num1.setTextColor(Color.WHITE);
+                yuan.setTextColor(Color.WHITE);
+                num2.setTextColor(Color.parseColor("#FFC800"));
+                yuan2.setTextColor(Color.parseColor("#FFC800"));
+                num3.setTextColor(Color.parseColor("#FFC800"));
+                yuan3.setTextColor(Color.parseColor("#FFC800"));
+                num4.setTextColor(Color.parseColor("#FFC800"));
+                yuan4.setTextColor(Color.parseColor("#FFC800"));
+                num5.setTextColor(Color.parseColor("#FFC800"));
+                yuan5.setTextColor(Color.parseColor("#FFC800"));
+                num6.setTextColor(Color.parseColor("#FFC800"));
+                yuan6.setTextColor(Color.parseColor("#FFC800"));
+            }
+        });
+        mReward10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditText.setText("10");
+                mEditText.setSelection(mEditText.getText().length());
+                chiocetrue1.setVisibility(View.INVISIBLE);
+                chiocetrue2.setVisibility(View.VISIBLE);
+                chiocetrue3.setVisibility(View.INVISIBLE);
+                chiocetrue4.setVisibility(View.INVISIBLE);
+                chiocetrue5.setVisibility(View.INVISIBLE);
+                chiocetrue6.setVisibility(View.INVISIBLE);
+                num1.setTextColor(Color.parseColor("#FFC800"));
+                yuan.setTextColor(Color.parseColor("#FFC800"));
+                num2.setTextColor(Color.WHITE);
+                yuan2.setTextColor(Color.WHITE);
+                num3.setTextColor(Color.parseColor("#FFC800"));
+                yuan3.setTextColor(Color.parseColor("#FFC800"));
+                num4.setTextColor(Color.parseColor("#FFC800"));
+                yuan4.setTextColor(Color.parseColor("#FFC800"));
+                num5.setTextColor(Color.parseColor("#FFC800"));
+                yuan5.setTextColor(Color.parseColor("#FFC800"));
+                num6.setTextColor(Color.parseColor("#FFC800"));
+                yuan6.setTextColor(Color.parseColor("#FFC800"));
+
+            }
+        });
+        mReward20.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditText.setText("20");
+                mEditText.setSelection(mEditText.getText().length());
+                chiocetrue1.setVisibility(View.INVISIBLE);
+                chiocetrue2.setVisibility(View.INVISIBLE);
+                chiocetrue3.setVisibility(View.VISIBLE);
+                chiocetrue4.setVisibility(View.INVISIBLE);
+                chiocetrue5.setVisibility(View.INVISIBLE);
+                chiocetrue6.setVisibility(View.INVISIBLE);
+                num1.setTextColor(Color.parseColor("#FFC800"));
+                yuan.setTextColor(Color.parseColor("#FFC800"));
+                num3.setTextColor(Color.WHITE);
+                yuan3.setTextColor(Color.WHITE);
+                num2.setTextColor(Color.parseColor("#FFC800"));
+                yuan2.setTextColor(Color.parseColor("#FFC800"));
+                num4.setTextColor(Color.parseColor("#FFC800"));
+                yuan4.setTextColor(Color.parseColor("#FFC800"));
+                num5.setTextColor(Color.parseColor("#FFC800"));
+                yuan5.setTextColor(Color.parseColor("#FFC800"));
+                num6.setTextColor(Color.parseColor("#FFC800"));
+                yuan6.setTextColor(Color.parseColor("#FFC800"));
+            }
+        });
+        mReward5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditText.setText("5");
+                mEditText.setSelection(mEditText.getText().length());
+                chiocetrue1.setVisibility(View.INVISIBLE);
+                chiocetrue2.setVisibility(View.INVISIBLE);
+                chiocetrue3.setVisibility(View.INVISIBLE);
+                chiocetrue4.setVisibility(View.VISIBLE);
+                chiocetrue5.setVisibility(View.INVISIBLE);
+                chiocetrue6.setVisibility(View.INVISIBLE);
+                num1.setTextColor(Color.parseColor("#FFC800"));
+                yuan.setTextColor(Color.parseColor("#FFC800"));
+                num4.setTextColor(Color.WHITE);
+                yuan4.setTextColor(Color.WHITE);
+                num2.setTextColor(Color.parseColor("#FFC800"));
+                yuan2.setTextColor(Color.parseColor("#FFC800"));
+                num3.setTextColor(Color.parseColor("#FFC800"));
+                yuan3.setTextColor(Color.parseColor("#FFC800"));
+                num5.setTextColor(Color.parseColor("#FFC800"));
+                yuan5.setTextColor(Color.parseColor("#FFC800"));
+                num6.setTextColor(Color.parseColor("#FFC800"));
+                yuan6.setTextColor(Color.parseColor("#FFC800"));
+
+            }
+        });
+        mReward100.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditText.setText("100");
+                mEditText.setSelection(mEditText.getText().length());
+                chiocetrue1.setVisibility(View.INVISIBLE);
+                chiocetrue2.setVisibility(View.INVISIBLE);
+                chiocetrue3.setVisibility(View.INVISIBLE);
+                chiocetrue4.setVisibility(View.INVISIBLE);
+                chiocetrue5.setVisibility(View.VISIBLE);
+                chiocetrue6.setVisibility(View.INVISIBLE);
+                num1.setTextColor(Color.parseColor("#FFC800"));
+                yuan.setTextColor(Color.parseColor("#FFC800"));
+                num5.setTextColor(Color.WHITE);
+                yuan5.setTextColor(Color.WHITE);
+                num2.setTextColor(Color.parseColor("#FFC800"));
+                yuan2.setTextColor(Color.parseColor("#FFC800"));
+                num4.setTextColor(Color.parseColor("#FFC800"));
+                yuan4.setTextColor(Color.parseColor("#FFC800"));
+                num3.setTextColor(Color.parseColor("#FFC800"));
+                yuan3.setTextColor(Color.parseColor("#FFC800"));
+                num6.setTextColor(Color.parseColor("#FFC800"));
+                yuan6.setTextColor(Color.parseColor("#FFC800"));
+
+            }
+        });
+        mReward200.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditText.setText("200");
+                mEditText.setSelection(mEditText.getText().length());
+                chiocetrue1.setVisibility(View.INVISIBLE);
+                chiocetrue2.setVisibility(View.INVISIBLE);
+                chiocetrue3.setVisibility(View.INVISIBLE);
+                chiocetrue4.setVisibility(View.INVISIBLE);
+                chiocetrue5.setVisibility(View.INVISIBLE);
+                chiocetrue6.setVisibility(View.VISIBLE);
+                num1.setTextColor(Color.parseColor("#FFC800"));
+                yuan.setTextColor(Color.parseColor("#FFC800"));
+                num6.setTextColor(Color.WHITE);
+                yuan6.setTextColor(Color.WHITE);
+                num2.setTextColor(Color.parseColor("#FFC800"));
+                yuan2.setTextColor(Color.parseColor("#FFC800"));
+                num4.setTextColor(Color.parseColor("#FFC800"));
+                yuan4.setTextColor(Color.parseColor("#FFC800"));
+                num5.setTextColor(Color.parseColor("#FFC800"));
+                yuan5.setTextColor(Color.parseColor("#FFC800"));
+                num6.setTextColor(Color.parseColor("#FFC800"));
+                yuan6.setTextColor(Color.parseColor("#FFC800"));
+                num1.setTextColor(Color.parseColor("#FFC800"));
+                yuan.setTextColor(Color.parseColor("#FFC800"));
+
+                num6.setTextColor(Color.WHITE);
+                yuan6.setTextColor(Color.WHITE);
+                num2.setTextColor(Color.parseColor("#FFC800"));
+                yuan2.setTextColor(Color.parseColor("#FFC800"));
+                num4.setTextColor(Color.parseColor("#FFC800"));
+                yuan4.setTextColor(Color.parseColor("#FFC800"));
+                num5.setTextColor(Color.parseColor("#FFC800"));
+                yuan5.setTextColor(Color.parseColor("#FFC800"));
+                num3.setTextColor(Color.parseColor("#FFC800"));
+                yuan3.setTextColor(Color.parseColor("#FFC800"));
+            }
+        });
+        //保存
+        mSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HideInputManager_Utils.hideInputManager(mContext);
+                mSave.setEnabled(false);
+                texts=mEditText.getText().toString();
+                if(texts.equals("")){
+                    mEditText.setHint("输入金额,（最多999元）");
+                    mSave.setEnabled(true);
+                }else {
+                    getUser();
+                    MainActivity.isShow2=false;
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        /**
+         * 设置宽度全屏，要设置在show的后面
+         */
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.gravity=Gravity.BOTTOM;
+        layoutParams.width= RelativeLayout.LayoutParams.MATCH_PARENT;
+        layoutParams.height= RelativeLayout.LayoutParams.WRAP_CONTENT;
+
+        getWindow().getDecorView().setPadding(0, 0, 0, 0);
+
+        getWindow().setAttributes(layoutParams);
+
+    }
+
+    /**
+     * 验证支付密码
+     */
+    private void isRecharge(String pwd){
+        MyApplication myApplication=new MyApplication();
+        OkHttpUtils.get().url(myApplication.getUrl()+"/User/IsCheckPayPassword")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("pwd",pwd)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","验证支付密码失败"+e.toString());
+                        mDialog=new HintText_Dialog(mContext,R.style.MyDialog);
+                        mDialog.show();
+                        HintText_Dialog mText_dialog=new HintText_Dialog(mContext,"支付失败","fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                                MainActivity.isShow2=true;
+                            }
+                        },Login_Static.hintTime);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","验证支付密码"+response);
+                        try {
+                            if(Integer.parseInt(Json_Utils.getTemplate(response))==1){
+                                mText.getEditText(texts);
+                                mNumberPop.setNumText();
+                                mNumberPop.dismiss();
+                                dismiss();
+                            }else {
+                                //错误时执行——
+                                hintText_dialog = new Dialog_Hint(mContext, 0, "您的输入密码不正确,是否重新输入?", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mNumberPop.setNumText();
+                                        hintText_dialog.dismiss();
+                                        MainActivity.isShow2=true;
+                                    }
+                                });
+                                hintText_dialog.show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+    /**
+     * 获取个人信息数据
+     */
+    private void getUser() {
+        MyApplication myApplication = (MyApplication) mContext.getApplicationContext();
+        OkHttpUtils.get().url(myApplication.getUrl() + "/User/GetUser")
+                .addParams("userid", Login_Static.myUserID)
+                .addParams("targetuserid", "0")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing", "个人信息 失败" + e.toString());
+                        mSave.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", "个人信息：" + response);
+                        mSave.setEnabled(true);
+                        try {
+                            CLog.e("testing", "个人信息：" + Json_Utils.getTemplate(response));
+                            if (Json_Utils.getCode(response) == 0) {
+                                User mUser = mGson.fromJson(Json_Utils.getTemplate(response), User.class);
+                                if("".equals(mUser.getPayPassword())){
+                                    //没设置
+                                    hintText_dialog = new Dialog_Hint(mContext, 0,
+                                            "您还没有设置支付密码,是否前往设置?", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            hintText_dialog.dismiss();
+                                            Intent intent = new Intent(mContext, Login_FindPassword_Activity.class);
+                                            intent.putExtra("PassWordType", 2);
+                                            mContext.startActivity(intent);
+                                        }
+                                    });
+                                    hintText_dialog.show();
+                                }else if(mUser.getBalance()<Double.parseDouble(texts)){
+                                    //没设置
+                                    hintText_dialog = new Dialog_Hint(mContext, 0,
+                                            "您的余额已不足,是否前往充值?", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            hintText_dialog.dismiss();
+                                            Intent intent = new Intent(mContext, My_MyWallet_Activity.class);
+                                            mContext.startActivity(intent);
+                                        }
+                                    });
+                                    hintText_dialog.show();
+                                }else {
+                                    mNumberPop=new RechangeNumber_Pop(mActivity,texts);
+                                    //设置弹出动画效果
+                                    mNumberPop.setAnimationStyle(R.style.PopupAnimation);
+                                    //显示窗口  //设置layout在PopupWindow中显示的位置
+                                    mNumberPop.showAtLocation(findViewById(R.id.flower_ParentLayout),
+                                            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                                    mNumberPop.setNum(new RechangeNumber_Pop.Num() {
+                                        @Override
+                                        public void num(String text) {
+                                            CLog.e("testing", text);
+                                            //判断密码是否正确
+                                            MainActivity.isShow2=false;
+                                            isRecharge(text);
+
+                                        }
+                                    });
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+}

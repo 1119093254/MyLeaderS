@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
+    >
+
+    <com.multshows.Views.CustomViewPager
+        android:id="@+id/vpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="45dp"
+        />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:layout_width="31dp"
+        android:layout_height="31dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="10dp"
+        fresco:placeholderImage="@drawable/identity_switchimg"
+        fresco:roundAsCircle="true"
+        android:id="@+id/identity_switchimg"
+       />
+    <RelativeLayout
+        android:id="@+id/comment_BottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/edit_grey"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/Comment_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="59dp"
+            android:background="#F5F5F6">
+
+            <ImageView
+                android:id="@+id/CommentfaceImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/info_face"/>
+
+            <TextView
+                android:id="@+id/CommentSent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:text="发表"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:id="@+id/CommentSent2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:text="发表"/>
+
+            <com.rockerhieu.emojicon.EmojiconEditText
+                android:id="@+id/comment_EditText"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="9dp"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="9dp"
+                android:layout_toLeftOf="@id/CommentSent"
+                android:layout_toRightOf="@+id/CommentfaceImage"
+                android:background="@drawable/border_9_white"
+                android:hint="输入内容..."
+                android:paddingLeft="10dp"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/comment_bottom_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Comment_Layout"
+            android:visibility="gone"
+
+            >
+
+            <FrameLayout
+                android:id="@+id/comment_bottom_fragment"
+                class="com.rockerhieu.emojicon.EmojiconsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bootom"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/nav_footerbg"
+        android:visibility="gone">
+
+        <RadioGroup
+            android:id="@+id/rg_tab_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_channel"
+                style="@style/tab_menu_item"
+                android:checked="true"
+                android:drawableTop="@drawable/main_bottom_1"
+                android:text="@string/home"/>
+
+            <RadioButton
+                android:id="@+id/rb_message"
+                style="@style/tab_menu_item"
+                android:drawableTop="@drawable/main_bottom_2"
+                android:text="@string/find"/>
+
+            <ImageView
+                android:id="@+id/add"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="1"
+                android:src="@drawable/release"
+                />
+
+            <RadioButton
+                android:id="@+id/rb_better"
+                style="@style/tab_menu_item"
+                android:drawableTop="@drawable/main_bottom_3"
+                android:text="@string/news"/>
+
+            <RadioButton
+                android:id="@+id/rb_setting"
+                style="@style/tab_menu_item"
+                android:drawableTop="@drawable/main_bottom_4"
+                android:text="@string/mys"/>
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/home_Text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/home"
+                android:textColor="@color/green"
+                android:textSize="9sp"/>
+
+            <TextView
+                android:id="@+id/find_Text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/find"
+                android:textColor="@color/text_grey_2"
+                android:textSize="9sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+
+                />
+
+            <TextView
+                android:id="@+id/news_Text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/news"
+                android:textColor="@color/text_grey_2"
+                android:textSize="9sp"/>
+
+            <TextView
+                android:id="@+id/mys_Text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/mys"
+                android:textColor="@color/text_grey_2"
+                android:textSize="9sp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/BabyBootom"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/item_bottom_bg"
+        android:visibility="visible">
+
+        <RadioGroup
+            android:id="@+id/rg_babyGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textTab"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_marginTop="5dp"
+                android:id="@+id/rb_baby1"
+                style="@style/tab_babymenu_item"
+                android:checked="true"
+                android:drawableTop="@drawable/main_babybottom_2"
+                />
+
+            <RadioButton
+                android:layout_marginTop="5dp"
+                android:id="@+id/rb_baby2"
+                style="@style/tab_babymenu_item"
+                android:drawableTop="@drawable/main_babybottom_1"
+               />
+
+            <ImageView
+                android:id="@+id/addBaby"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="1"
+                android:src="@drawable/item_bottom_publish_no"
+                />
+
+            <RadioButton
+                android:layout_marginTop="5dp"
+                android:id="@+id/rb_baby3"
+                style="@style/tab_babymenu_item"
+                android:drawableTop="@drawable/main_babybottom_3"
+                />
+
+            <RadioButton
+                android:layout_marginTop="5dp"
+                android:id="@+id/rb_baby4"
+                style="@style/tab_babymenu_item"
+                android:drawableTop="@drawable/main_babybottom_4"
+                />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/textTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="3dp">
+
+            <TextView
+                android:id="@+id/babyTask"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/work"
+                android:textColor="@color/green"
+                android:textSize="9sp"/>
+            <TextView
+                android:id="@+id/BabyWork_Text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/task"
+                android:textColor="@color/white"
+                android:textSize="9sp"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="发布"
+                android:textSize="9sp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                />
+            <TextView
+                android:id="@+id/BabyNews_Text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/news"
+                android:textColor="@color/white"
+                android:textSize="9sp"/>
+
+            <TextView
+                android:id="@+id/BabyMy_Text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/mys"
+                android:textColor="@color/white"
+                android:textSize="9sp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

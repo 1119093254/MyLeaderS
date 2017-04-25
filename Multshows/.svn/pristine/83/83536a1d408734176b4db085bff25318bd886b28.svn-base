@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:fitsSystemWindows="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/cricle_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/my_toplayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/green">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="发布圈子"
+                android:textColor="@color/white"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:id="@+id/ReleaseCricleActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="7dp"
+                android:padding="10dp"
+                android:text="发布"
+                android:textColor="@color/white"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/text_gray"/>
+
+            <ImageView
+                android:id="@+id/ReleaseCricle_return"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="7dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/index_return_arrow"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <EditText
+                android:id="@+id/Release_CricleContent"
+                android:layout_width="fill_parent"
+                android:layout_height="180dp"
+                android:layout_marginLeft="16dp"
+                android:background="@null"
+                android:gravity="left|top"
+                android:hint="说点什么吧...."
+                android:paddingTop="5dp"/>
+
+            <com.multshows.Views.MyGridView
+                android:id="@+id/imageCricleGridview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/Release_CricleContent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:horizontalSpacing="3dp"
+                android:numColumns="4"
+                android:scrollbars="none"
+                android:verticalSpacing="5dp">
+            </com.multshows.Views.MyGridView>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/CricleWhoSee"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/chioce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:text="谁可以看"
+                android:textColor="@color/bg_black"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/moreImage"
+                android:text="好友可见"
+                android:id="@+id/WhoSeeText"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:id="@+id/moreImage"
+                android:src="@drawable/set_more_icon"/>
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

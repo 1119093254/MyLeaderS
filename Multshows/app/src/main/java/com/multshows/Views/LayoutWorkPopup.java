@@ -1,0 +1,216 @@
+package com.multshows.Views;
+
+import android.content.Context;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.multshows.R;
+
+import java.util.ArrayList;
+
+/**
+ * 功能描述：作品评论上的的弹窗（继承自PopupWindow）
+ */
+public class LayoutWorkPopup extends PopupWindow {
+    private static final String TAG = LayoutWorkPopup.class.getSimpleName();
+    TextView likeText;
+    TextView collectText;
+    ImageView likeimage;
+    ImageView collectimage;
+    private RelativeLayout likeTextLayout;//赞
+    private RelativeLayout flowerLayout;//送花布局
+    private RelativeLayout rewardLayout;//打赏布局
+    private RelativeLayout commentLayout;//评论布局
+    private RelativeLayout collectLayout;//收藏布局
+    private RelativeLayout purchaseLayout;//购买布局
+    private Context mContext;
+
+    // 列表弹窗的间隔
+    protected final int LIST_PADDING = 10;
+
+    // 实例化一个矩形
+    private Rect mRect = new Rect();
+
+    // 坐标的位置（x、y）
+    private final int[] mLocation = new int[2];
+
+    // 屏幕的宽度和高度
+//	private int mScreenWidth, mScreenHeight;
+
+    // 判断是否需要添加或更新列表子类项
+    private boolean mIsDirty;
+
+    // 位置不在中心
+//	private int popupGravity = Gravity.NO_GRAVITY;
+
+    // 弹窗子类项选中时的监听
+    private OnItemOnClickListener mItemOnClickListener;
+
+    // 定义弹窗子类项列表
+    private ArrayList<ActionItem> mActionItems = new ArrayList<ActionItem>();
+
+    OnClickListener onclick = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            dismiss();
+
+            switch (v.getId()) {
+                case R.id.likeTextLayout:
+                    mItemOnClickListener.onItemWorkClick(mActionItems.get(0), 0);
+                    break;
+                case R.id.flowerLayout:
+                    mItemOnClickListener.onItemWorkClick(mActionItems.get(1), 1);
+                    break;
+                case R.id.rewardLayout:
+                    mItemOnClickListener.onItemWorkClick(mActionItems.get(2), 2);
+                    break;
+                case R.id.commentImageLayout:
+                    mItemOnClickListener.onItemWorkClick(mActionItems.get(3), 3);
+                    break;
+                case R.id.collectLayout:
+                    mItemOnClickListener.onItemWorkClick(mActionItems.get(4), 4);
+                    break;
+                case R.id.purchaseLayout:
+                    mItemOnClickListener.onItemWorkClick(mActionItems.get(5), 5);
+                    break;
+            }
+        }
+    };
+
+    public LayoutWorkPopup(Context context) {
+        // 设置布局的参数
+        this(context, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    }
+
+    public LayoutWorkPopup(Context context, int width, int height) {
+        this.mContext = context;
+
+        // 设置可以获得焦点
+        setFocusable(true);
+        // 设置弹窗内可点击
+        setTouchable(true);
+        // 设置弹窗外可点击
+        setOutsideTouchable(true);
+
+        // 获得屏幕的宽度和高度
+//		mScreenWidth = Util.getScreenWidth(mContext);
+//		mScreenHeight = Util.getScreenHeight(mContext);
+
+        // 设置弹窗的宽度和高度
+        setWidth(width);
+        setHeight(height);
+
+        setBackgroundDrawable(new BitmapDrawable());
+
+        // 设置弹窗的布局界面
+        View view = LayoutInflater.from(mContext).inflate(R.layout.popupworklayout, null);
+        setContentView(view);
+        Log.i(TAG, " -> " + view.getHeight() + "    " + view.getWidth());
+
+        commentLayout = (RelativeLayout) view.findViewById(R.id.commentImageLayout);
+        likeTextLayout = (RelativeLayout) view.findViewById(R.id.likeTextLayout);
+        flowerLayout = (RelativeLayout) view.findViewById(R.id.flowerLayout);
+        rewardLayout = (RelativeLayout) view.findViewById(R.id.rewardLayout);
+        collectLayout = (RelativeLayout) view.findViewById(R.id.collectLayout);
+        likeimage = (ImageView) view.findViewById(R.id.likeimage);
+        collectimage = (ImageView) view.findViewById(R.id.collectimage);
+        purchaseLayout = (RelativeLayout) view.findViewById(R.id.purchaseLayout);
+        likeText = (TextView) view.findViewById(R.id.likeText);
+        collectText = (TextView) view.findViewById(R.id.collectText);
+
+        commentLayout.setOnClickListener(onclick);
+        likeTextLayout.setOnClickListener(onclick);
+        flowerLayout.setOnClickListener(onclick);
+        rewardLayout.setOnClickListener(onclick);
+        collectLayout.setOnClickListener(onclick);
+        purchaseLayout.setOnClickListener(onclick);
+    }
+
+    /**
+     * 显示弹窗列表界面
+     */
+    public void show(final View c) {
+        // 获得点击屏幕的位置坐标
+        c.getLocationOnScreen(mLocation);
+        // 设置矩形的大小
+        mRect.set(mLocation[0], mLocation[1], mLocation[0] + c.getWidth(), mLocation[1] + c.getHeight());
+        likeText.setText(mActionItems.get(0).mTitle);
+        collectText.setText(mActionItems.get(4).getTitle());
+        likeimage.setImageDrawable(mActionItems.get(0).getDrawable());
+        collectimage.setImageDrawable(mActionItems.get(4).getDrawable());
+        if(mActionItems.get(5).getTitle().equals("")){
+            purchaseLayout.setVisibility(View.INVISIBLE);
+        }else {
+            purchaseLayout.setVisibility(View.VISIBLE);
+        }
+        // 判断是否需要添加或更新列表子类项
+        if (mIsDirty) {
+            // populateActions();
+        }
+        Log.i(TAG, "this.height ->  " + this.getHeight());// 50
+        Log.i(TAG, "height ->  " + c.getHeight());// 96
+        Log.i(TAG, "this.width -> " + this.getWidth());
+
+        Log.i(TAG, "mLocation[1] -> " + (mLocation[1]));
+
+        // 显示弹窗的位置
+        // showAtLocation(view, popupGravity, mScreenWidth - LIST_PADDING
+        // - (getWidth() / 2), mRect.bottom);
+        showAtLocation(c, Gravity.NO_GRAVITY, mLocation[0] - this.getWidth()
+                - 10, mLocation[1] - ((this.getHeight() - c.getHeight()) / 2));
+    }
+
+    /**
+     * 添加子类项
+     */
+    public void addAction(ActionItem action) {
+        if (action != null) {
+            mActionItems.add(action);
+            mIsDirty = true;
+        }
+    }
+
+    /**
+     * 清除子类项
+     */
+    public void cleanAction() {
+        if (mActionItems.isEmpty()) {
+            mActionItems.clear();
+            mIsDirty = true;
+        }
+    }
+
+    /**
+     * 根据位置得到子类项
+     */
+    public ActionItem getAction(int position) {
+        if (position < 0 || position > mActionItems.size())
+            return null;
+
+        return mActionItems.get(position);
+    }
+
+    /**
+     * 设置监听事件
+     */
+    public void setItemOnClickListener(OnItemOnClickListener onItemOnClickListener) {
+        this.mItemOnClickListener = onItemOnClickListener;
+    }
+
+    /**
+     * 功能描述：弹窗子类项按钮监听事件
+     */
+    public interface OnItemOnClickListener {
+        void onItemWorkClick(ActionItem item, int position);
+    }
+}

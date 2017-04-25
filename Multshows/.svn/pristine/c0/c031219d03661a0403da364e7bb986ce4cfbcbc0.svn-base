@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/friends_requestList_ParentsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    tools:context="com.multshows.Activity.Friends_RequestList_Activity">
+
+    <RelativeLayout
+        android:id="@+id/friends_requestList_returnLayout"
+        style="@style/top_APP"
+        android:background="@drawable/layout_border_bottom1_white">
+        <ImageView
+            android:id="@+id/friends_requestList_return"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/return_arrow"/>
+
+        <TextView
+            android:id="@+id/friends_requestList_TopTitle"
+            style="@style/text_ww_20_text_grey_2"
+            android:layout_centerInParent="true"
+            android:text="好友申请"/>
+    </RelativeLayout>
+    <com.multshows.Views.PullToRefresh
+        android:id="@+id/friends_requestList_Refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <ListView
+        android:id="@+id/friends_requestList_ListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:divider="@null"/>
+    <include
+        android:id="@+id/friends_requestList_No_View"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/no_view"/>
+    </com.multshows.Views.PullToRefresh>
+</LinearLayout>

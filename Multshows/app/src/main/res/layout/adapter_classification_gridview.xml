@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/classfication_topLayout"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:background="@drawable/gv_one_selector"
+                android:orientation="vertical">
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:layout_marginTop="20dp"
+            android:id="@+id/classificationgridviewItem"
+            android:layout_width="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_height="60dp"
+            fresco:actualImageScaleType="fitXY"
+            fresco:failureImage="@drawable/defult"
+            />
+
+        <TextView
+            android:id="@+id/classificationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/classificationgridviewItem"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="22dp"
+            android:layout_marginTop="8dp"
+            android:textSize="17sp" />
+    </RelativeLayout>
+    <CheckBox
+        android:layout_marginTop="20dp"
+        android:id="@+id/classificationText_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:clickable="false"
+        android:button="@drawable/chenkbox_bacground"
+        android:textSize="17sp" />
+</FrameLayout>
+
+</RelativeLayout>

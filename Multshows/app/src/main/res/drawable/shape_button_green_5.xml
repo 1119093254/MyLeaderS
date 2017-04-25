@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 设置圆角 可用radius设置4个方向的圆角，也可分别单独设置4个圆角-->
+    <corners
+        android:topLeftRadius="5dp"
+        android:topRightRadius="5dp"
+        android:bottomLeftRadius="5dp"
+        android:bottomRightRadius="5dp" />
+    <!-- 实心，即填充的颜色 -->
+    <solid android:color="@color/white"/>
+    <stroke android:color="@color/text_green"
+            android:width="1dp"/>
+</shape>

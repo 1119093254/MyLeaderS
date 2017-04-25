@@ -1,0 +1,290 @@
+package com.multshows.Activity;
+
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.multshows.Beans.UserAmount;
+import com.multshows.Beans.UserAssetTerm;
+import com.multshows.Beans.UserAuthentication;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.MomORBaby_Utils;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Views.Dialog_Hint;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+
+import okhttp3.Call;
+
+/**
+ * 我的钱包
+ */
+public class My_MyWallet_Activity extends AppCompatActivity {
+    //控件
+    ImageView mReturn;//返回
+    RelativeLayout mReturnLayout;//顶部布局
+    LinearLayout mParentLayout;//父布局
+    TextView mTopTitle;//大标题
+    TextView mBalance;//余额
+    RelativeLayout mRecharge;//充值
+    RelativeLayout mKitting;//提现
+    RelativeLayout mLayout_1;//交易记录
+    RelativeLayout mLayout_2;//打赏记录
+    RelativeLayout mLayout_3;//绑定一麻袋
+    RelativeLayout mLayout_4;//我的银行卡
+    TextView mBankNumber;//银行卡数量
+    Dialog_Hint dialog_hints;
+
+    SaveSharedPreferences mSharedPreferences=new SaveSharedPreferences();
+    Gson mGson=new Gson();
+    MyApplication myApplication;
+    Dialog mDialog;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_my_my_wallet);
+        MySystemBarTintManage_Utils manageUtils=new MySystemBarTintManage_Utils();
+        manageUtils.setSystemBarTintManage(My_MyWallet_Activity.this,R.color.app_topColor);
+        myApplication= (MyApplication) getApplication();
+        initView();
+        initData();
+        initListen();
+
+    }
+
+    /**
+     * 初始化
+     */
+    private void initView() {
+        mReturn= (ImageView) findViewById(R.id.My_MyWallet_return);
+        mReturnLayout= (RelativeLayout) findViewById(R.id.My_MyWallet_returnLayout);
+        mParentLayout= (LinearLayout) findViewById(R.id.My_MyWallet_ParentsLayout);
+        mTopTitle= (TextView) findViewById(R.id.My_MyWallet_TopTitle);
+        mBalance= (TextView) findViewById(R.id.My_MyWallet_Balance);
+        mRecharge= (RelativeLayout) findViewById(R.id.My_MyWallet_Recharge);
+        mKitting= (RelativeLayout) findViewById(R.id.My_MyWallet_Kitting);
+        mLayout_1= (RelativeLayout) findViewById(R.id.My_MyWallet_layout1);
+        mLayout_2= (RelativeLayout) findViewById(R.id.My_MyWallet_layout2);
+        mLayout_3= (RelativeLayout) findViewById(R.id.My_MyWallet_layout3);
+        mLayout_4= (RelativeLayout) findViewById(R.id.My_MyWallet_layout4);
+        mBankNumber= (TextView) findViewById(R.id.My_MyWallet_images_BankNumberText);
+    }
+
+    /**
+     * 数据处理
+     */
+    private void initData() {
+        String type=mSharedPreferences.Get_PREFS(My_MyWallet_Activity.this,"Type");//代表此页妈妈界面还是宝宝页面unlogin没登录
+        if("mom".equals(type)) {
+            //妈妈端
+            mLayout_3.setVisibility(View.VISIBLE);
+        }else if("baby".equals(type)){
+            //宝宝端
+            mLayout_3.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 事件处理
+     */
+    private void initListen() {
+        //返回
+        mReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        //充值
+        mRecharge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(My_MyWallet_Activity.this,My_MyWalletFragment_Activity.class);
+                intent.putExtra("MyWallet_type","Recharge");
+                startActivity(intent);
+            }
+        });
+        //提现
+        mKitting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(My_MyWallet_Activity.this,My_Kitting_Activity.class);
+                //intent.putExtra("MyWallet_type","Kiting");
+                startActivity(intent);
+            }
+        });
+        //交易记录
+        mLayout_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(My_MyWallet_Activity.this,My_MyWalletFragment_Activity.class);
+                intent.putExtra("MyWallet_type","TradingList");
+                startActivity(intent);
+            }
+        });
+        //打赏记录
+        mLayout_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(My_MyWallet_Activity.this,My_ReWordList_Activity.class);
+                startActivity(intent);
+            }
+        });
+        //绑定一麻袋
+        mLayout_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getState();
+            }
+        });
+        //我的银行卡
+        mLayout_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(My_MyWallet_Activity.this,My_BankList_Activity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getInformation();
+    }
+
+    /**
+     * 获取数据
+     */
+    private void getInformation() {
+        OkHttpUtils.get().url(myApplication.getUrl()+"/User/GetUserAmount")
+                .addParams("userid",Login_Static.myUserID)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","余额信息："+response);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                UserAmount bean=mGson.fromJson(Json_Utils.getTemplate(response),UserAmount.class);
+                                mBalance.setText(""+bean.getBalance());
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    /**
+     * 判断申请状态
+     *
+     */
+    private void getState(){
+        OkHttpUtils.get().url(myApplication.getUrl()+"/User/GetAuthen")
+                .addParams("userId",Login_Static.myUserID)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","获取用户实名认证失败"+e.toString());
+                        mDialog=new HintText_Dialog(My_MyWallet_Activity.this,R.style.MyDialog);
+                        mDialog.show();
+                        HintText_Dialog mHintText_dialog=new HintText_Dialog(My_MyWallet_Activity.this,"未知异常","fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },2000);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","获取用户实名认证"+response);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                UserAuthentication bean=mGson.fromJson(Json_Utils.getTemplate(response),UserAuthentication.class);
+                                if(bean.getUserId()!=null && !"null".equals(bean.getUserId()) && !"".equals(bean.getUserId())) {
+                                    if (bean.getIsAuthenticated() == 1) {
+                                        //1认证通过
+                                        Intent intent=new Intent(My_MyWallet_Activity.this,BoundYMD_Activity.class);
+                                        startActivity(intent);
+                                    } else if (bean.getIsAuthenticated() == 2) {
+                                        //认证中
+                                        mDialog = new HintText_Dialog(My_MyWallet_Activity.this, R.style.MyDialog);
+                                        mDialog.show();
+                                        HintText_Dialog mHintText_dialog = new HintText_Dialog(My_MyWallet_Activity.this,
+                                                "实名认证审核中无法绑定一麻袋,请等待...", "fail");
+                                        new Handler().postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mDialog.dismiss();
+                                            }
+                                        }, 2000);
+                                    } else {
+                                        dialog_hints = new Dialog_Hint(My_MyWallet_Activity.this, 0,
+                                                "还未进行实名认证,是否前往实名认证", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Intent intent = new Intent(My_MyWallet_Activity.this, My_Information_RealName_Activity.class);
+                                                startActivity(intent);
+                                                dialog_hints.dismiss();
+                                            }
+                                        });
+                                        dialog_hints.show();
+                                    }
+                                } else {
+                                    dialog_hints = new Dialog_Hint(My_MyWallet_Activity.this, 0,
+                                            "还未进行实名认证,是否前往实名认证", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent intent = new Intent(My_MyWallet_Activity.this, My_Information_RealName_Activity.class);
+                                            startActivity(intent);
+                                            dialog_hints.dismiss();
+                                        }
+                                    });
+                                    dialog_hints.show();
+                                }
+                            }else {
+                                mDialog=new HintText_Dialog(My_MyWallet_Activity.this,R.style.MyDialog);
+                                mDialog.show();
+                                HintText_Dialog mHintText_dialog=new HintText_Dialog(My_MyWallet_Activity.this,
+                                        Json_Utils.getMessage(response),"fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDialog.dismiss();
+                                    }
+                                },2000);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+}

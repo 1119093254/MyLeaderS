@@ -1,0 +1,515 @@
+package com.multshows.Activity;
+
+
+import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.multshows.Adapter.ActivityDetails_ImageText_Adapter;
+import com.multshows.Adapter.ActivityDetails_User_Adapter;
+import com.multshows.Beans.Activity;
+import com.multshows.Beans.ActivityDetailsUser_Beans;
+import com.multshows.Beans.ActivityDetails_Beans;
+import com.multshows.Beans.UserAuthentication;
+import com.multshows.Beans.UserInfoTag;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Emoji_Change;
+import com.multshows.Utils.Emoji_Map;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Utils.SubString_Utils;
+import com.multshows.Utils.Verification_Utils;
+import com.multshows.Views.Dialog_Editext;
+import com.multshows.Views.Dialog_Hint;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.MyListView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import okhttp3.Call;
+
+/**
+ * 描述：活动详情界面
+ * 作者：李萧萧
+ * 时间：2016.10/8
+ */
+public class Activity_Details_Activity extends BaseActivity {
+    @Bind(R.id.Activity_return)
+    ImageView mActivityReturn;//返回
+    @Bind(R.id.Activity_edit)
+    TextView mActivityEdit;//编辑文字（已隐藏）
+    @Bind(R.id.ActivityDetails_image)
+    SimpleDraweeView mActivityDetailsImage;//发布人的头像
+    @Bind(R.id.ActivityDetails_username)
+    TextView mActivityDetailsUsername;//发布人的昵称
+    @Bind(R.id.TitleText)
+    TextView mTitleText;//活动的标题
+    @Bind(R.id.TitleDetail)
+    TextView mTitleDetail;//活动的详情
+    @Bind(R.id.OverTimeText)
+    TextView mOverTimeText;//报名截止时间
+    @Bind(R.id.TimeText)
+    TextView mTimeText;//活动进行时间
+    @Bind(R.id.looknum)
+    TextView looknum;//看过该活动的人的数量
+    @Bind(R.id.AddressText)
+    TextView mAddressText;//活动地址显示
+    @Bind(R.id.Activity_details_listview)
+    MyListView mActivityDetailsListview;//活动图片显示ListView
+    @Bind(R.id.personNum)
+    TextView mPersonNum;//报名人数
+    @Bind(R.id.Activity_persondetails_listview)
+    MyListView mActivityPersondetailsListview;//报名人列表ListView
+    @Bind(R.id.Mysignup)
+    Button mMysignup;//报名活动/取消报名/取消活动的按钮
+    @Bind(R.id.bottomLayout)
+    RelativeLayout bottomLayout;//顶部导航部分 以下的布局，用来设置背景
+    @Bind(R.id.BabyisLook)
+    ImageView mBabyisLook;//宝宝是否可见按钮（已隐藏）
+    @Bind(R.id.activityLayout)
+    LinearLayout mActivityLayout;//活动布局
+    @Bind(R.id.BabyisLookLayout)
+    RelativeLayout mBabyisLookLayout;//活动布局
+    int isBabyLook = 0;//是否可见 0不可见，1可见
+    List<ActivityDetails_Beans> mList;//图文详情bean集合
+    List<ActivityDetailsUser_Beans> mListuser;//已报名用户列表bean
+    @Bind(R.id.ActivityDetailsLayout)
+    RelativeLayout mActivityDetailsLayout;//顶部导航布局， 用于设置背景
+    String activityId;//活动id
+    Gson mGson = new Gson();
+    Dialog_Hint hintText_dialog;//报名提示框
+    Dialog dialog;//消息提示框
+    SaveSharedPreferences mSave = new SaveSharedPreferences();
+    MyApplication mApplication;
+    Emoji_Change mEmoji_change = new Emoji_Change();//表情，匹配符替换类
+    Activity activity;//活动信息
+    String types="";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_activitydetails);
+        MySystemBarTintManage_Utils tintManageUtils = new MySystemBarTintManage_Utils();
+        tintManageUtils.setSystemBarTintManage(Activity_Details_Activity.this, R.color.green);//设置沉浸式颜色
+        ButterKnife.bind(this);//绑定id
+        mApplication = (MyApplication) this.getApplicationContext();
+        types=mSave.Get_PREFS(Activity_Details_Activity.this,"Type");//代表此页妈妈界面还是宝宝页面unlogin没登录
+        if("mom".equals(types)) {
+            mMysignup.setEnabled(true);
+        }else {
+            mMysignup.setEnabled(false);
+            mBabyisLookLayout.setVisibility(View.GONE);
+        }
+        dialog = new HintText_Dialog(Activity_Details_Activity.this, R.style.MyDialog);
+        Intent intent = getIntent();
+        activityId = intent.getStringExtra("activityId");
+        mList = new ArrayList<>();
+        //初始化数据
+        inData();
+        //监听
+        initLister();
+
+    }
+
+    @Override
+    public void findViews() {
+
+    }
+
+    @Override
+    public void addListeners() {
+
+    }
+
+    //监听事件
+    private void initLister() {
+
+    }
+
+    //设置宝宝对互动的可见性
+    public void ChangeActivityVisible() {
+        CLog.e("ChangeActivityVisible", activityId + "  " + Login_Static.mAccount.getAccountId() + "  " + isBabyLook);
+        OkHttpUtils.get().url(mApplication.getUrl() + "/Activity/ChangeActivityVisible")
+                .addParams("activityId", activityId)
+                .addParams("accountId", Login_Static.mAccount.getAccountId())
+                .addParams("isShow", isBabyLook + "")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        JSONObject jsonObject = null;
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                dialog.show();
+                                showError("设置成功", 1);
+
+                            } else {
+                                dialog.show();
+                                showError("设置失败", 0);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+    //初始化数据
+    private void inData() {
+        CLog.e("activityId", activityId);
+        CLog.e("currentUserId", Login_Static.myUserID);
+        OkHttpUtils.get().url(mApplication.getUrl() + "/Activity/GetActivityInfo")
+                .addParams("activityId", activityId)
+                .addParams("currentUserId", Login_Static.myUserID)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        JSONObject jsonObject = null;
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                JSONObject jsonArray = new JSONObject(Json_Utils.getTemplate(response));
+                                CLog.e("baby", jsonArray.length() + "");
+                                activity = mGson.fromJson(jsonArray.toString(), Activity.class);
+                                Uri mUri = Uri.parse(SubString_Utils.getImageUrl(activity.getSponsor().getPortrait()));
+                                mActivityDetailsImage.setImageURI(mUri);
+                                mActivityDetailsUsername.setText(activity.getSponsor().getNickName());
+                                mTitleText.setText(Emoji_Map.Emojichange(Activity_Details_Activity.this, mEmoji_change.ChangeEmoji(activity.getTitle())));
+                                mTitleDetail.setText(Emoji_Map.Emojichange(Activity_Details_Activity.this, mEmoji_change.ChangeEmoji(activity.getInfos())));
+                                mTimeText.setText(activity.getBeginTimeStr().substring(0, 16) + "至" + activity.getEndTimeStr().substring(0, 16));
+                                mOverTimeText.setText(activity.getSignDeadlineStr().substring(0, 16)+" 截止报名");
+                                mAddressText.setText(Emoji_Map.Emojichange(Activity_Details_Activity.this, mEmoji_change.ChangeEmoji(activity.getLocation())));
+                                mPersonNum.setText("已报名：" + activity.getParticipantCount());
+                                if (activity.isIsShow()) {
+                                    mBabyisLook.setImageResource(R.drawable.switch_on);
+                                    isBabyLook = 1;
+                                } else {
+                                    mBabyisLook.setImageResource(R.drawable.switch_off);
+                                    isBabyLook = 0;
+                                }
+                                looknum.setText(activity.getViews() + "");
+                                List<String> imageStrinig3 = new ArrayList<String>();
+                                // ActivityDetails_Beans bean = new ActivityDetails_Beans("http://pica.nipic.com/2008-01-12/200811215275498_2.jpg", activity.getInfos());
+                                if (activity.getImgs() != null) {
+                                    String[] imag = activity.getImgs().split(",");
+                                    CLog.e("", "" + imag.length);
+                                    for (int m = 0; m < imag.length; m++) {
+                                        imageStrinig3.add(SubString_Utils.getImageUrl(imag[m]));
+                                    }
+                                }
+                                for (int j = 0; j < imageStrinig3.size(); j++) {
+                                    ActivityDetails_Beans bean2 = new ActivityDetails_Beans(imageStrinig3.get(j), activity.getInfos());
+                                    mList.add(bean2);
+                                }
+                                for (int i = 0; i < activity.getParticipantCount(); i++) {
+                                    UserInfoTag mUser = activity.getParticipant().get(i).getUserInfo();
+                                    if (mUser.getUserId().equals(Login_Static.myUserID)) {
+                                        mMysignup.setText("取消报名");
+                                    }
+                                    ActivityDetailsUser_Beans mBean = new ActivityDetailsUser_Beans(activity.getSponsor().getUserId(), SubString_Utils.getImageUrl(mUser.getPortrait()), mUser.getNickName(), null, activity.getParticipant().get(i).getSignMobile());
+                                    mListuser.add(mBean);
+                                }
+                                ActivityDetails_ImageText_Adapter mAdapter = new ActivityDetails_ImageText_Adapter(Activity_Details_Activity.this, mList);
+                                mActivityDetailsListview.setAdapter(mAdapter);
+                                ActivityDetails_User_Adapter mUserAdapter = new ActivityDetails_User_Adapter(Activity_Details_Activity.this, mListuser);
+                                mActivityPersondetailsListview.setAdapter(mUserAdapter);
+                                if (Login_Static.myUserID.equals(activity.getSponsor().getUserId())) {
+                                    mMysignup.setText("取消活动");
+                                    mMysignup.setVisibility(View.VISIBLE);
+                                } else {
+                                    bottomLayout.setVisibility(View.VISIBLE);
+                                    mMysignup.setVisibility(View.VISIBLE);
+                                }
+                                mActivityLayout.setVisibility(View.VISIBLE);
+                            } else {
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        CLog.e("activityId", "" + activityId);
+        if (mSave.Get_PREFS(Activity_Details_Activity.this, "Type").equals("baby")) {
+            mActivityDetailsLayout.setAlpha((float) 0.9);
+        }
+        if (mSave.Get_PREFS(Activity_Details_Activity.this, "Type").equals("mom")) {
+            mActivityDetailsLayout.setAlpha(1);
+        }
+        mListuser = new ArrayList<>();
+        // ActivityDetails_Beans bean = new ActivityDetails_Beans("http://pica.nipic.com/2008-01-12/200811215275498_2.jpg", "月色满空，微凉如斯。你说我不来，你不走，可花期已过，情心已散，我找遍了城市的每个角落，依然不见你的身影，哭泣的蹲在路边，像个孩子。");
+        //  mList.add(bean);
+        //mList.add(bean);
+
+
+        // mPersonNum.setText("已报名：" + mListuser.size());
+    }
+
+    @OnClick({R.id.Activity_return, R.id.Activity_edit, R.id.ActivityDetails_image, R.id.Mysignup, R.id.BabyisLook})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.Activity_return:
+                finish();
+                break;
+            case R.id.Activity_edit:
+                if (activity != null) {
+                    Intent mIntent = new Intent(Activity_Details_Activity.this, Release_Activity_Activity.class);
+                    mIntent.putExtra("activity", activity);
+                    startActivity(mIntent);
+                }
+                break;
+            case R.id.ActivityDetails_image:
+                break;
+            case R.id.BabyisLook:
+                if (isBabyLook == 1) {
+                    mBabyisLook.setImageResource(R.drawable.switch_off);
+                    isBabyLook = 0;
+                    ChangeActivityVisible();
+                } else {
+                    isBabyLook = 1;
+                    mBabyisLook.setImageResource(R.drawable.switch_on);
+                    ChangeActivityVisible();
+                }
+                break;
+            case R.id.Mysignup:
+                if (mMysignup.getText().equals("我要报名")) {
+                    getState();
+                } else if (mMysignup.getText().equals("取消报名")) {
+                    cancleSignUp(activityId, Login_Static.mAccount.getAccountId());
+                } else if (mMysignup.getText().equals("取消活动")) {
+                    CloseActivity(activityId);
+                }
+
+                break;
+        }
+    }
+
+    private void CloseActivity(String activityId) {
+        dialog.show();
+        HintText_Dialog hint = new HintText_Dialog(Activity_Details_Activity.this, "正在取消活动...", "");
+        OkHttpUtils.get().url(mApplication.getUrl() + "/Activity/CancelActivity")
+                .addParams("activityId", activityId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        JSONObject jsonObject = null;
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                showError("关闭活动成功", 2);
+                            } else {
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+
+    //发布结果提示
+    public void showError(String errorString, final int is) {
+        String isString = null;
+        if (is == 1) {
+            isString = "success";
+        }
+        if (is == 2) {
+            isString = "success";
+            mMysignup.setText("取消报名");
+        }
+        if (is == 0) {
+            isString = "fail";
+        }
+        HintText_Dialog hint = new HintText_Dialog(Activity_Details_Activity.this, errorString, isString);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //得到返回值后，2秒后加载框消失
+                if (is == 2) {
+                    finish();
+                }
+                dialog.dismiss();
+            }
+        }, 2000);
+    }
+
+    //取消 报名
+    private void cancleSignUp(String mActivityId, String accountId) {
+        dialog.show();
+        HintText_Dialog hint = new HintText_Dialog(Activity_Details_Activity.this, "正在取消报名...", "");
+        OkHttpUtils.get().url(mApplication.getUrl() + "/Activity/UndoParticipateActivity")
+                .addParams("activityId", mActivityId)
+                .addParams("accountId", accountId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("onError", e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", response);
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                mMysignup.setText("我要报名");
+                                mList.clear();
+                                inData();
+                                showError("取消报名成功", 1);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+    /**
+     * 判断申请状态
+     */
+    private void getState() {
+        OkHttpUtils.get().url(mApplication.getUrl() + "/User/GetAuthen")
+                .addParams("userId", Login_Static.myUserID)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing", "获取用户实名认证失败" + e.toString());
+                        dialog.show();
+                        showError("获取实名认证信息失败", 0);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing", "获取用户实名认证" + response);
+                        try {
+                            if (Json_Utils.getCode(response) == 0) {
+                                UserAuthentication bean = mGson.fromJson(Json_Utils.getTemplate(response), UserAuthentication.class);
+                                if (bean.getUserId() != null && !"null".equals(bean.getUserId()) && !"".equals(bean.getUserId())) {
+                                    if (bean.getIsAuthenticated() == 0) {
+                                        //0未认证通过
+                                        dialog.show();
+                                        showError("实名认证未通过", 0);
+                                    } else if (bean.getIsAuthenticated() == 1) {
+                                        //1认证通过
+                                        final Dialog_Editext mDialog = new Dialog_Editext(Activity_Details_Activity.this, 0, "请输入手机号", "手机号不可为空", "输入手机号", new Dialog_Editext.EditTextContent() {
+                                            @Override
+                                            public void getEditText(String text) {
+
+
+                                                if (Verification_Utils.checkMobileNumber(text)) {
+                                                    dialog.show();
+                                                    HintText_Dialog hint = new HintText_Dialog(Activity_Details_Activity.this, "正在报名...", "");
+                                                    CLog.e("url", "" + mApplication.getUrl() + "/Activity/ParticipateActivity");
+                                                    CLog.e("userId", Login_Static.myUserID);
+                                                    CLog.e("activityId", activityId);
+                                                    CLog.e("mobile", text);
+                                                    OkHttpUtils.get().url(mApplication.getUrl() + "/Activity/ParticipateActivity")
+                                                            .addParams("activityId", activityId)
+                                                            .addParams("userId", Login_Static.myUserID)
+                                                            .addParams("mobile", text)
+                                                            .build()
+                                                            .execute(new StringCallback() {
+                                                                @Override
+                                                                public void onError(Call call, Exception e, int id) {
+                                                                    CLog.e("testing", e.getMessage());
+                                                                }
+
+                                                                @Override
+                                                                public void onResponse(String response, int id) {
+                                                                    CLog.e("testing", response);
+                                                                    JSONObject jsonObject = null;
+                                                                    try {
+                                                                        if (Json_Utils.getCode(response) == 0) {
+                                                                            mList.clear();
+                                                                            inData();
+                                                                            showError("报名成功", 2);
+                                                                        } else {
+                                                                            //后期判断错误原因
+                                                                            showError("报名失败", 0);
+                                                                        }
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                                }
+                                                            });
+                                                } else {
+                                                    dialog.show();
+                                                    showError("手机号格式不正确", 0);
+                                                }
+
+
+                                            }
+                                        });
+                                        mDialog.show();
+                                    } else if (bean.getIsAuthenticated() == 2) {
+                                        //2认证中
+                                        dialog.show();
+                                        showError("实名认证审核中无法报名活动,请等待...", 0);
+                                    }
+                                } else {
+                                    //还没认证
+//没设置
+                                    hintText_dialog = new Dialog_Hint(Activity_Details_Activity.this, 0,
+                                            "还未进行实名认证，是否前往实名认证?", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            hintText_dialog.dismiss();
+                                            Intent intent = new Intent(Activity_Details_Activity.this, My_Information_RealName_Activity.class);
+                                            startActivity(intent);
+                                        }
+                                    });
+                                    hintText_dialog.show();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+}

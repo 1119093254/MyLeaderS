@@ -1,0 +1,795 @@
+package com.multshows.Fragment;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.multshows.Activity.InvitationActivity;
+import com.multshows.Activity.LoginActivity;
+import com.multshows.Activity.LoginRegisterActivity;
+import com.multshows.Activity.MyCollection_Acyivity;
+import com.multshows.Activity.MyHomePager_Activity;
+import com.multshows.Activity.My_FlowerMarket_Activity;
+import com.multshows.Activity.My_Information_Activity;
+import com.multshows.Activity.My_Interests_Activity;
+import com.multshows.Activity.My_LookMe_Activity;
+import com.multshows.Activity.My_MeLook_Activity;
+import com.multshows.Activity.My_MyBaby_Activity;
+import com.multshows.Activity.My_MyWallet_Activity;
+import com.multshows.Activity.My_OrderList_Activity;
+import com.multshows.Activity.My_ReWordList_Activity;
+import com.multshows.Activity.Setting_Activity;
+import com.multshows.Activity.Setting_Change_Activity;
+import com.multshows.Adapter.MyFragmentItem_Adapter;
+import com.multshows.Beans.MyFragmentItem_Beans;
+import com.multshows.Beans.User;
+import com.multshows.Beans.UserFootprintTerm;
+import com.multshows.Beans.UserTerm;
+import com.multshows.Login_Static;
+import com.multshows.R;
+import com.multshows.Utils.CLog;
+import com.multshows.Utils.Json_Utils;
+import com.multshows.Utils.OKHttp;
+import com.multshows.Utils.SaveSharedPreferences;
+import com.multshows.Utils.SubString_Utils;
+import com.multshows.Views.HintText_Dialog;
+import com.multshows.Views.MyApplication;
+import com.multshows.Views.MyGridView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+
+/**
+ * 我的
+ */
+public class My_Fragment extends Fragment {
+    private boolean init;//记录界面是否为第一次加载
+    //上下文
+    Context mContext;
+    //父控件
+    RelativeLayout mParents;
+    //控件
+    TextView mTake;//设置
+    TextView mTitle;//标题
+    TextView mMeLookNumber;//我看过的数量
+    TextView mLookMeNumber;//看过我的数量
+    TextView mRewordMeNumber;//打赏我的数量
+
+    RelativeLayout mTopLayout;//顶部布局
+    RelativeLayout mInformation;//基本信息布局
+    RelativeLayout mMyLookLayout;//我看过的
+    RelativeLayout mLookMeLayout;//看过我的
+    RelativeLayout mGiveMoneyLayout;//打赏我的
+
+    RelativeLayout mZP;//我的作品
+    RelativeLayout mQZ;//我的圈子
+    RelativeLayout mXZ;//我的闲置
+    RelativeLayout mXC;//我的相册
+    RelativeLayout mRW;//我的任务
+
+  /*  RelativeLayout mMyBodyLayout;//我的宝宝
+    RelativeLayout mToUpdateLayout;//版本切换
+    RelativeLayout mInterestLayout;//兴趣标签
+    RelativeLayout mCollectionLayout;//我的收藏
+    RelativeLayout mFlowerLayout;//鲜花市场
+    RelativeLayout mMyOrderLayout;//我的订单
+    RelativeLayout mMyWalletLayout;//我的钱包*/
+    RelativeLayout my_toplayout;//我的钱包
+
+    MyGridView mMyGridView;
+    ScrollView mScrollView;
+    SimpleDraweeView mHeader;//头像
+    TextView mNickName;//昵称
+    TextView mTag_1;
+    TextView mTag_2;
+    TextView mTag_3;
+    SaveSharedPreferences mSharedPreferences=new SaveSharedPreferences();
+    //间隔布局
+    LinearLayout mLayout2,mLayout3;
+    List<MyFragmentItem_Beans> mItemBeanses=new ArrayList<>();
+    MyFragmentItem_Adapter mItemAdapter;
+    boolean isCan=false;
+    String type;
+    Dialog mDialog;
+    Gson mGson=new Gson();
+    MyApplication myApplication;
+    MyFragmentItem_Beans checkBean;
+
+    LinearLayout mUnloginLayout;//未登录界面
+    View mUnlogin;//未登录界面视图
+    TextView mUnLoginHint;
+    Button mLogin;//登录
+    Button mZC;//注册
+    String unlogin="";
+    String vip="";
+    MyFragmentItem_Beans b1,b2,b3,b4,b5,b6,b7,b8;
+    public My_Fragment() {
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext=activity;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_my,container,false);
+        myApplication= (MyApplication) getActivity().getApplication();
+        init=true;//第一次加载
+        initView(view);
+        type=mSharedPreferences.Get_PREFS(getActivity(),"Type");//代表此页妈妈界面还是宝宝页面unlogin没登录
+        vip=mSharedPreferences.Get_PREFS(getActivity(),"Vip");
+        if("mom".equals(type)) {
+            //妈妈端
+            mParents.setBackgroundColor(getResources().getColor(R.color.white));
+            my_toplayout.setBackgroundColor(getResources().getColor(R.color.green));
+            mTopLayout.setBackgroundColor(getActivity().getResources().getColor(R.color.app_topColor));
+            mLayout2.setBackgroundColor(getResources().getColor(R.color.background_grey));
+            mLayout3.setBackgroundColor(getResources().getColor(R.color.background_grey));
+            //mLayout4.setBackgroundColor(getResources().getColor(R.color.background_grey));
+            mQZ.setVisibility(View.VISIBLE);
+            mXZ.setVisibility(View.VISIBLE);
+            mRW.setVisibility(View.GONE);
+        }else if("baby".equals(type)){
+            //宝宝端
+            my_toplayout.setBackgroundResource(R.drawable.myhead_bgimg);
+            mTitle.setTextColor(getResources().getColor(R.color.red_grey));
+            mTake.setTextColor(getResources().getColor(R.color.red_grey));
+            mQZ.setVisibility(View.GONE);
+            mXZ.setVisibility(View.GONE);
+            mRW.setVisibility(View.VISIBLE);
+        }
+        unlogin=mSharedPreferences.Get_PREFS(getActivity(),"Unlogin");
+        if("yes".equals(unlogin)){
+            //未登录
+            mTake.setVisibility(View.GONE);
+            mScrollView.setVisibility(View.GONE);
+            mUnloginLayout.setVisibility(View.VISIBLE);
+            my_toplayout.setBackgroundResource(R.drawable.head_bgimg);
+        }else {
+            //已登录
+            mTake.setVisibility(View.VISIBLE);
+            mScrollView.setVisibility(View.VISIBLE);
+            mUnloginLayout.setVisibility(View.GONE);
+        }
+        b1=new MyFragmentItem_Beans(R.drawable.mysign_img01,"我的宝贝");
+        b2=new MyFragmentItem_Beans(R.drawable.mysign_img02,"身份切换");
+        b3=new MyFragmentItem_Beans(R.drawable.mysign_img05,"我的钱包");
+        b4=new MyFragmentItem_Beans(R.drawable.mysign_img07,"我的订单");
+        b5=new MyFragmentItem_Beans(R.drawable.mylogin_img09,"邀请码");
+        b6=new MyFragmentItem_Beans(R.drawable.mysign_img04,"我的收藏");
+        b7=new MyFragmentItem_Beans(R.drawable.mysign_img06,"鲜花市场");
+        b8=new MyFragmentItem_Beans(R.drawable.mysign_img03,"兴趣标签");
+
+        initData();
+        initListen();
+
+        return view;
+    }
+
+    /**
+     * 初始化
+     */
+    private void initView(View view) {
+        //改变布局颜色
+        mParents= (RelativeLayout) view.findViewById(R.id.my_fragment_Parents);
+        mLayout2= (LinearLayout) view.findViewById(R.id.My_Fragment_rel_2);
+        mLayout3= (LinearLayout) view.findViewById(R.id.My_Fragment_rel_3);
+        //mLayout4= (LinearLayout) view.findViewById(R.id.My_Fragment_rel_4);
+
+        mTopLayout= (RelativeLayout) view.findViewById(R.id.my_toplayout);
+        mTitle= (TextView) view.findViewById(R.id.My_Fragment_title);
+        mMeLookNumber= (TextView) view.findViewById(R.id.My_Fragment_myLookNumber);
+        mLookMeNumber= (TextView) view.findViewById(R.id.My_Fragment_lookMeNumber);
+        mRewordMeNumber= (TextView) view.findViewById(R.id.My_Fragment_giveMoneyNumber);
+        mScrollView= (ScrollView) view.findViewById(R.id.My_Fragment_scroll);
+
+        mHeader= (SimpleDraweeView) view.findViewById(R.id.My_Fragment_header);
+        mNickName= (TextView) view.findViewById(R.id.My_Fragment_nickName);
+
+        mZP= (RelativeLayout) view.findViewById(R.id.myFragment_myWork);
+        mQZ= (RelativeLayout) view.findViewById(R.id.myFragment_myIdel);
+        mXZ= (RelativeLayout) view.findViewById(R.id.myFragment_myXZ);
+        mXC= (RelativeLayout) view.findViewById(R.id.myFragment_myPhoto);
+        mRW= (RelativeLayout) view.findViewById(R.id.myFragment_myTask);
+
+        mTake= (TextView) view.findViewById(R.id.My_Fragment_take);
+        mInformation= (RelativeLayout) view.findViewById(R.id.My_Fragment_myInformation);
+        mMyLookLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_myLookLayout);
+        mLookMeLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_lookMeLayout);
+        mGiveMoneyLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_giveMoneyLayout);
+
+        mMyGridView= (MyGridView) view.findViewById(R.id.My_Fragment_GridView);
+     /*   mMyBodyLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_myBody_Layout);
+        mToUpdateLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_toUpdate_Layout);
+        mInterestLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_interest_Layout);
+        mCollectionLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_collection_Layout);
+        mFlowerLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_flower_Layout);
+        mMyOrderLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_myOrder_Layout);
+        mMyWalletLayout= (RelativeLayout) view.findViewById(R.id.My_Fragment_myWallet_Layout);*/
+        my_toplayout= (RelativeLayout) view.findViewById(R.id.my_toplayout);
+        mTag_1= (TextView) view.findViewById(R.id.My_Fragment_userTag1);
+        mTag_2= (TextView) view.findViewById(R.id.My_Fragment_userTag2);
+        mTag_3= (TextView) view.findViewById(R.id.My_Fragment_userTag3);
+        mUnloginLayout= (LinearLayout) view.findViewById(R.id.Unlogin_view);
+        mUnlogin=view.findViewById(R.id.unlogin_views);
+        mUnLoginHint= (TextView) mUnlogin.findViewById(R.id.UnLogin_text);
+        mLogin= (Button) mUnlogin.findViewById(R.id.UnLogin_login);
+        mZC= (Button) mUnlogin.findViewById(R.id.UnLogin_ZC);
+        mUnLoginHint.setText("登陆后，你可以管理你的收益、添加宝贝成为家长一起开启领秀S的奇妙育儿之旅！");
+    }
+
+    /**
+     * 数据处理
+     */
+    private void initData() {
+        mItemBeanses.clear();
+        if("mom".equals(type)){
+            mItemBeanses.add(b1);
+            if("yes".equals(vip)){
+
+            }else {
+                mItemBeanses.add(b2);
+            }
+            mItemBeanses.add(b3);
+            mItemBeanses.add(b4);
+            mItemBeanses.add(b5);
+            mItemBeanses.add(b6);
+            mItemBeanses.add(b7);
+            mItemBeanses.add(b8);
+        }else {
+            mItemBeanses.add(b2);
+            mItemBeanses.add(b3);
+            mItemBeanses.add(b4);
+            mItemBeanses.add(b5);
+            mItemBeanses.add(b6);
+            mItemBeanses.add(b7);
+            mItemBeanses.add(b8);
+        }
+        if(Login_Static.mAccount!=null) {
+            if(Login_Static.mAccount.getPortrait()!=null && !"null".equals(Login_Static.mAccount.getPortrait())) {
+                mHeader.setImageURI(Uri.parse(SubString_Utils.getImageUrl(Login_Static.mAccount.getPortrait())));
+            }else {
+                mHeader.setImageURI(Uri.parse(""));
+            }
+            mNickName.setText(Login_Static.mAccount.getNickName());
+            //显示标签部分
+            if (Login_Static.mAccount.getListUserTag() != null) {
+                if (Login_Static.mAccount.getListUserTag().size() == 0) {
+                    mTag_1.setVisibility(View.GONE);
+                    mTag_2.setVisibility(View.GONE);
+                    mTag_3.setVisibility(View.GONE);
+                } else if (Login_Static.mAccount.getListUserTag().size() == 1) {
+                    mTag_1.setVisibility(View.VISIBLE);
+                    mTag_2.setVisibility(View.GONE);
+                    mTag_3.setVisibility(View.GONE);
+                    mTag_1.setText(Login_Static.mAccount.getListUserTag().get(0).getTagName());
+                } else if (Login_Static.mAccount.getListUserTag().size() == 2) {
+                    mTag_2.setVisibility(View.VISIBLE);
+                    mTag_1.setVisibility(View.VISIBLE);
+                    mTag_3.setVisibility(View.GONE);
+                    mTag_1.setText(Login_Static.mAccount.getListUserTag().get(0).getTagName());
+                    mTag_2.setText(Login_Static.mAccount.getListUserTag().get(1).getTagName());
+                } else {
+                    mTag_3.setVisibility(View.VISIBLE);
+                    mTag_2.setVisibility(View.VISIBLE);
+                    mTag_1.setVisibility(View.VISIBLE);
+                    mTag_1.setText(Login_Static.mAccount.getListUserTag().get(0).getTagName());
+                    mTag_2.setText(Login_Static.mAccount.getListUserTag().get(1).getTagName());
+                    mTag_3.setText(Login_Static.mAccount.getListUserTag().get(2).getTagName());
+                }
+            }
+        }else {
+            mHeader.setImageURI(Uri.parse(""));
+            mNickName.setText("");
+        }
+
+        mItemAdapter=new MyFragmentItem_Adapter(mContext,mItemBeanses);
+        mMyGridView.setAdapter(mItemAdapter);
+    }
+
+    /**
+     * 事件处理
+     */
+    private void initListen() {
+        //登录
+        mLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, LoginActivity.class);
+                startActivity(intent);
+
+            }
+        });
+        //注册
+        mZC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, LoginRegisterActivity.class);
+                intent.putExtra("IsThree", "no");//传值，yes代表是第三方登录
+                intent.putExtra("Logintoken", "no");
+                startActivity(intent);
+
+            }
+        });
+      /*  //头像点击
+        mHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent = new Intent(mContext, MyHomePager_Activity.class);
+                //是否进入的我的主页，yes表示进入的是我的主页，no表示进入的是发现的闲置页
+                mSharedPreferences.Save_PREFS(mContext, "otherId", Login_Static.myUserID);
+                mContext.startActivity(mIntent);
+            }
+        });*/
+        //设置
+        mTake.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext, Setting_Activity.class);
+                startActivity(intent);
+            }
+        });
+        //基本信息
+        mInformation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext, My_Information_Activity.class);
+                startActivity(intent);
+            }
+        });
+        //我看过的
+        mMyLookLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext, My_MeLook_Activity.class);
+                startActivity(intent);
+            }
+        });
+        //看过我的
+        mLookMeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext, My_LookMe_Activity.class);
+                startActivity(intent);
+            }
+        });
+        //打赏我的
+        mGiveMoneyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext, My_ReWordList_Activity.class);
+                startActivity(intent);
+            }
+        });
+        mMyGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                checkBean=mItemBeanses.get(position);
+                if(checkBean!=null){
+                    if("我的宝贝".equals(checkBean.getText())){
+                        Intent intent=new Intent(mContext, My_MyBaby_Activity.class);
+                        startActivity(intent);
+                    }else if("身份切换".equals(checkBean.getText())){
+                        if("mom".equals(type)) {
+                            if(isCan) {
+                                Intent intent = new Intent(mContext, Setting_Change_Activity.class);
+                                startActivity(intent);
+                            }else {
+                                mDialog=new HintText_Dialog(mContext,R.style.MyDialog);
+                                mDialog.show();
+                                HintText_Dialog mText_dialog=new HintText_Dialog(mContext,"请先添加宝宝","fail");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDialog.dismiss();
+                                    }
+                                },2000);
+                            }
+                        }else {
+                            Intent intent = new Intent(mContext, Setting_Change_Activity.class);
+                            startActivity(intent);
+                        }
+                    }else if("我的钱包".equals(checkBean.getText())){
+                        Intent intent=new Intent(mContext,My_MyWallet_Activity.class);
+                        startActivity(intent);
+                    }else if("我的订单".equals(checkBean.getText())){
+                        Intent intent=new Intent(mContext,My_OrderList_Activity.class);
+                        getActivity().startActivityForResult(intent,7);
+                    }else if("邀请码".equals(checkBean.getText())){
+                        Intent intent = new Intent(mContext, InvitationActivity.class);
+                        if (Login_Static.mAccount != null) {
+                            intent.putExtra("inviteCode", Login_Static.mAccount.getAccountId());
+                        }
+                        startActivity(intent);
+                    }else if("我的收藏".equals(checkBean.getText())){
+                        Intent intent=new Intent(mContext,MyCollection_Acyivity.class);
+                        startActivity(intent);
+                    }else if("鲜花市场".equals(checkBean.getText())){
+                        Intent intent=new Intent(mContext,My_FlowerMarket_Activity.class);
+                        startActivity(intent);
+                    }else if("兴趣标签".equals(checkBean.getText())){
+                        Intent intent=new Intent(mContext,My_Interests_Activity.class);
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
+        //我的作品
+        mZP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MyHomePager_Activity.class);
+                mSharedPreferences.Save_PREFS(mContext, "otherId",Login_Static.myUserID);
+                intent.putExtra("myfragment",1);
+                mContext.startActivity(intent);
+            }
+        });
+        //我的圈子
+        mQZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MyHomePager_Activity.class);
+                mSharedPreferences.Save_PREFS(mContext, "otherId",Login_Static.myUserID);
+                intent.putExtra("myfragment",2);
+                mContext.startActivity(intent);
+            }
+        });
+        //我的闲置
+        mXZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MyHomePager_Activity.class);
+                mSharedPreferences.Save_PREFS(mContext, "otherId",Login_Static.myUserID);
+                intent.putExtra("myfragment",3);
+                mContext.startActivity(intent);
+            }
+        });
+        //我的相册
+        mXC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MyHomePager_Activity.class);
+                mSharedPreferences.Save_PREFS(mContext, "otherId",Login_Static.myUserID);
+                intent.putExtra("myfragment",4);
+                mContext.startActivity(intent);
+            }
+        });
+        //我的任务
+        mRW.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MyHomePager_Activity.class);
+                mSharedPreferences.Save_PREFS(mContext, "otherId",Login_Static.myUserID);
+                intent.putExtra("myfragment",5);
+                mContext.startActivity(intent);
+            }
+        });
+        /*//我的宝宝
+        mMyBodyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext, My_MyBaby_Activity.class);
+                startActivity(intent);
+            }
+        });
+        //账号切换
+        mToUpdateLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if("mom".equals(type)) {
+                    if(isCan) {
+                        Intent intent = new Intent(mContext, Setting_Change_Activity.class);
+                        startActivity(intent);
+                    }else {
+                        mDialog=new HintText_Dialog(mContext,R.style.MyDialog);
+                        mDialog.show();
+                        HintText_Dialog mText_dialog=new HintText_Dialog(mContext,"请先添加宝宝","fail");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDialog.dismiss();
+                            }
+                        },2000);
+                    }
+                }else {
+                    Intent intent = new Intent(mContext, Setting_Change_Activity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        //兴趣标签
+        mInterestLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext,My_Interests_Activity.class);
+                startActivity(intent);
+            }
+        });
+        //我的收藏
+        mCollectionLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext,MyCollection_Acyivity.class);
+                startActivity(intent);
+
+            }
+        });
+        //鲜花市场
+        mFlowerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext,My_FlowerMarket_Activity.class);
+                startActivity(intent);
+            }
+        });
+        //我的订单
+        mMyOrderLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext,My_OrderList_Activity.class);
+                getActivity().startActivityForResult(intent,7);
+            }
+        });
+        //我的钱包
+        mMyWalletLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext,My_MyWallet_Activity.class);
+                startActivity(intent);
+            }
+        });*/
+
+    }
+
+    /**
+     * 功能：该frament第一次显示的时候，加载网络数据
+     * * 参数：无
+     * 返回：无
+     */
+    private void getservciesData(){
+        getUser();
+        getLookMe(1);
+        getMeLook(1);
+        getReWordtoMe(1);
+        if("mom".equals(type)) {
+            getBabyList();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        if (getUserVisibleHint()) {
+            getdata();
+        }
+    }
+
+    /**
+     * 功能：加载网络数据
+     * 参数：无
+     * 返回：无
+     */
+    private void getdata() {
+        initData();
+        getservciesData();
+    }
+
+    /**
+     * 功能：该界面是否为显示状态
+     * 参数：isVisibleToUser 是否正在显示
+     * 返回：无
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        // TODO Auto-generated method stub
+        super.setUserVisibleHint(isVisibleToUser);
+        //界面显示的时候加载数据
+        if (isVisibleToUser) {
+            getdata();
+        }
+    }
+
+    //获取看过我的列表
+    private void getLookMe(int pageIndex){
+        UserFootprintTerm userFootprintTerm=new UserFootprintTerm();
+        userFootprintTerm.setUserId(Login_Static.myUserID);
+        userFootprintTerm.setType(2);
+        userFootprintTerm.setPageIndex(pageIndex);
+        userFootprintTerm.setPageSize(20);
+        String data=mGson.toJson(userFootprintTerm);
+        CLog.e("testing","获取看过我的列表data"+data);
+        OKHttp.OkHttpPost("/User/GetFootList", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","获取看过我的列表失败"+e.toString());
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing","获取看过我的列表"+response);
+                try {
+                    if(Json_Utils.getCode(response)==0){
+                        mLookMeNumber.setText(Json_Utils.getCount(response)+"");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+    //获取我看过的列表
+    private void getMeLook(int pageIndex){
+        UserFootprintTerm userFootprintTerm=new UserFootprintTerm();
+        userFootprintTerm.setUserId(Login_Static.myUserID);
+        userFootprintTerm.setType(1);
+        userFootprintTerm.setPageIndex(pageIndex);
+        userFootprintTerm.setPageSize(10);
+        String data=mGson.toJson(userFootprintTerm);
+        CLog.e("testing","获取我看过的列表data"+data);
+        OKHttp.OkHttpPost("/User/GetFootList", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","获取我看过的列表失败"+e.toString());
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing","获取我看过的列表"+response);
+                try {
+                    if(Json_Utils.getCode(response)==0){
+                       mMeLookNumber.setText(Json_Utils.getCount(response)+"");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+    /**
+     * 打赏我的 记录
+     */
+    private void getReWordtoMe(int pageIndex){
+        OkHttpUtils.get().url(myApplication.getUrl()+"/Statis/GetUserBeRewardedList")
+                .addParams("userId", Login_Static.myUserID)
+                .addParams("pageIndex", pageIndex+"")
+                .addParams("pageSize", "10")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","获取打赏我的记录失败："+e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","获取打赏我的记录："+response);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                              mRewordMeNumber.setText(Json_Utils.getCount(response)+"");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+
+    /**
+     * 打赏我的 记录
+     */
+    private void getUser(){
+        OkHttpUtils.get().url(myApplication.getUrl()+"/User/GetUser")
+                .addParams("userid", Login_Static.myUserID)
+                .addParams("targetuserid", "0")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        CLog.e("testing","获取我的信息失败："+e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        CLog.e("testing","获取我的信息："+response);
+                        try {
+                            if(Json_Utils.getCode(response)==0){
+                                User user=mGson.fromJson(Json_Utils.getTemplate(response),User.class);
+                                if(user.getPortrait()!=null && !"null".equals(user.getPortrait())) {
+                                    mHeader.setImageURI(Uri.parse(SubString_Utils.getImageUrl(user.getPortrait())));
+                                }else {
+                                    mHeader.setImageURI(Uri.parse(""));
+                                }
+                                mNickName.setText(user.getNickName());
+                                //显示标签部分
+                                if (user.getListUserTag() != null) {
+                                    if (user.getListUserTag().size() == 0) {
+                                        mTag_1.setVisibility(View.GONE);
+                                        mTag_2.setVisibility(View.GONE);
+                                        mTag_3.setVisibility(View.GONE);
+                                    } else if (user.getListUserTag().size() == 1) {
+                                        mTag_1.setVisibility(View.VISIBLE);
+                                        mTag_2.setVisibility(View.GONE);
+                                        mTag_3.setVisibility(View.GONE);
+                                        mTag_1.setText(user.getListUserTag().get(0).getTagName());
+                                    } else if (user.getListUserTag().size() == 2) {
+                                        mTag_2.setVisibility(View.VISIBLE);
+                                        mTag_1.setVisibility(View.VISIBLE);
+                                        mTag_3.setVisibility(View.GONE);
+                                        mTag_1.setText(user.getListUserTag().get(0).getTagName());
+                                        mTag_2.setText(user.getListUserTag().get(1).getTagName());
+                                    } else {
+                                        mTag_3.setVisibility(View.VISIBLE);
+                                        mTag_2.setVisibility(View.VISIBLE);
+                                        mTag_1.setVisibility(View.VISIBLE);
+                                        mTag_1.setText(user.getListUserTag().get(0).getTagName());
+                                        mTag_2.setText(user.getListUserTag().get(1).getTagName());
+                                        mTag_3.setText(user.getListUserTag().get(2).getTagName());
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+    private void getBabyList(){
+        UserTerm userTerm=new UserTerm();
+        userTerm.setUserId(Login_Static.myUserID);
+        String data=mGson.toJson(userTerm);
+        CLog.e("testing","获取宝贝列表data："+data);
+        OKHttp.OkHttpPost("/User/GetUserList", "", data, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                CLog.e("testing","获取宝贝列表失败："+e.toString());
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                CLog.e("testing","获取宝贝列表："+response);
+                try {
+                    if(Json_Utils.getCode(response)==0) {
+                        JSONArray jsonArray = new JSONArray(Json_Utils.getTemplate(response));
+                        isCan = jsonArray.length() > 0;
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+
+}

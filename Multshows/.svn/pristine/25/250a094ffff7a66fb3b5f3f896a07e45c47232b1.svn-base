@@ -1,0 +1,106 @@
+package com.multshows.Activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.multshows.R;
+import com.multshows.Utils.MySystemBarTintManage_Utils;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class Release_WhoSee_Activity extends AppCompatActivity {
+
+    @Bind(R.id.WhoSee_finshActivity)
+    TextView mWhoSeeFinshActivity;
+    @Bind(R.id.WhoSee_return)
+    TextView mWhoSeeReturn;
+    @Bind(R.id.public_see)
+    CheckBox mPublicSee;
+    @Bind(R.id.publicLayout)
+    RelativeLayout mPublicLayout;
+    @Bind(R.id.Private_see)
+    CheckBox mPrivateSee;
+    @Bind(R.id.PrivateLayout)
+    RelativeLayout mPrivateLayout;
+    @Bind(R.id.Friends_see)
+    CheckBox mFriendsSee;
+    @Bind(R.id.FriendsLayout)
+    RelativeLayout mFriendsLayout;
+    String chioceString="好友可见";
+    String intentString="";//传过来的信息
+    Intent mIntent ;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_release_who_see);
+        ButterKnife.bind(this);
+        initData();
+    }
+
+    private void initData() {
+        MySystemBarTintManage_Utils tintManageUtils = new MySystemBarTintManage_Utils();
+        tintManageUtils.setSystemBarTintManage(Release_WhoSee_Activity.this, R.color.green);
+        mIntent =getIntent();
+        intentString=mIntent.getStringExtra("mWhoSeeText");
+        if(intentString.equals("所有人可见")){
+            chioceString="所有人可见";
+            mPublicSee.setVisibility(View.VISIBLE);
+            mFriendsSee.setVisibility(View.INVISIBLE);
+            mPrivateSee.setVisibility(View.INVISIBLE);
+        }
+        if(intentString.equals("仅自己可见")){
+            chioceString="仅自己可见";
+            mPublicSee.setVisibility(View.INVISIBLE);
+            mPrivateSee.setVisibility(View.VISIBLE);
+            mFriendsSee.setVisibility(View.INVISIBLE);
+        }
+        if(intentString.equals("好友可见")){
+            chioceString="好友可见";
+            mPublicSee.setVisibility(View.INVISIBLE);
+            mFriendsSee.setVisibility(View.VISIBLE);
+            mPrivateSee.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @OnClick({R.id.WhoSee_finshActivity, R.id.WhoSee_return, R.id.publicLayout, R.id.PrivateLayout, R.id.FriendsLayout})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.WhoSee_finshActivity:
+                Intent intent = new Intent();
+                //把返回数据存入Intent
+                intent.putExtra("chioceResult",chioceString);
+                setResult(4, intent);
+                finish();
+                break;
+            case R.id.WhoSee_return:
+                finish();
+                break;
+            case R.id.publicLayout:
+                mPublicSee.setVisibility(View.VISIBLE);
+                mFriendsSee.setVisibility(View.INVISIBLE);
+                mPrivateSee.setVisibility(View.INVISIBLE);
+                chioceString="所有人可见";
+                break;
+            case R.id.PrivateLayout:
+                mPublicSee.setVisibility(View.INVISIBLE);
+                mPrivateSee.setVisibility(View.VISIBLE);
+                mFriendsSee.setVisibility(View.INVISIBLE);
+                chioceString="仅自己可见";
+                break;
+            case R.id.FriendsLayout:
+                mPublicSee.setVisibility(View.INVISIBLE);
+                mFriendsSee.setVisibility(View.VISIBLE);
+                mPrivateSee.setVisibility(View.INVISIBLE);
+                chioceString="好友可见";
+                break;
+        }
+    }
+}

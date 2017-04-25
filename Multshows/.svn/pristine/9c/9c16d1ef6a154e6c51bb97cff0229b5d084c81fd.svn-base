@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/home_myFriends_FriendList_parentLayout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/background_alight"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/sort_layout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/layout_border_bottom1_light_grey">
+
+        <TextView
+            android:id="@+id/sort_firstCharacter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18sp"
+            android:text="A"
+            android:textColor="@color/text_grey_2"
+            android:textSize="14sp"
+            />
+    </RelativeLayout>
+
+    <com.multshows.Views.SwipeLayout_Views
+        android:id="@+id/sort_swipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        >
+
+        <RelativeLayout
+            android:id="@+id/sort_Item_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/sort_leftLayout"
+                android:layout_width="69dp"
+                android:layout_height="match_parent">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/sort_headImage"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="3dp"
+                    fresco:failureImage="@drawable/info_photoyou"
+                    fresco:placeholderImage="@drawable/info_photoyou"
+                    fresco:roundAsCircle="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/sort_leftLayout"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/layout_border_bottom1_alightwhite">
+
+                <TextView
+                    android:id="@+id/sort_userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="12dp"
+                    android:text="昵称"
+                    android:textColor="@color/text_black"
+                    android:textSize="17sp"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sort_userName"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="3dp">
+
+                    <TextView
+                        android:id="@+id/sort_userTag1"
+                        style="@style/text_ww_10_green"
+                        android:background="@drawable/green_labelimg2"
+                        android:paddingLeft="13dp"
+                        android:paddingRight="4dp"
+                        android:paddingBottom="1dp"
+                        android:paddingTop="1dp"
+                        android:gravity="center_vertical"
+                        />
+
+                    <TextView
+                        android:id="@+id/sort_userTag2"
+                        style="@style/text_ww_10_green"
+                        android:background="@drawable/green_labelimg2"
+                        android:paddingLeft="13dp"
+                        android:paddingRight="4dp"
+                        android:paddingBottom="1dp"
+                        android:paddingTop="1dp"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="9dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/sort_userTag3"
+                        style="@style/text_ww_10_green"
+                        android:background="@drawable/green_labelimg2"
+                        android:paddingLeft="13dp"
+                        android:paddingRight="4dp"
+                        android:paddingBottom="1dp"
+                        android:paddingTop="1dp"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="9dp"
+                        />
+                </LinearLayout>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:focusable="false">
+            <TextView
+                android:id="@+id/sort_NameFriend"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:textColor="@color/white"
+                android:background="@color/text_black_2"
+                android:gravity="center"
+                android:textSize="17sp"
+                android:text="备注"/>
+            <TextView
+                android:id="@+id/sort_deleteFriend"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@color/text_green"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:text="删除"/>
+        </LinearLayout>
+
+    </com.multshows.Views.SwipeLayout_Views>
+
+
+</LinearLayout>

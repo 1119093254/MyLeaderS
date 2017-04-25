@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/MyPageComment_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:background="@color/edit_grey"
+        >
+        <RelativeLayout
+            android:id="@+id/MyComment_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="59dp"
+            android:background="#F5F5F6">
+
+            <ImageView
+                android:id="@+id/MyCommentfaceImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/info_face"/>
+            <TextView
+            android:id="@+id/MyCommentSent"
+            android:layout_marginRight="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text="发表"/>
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/MyCommentSent2"
+                android:layout_marginRight="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:text="发表"/>
+            <com.rockerhieu.emojicon.EmojiconEditText
+                android:layout_toRightOf="@+id/MyCommentfaceImage"
+                android:id="@+id/MyComment_EditText"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="9dp"
+                android:layout_marginLeft="17dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="9dp"
+
+                android:background="@drawable/border_9_white"
+                android:hint="输入内容..."
+                android:paddingLeft="10dp"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/Mycomment_bottom_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/MyComment_Layout"
+            android:visibility="gone"
+            >
+            <FrameLayout
+                android:id="@+id/mycomment_bottom_fragment"
+                class="com.rockerhieu.emojicon.EmojiconsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
