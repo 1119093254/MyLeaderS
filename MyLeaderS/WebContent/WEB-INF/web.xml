@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>MyLeaderS</display-name>
+  
+    <filter>
+		<filter-name>cfilter</filter-name>
+		<filter-class>com.lxx.filter.CharsetFilter</filter-class>
+		<init-param>
+			<param-name>character</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>cfilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+  
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>LeaderServlet</servlet-name>
+    <servlet-class>com.lxx.servlet.LeaderServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LeaderServlet</servlet-name>
+    <url-pattern>/servlet/LeaderServlet</url-pattern>
+  </servlet-mapping>
+   
+</web-app>
