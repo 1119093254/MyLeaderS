@@ -23,7 +23,7 @@ import com.qiniu.util.Auth;
 public class QiniuDao {
 
 	/**
-	 * 获取用户信息
+	 * 获取七牛云上传Token
 	 * @return
 	 */
 	public String getUpToken() {
